@@ -1,0 +1,154 @@
+<div class="card">
+  <div class="card-header header-elements-inline">
+    <h6 class="card-title">KIỂM SOÁT PHƯƠNG TIỆN ĐI PHÁT CỦA CỤC</h6>
+    <div class="header-elements">
+      <!-- <span class="cbx-posCode-title">Bưu cục:</span> -->
+      <span class="badge badge-success badge-pill mr-2">Bưu cục</span>
+      <input-select
+        class="cbx-posCode"
+        [items]="listData"
+        [(ngModel)]="posCode"
+        (ngModelChange)="changePos()"
+      ></input-select>
+    </div>
+  </div>
+
+  <div class="card-body py-0">
+    <div class="xe-content">
+      <div class="xe-map">
+        <ng-container *ngIf="url">
+          <iframe
+            width="100%"
+            height="1070px"
+            [src]="url | safeIframe"
+            (load)="isLoadIframe = false"
+          ></iframe>
+        </ng-container>
+        <nz-spin *ngIf="!url" [nzSpinning]="true"></nz-spin>
+      </div>
+      <div class="xe-thong-tin">
+        <div class="xe-list">
+          <nz-spin *ngIf="isLoading" [nzSpinning]="isLoading"></nz-spin>
+          <table *ngIf="!isLoading" class="table">
+            <thead>
+              <tr>
+                <th style="width: 210px">Thông tin xe</th>
+                <th style="width: 110px">Khởi hành</th>
+                <th style="width: 80px">Trạng thái</th>
+                <th style="width: 50px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of listOfData">
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="mr-3">
+                        <a
+                          [ngClass]="{
+                            'btn-danger': item.Status === 2,
+                            'btn-success': item.Status !== 2
+                          }"
+                          href="#"
+                          class="btn rounded-pill btn-icon btn-sm"
+                        >
+                          <span class="letter-icon">{{
+                            item.FullName | firstTxt
+                          }}</span>
+                        </a>
+                      </div>
+                      <div>
+                        <a
+                          href="#"
+                          class="text-body font-weight-semibold letter-icon-title"
+                          >{{ item.FullName }}</a
+                        >
+                        <div class="text-muted font-size-sm">
+                          <i
+                            class="font-size-sm mr-1"
+                            [ngClass]="{
+                              'icon-lifebuoy': item.Status === 2,
+                              'icon-checkmark3': item.Status !== 2
+                            }"
+                          ></i>
+                          {{ item.TransportCode }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <span class="text-muted font-size-sm">{{
+                      item.ApprovedDate | datetimeFormat
+                    }}</span>
+                  </td>
+                  <td class="text-center">
+                    <h6
+                      class="font-weight-semibold mb-0"
+                      [ngClass]="{
+                        'text-danger': item.Status === 2,
+                        'text-success': item.Status !== 2
+                      }"
+                    >
+                      {{ item.Status === 2 ? "Xe hỏng" : "Đi phát" }}
+                    </h6>
+                  </td>
+                  <td class="text-center" (click)="selectTran(item)">
+                    <a
+                      href="javascript:;"
+                      class="badge badge-pill"
+                      [ngClass]="{
+                        'badge-muted': transportCode !== item.TransportCode,
+                        'badge-success': transportCode === item.TransportCode
+                      }"
+                      >Xem</a
+                    >
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+        <div class="xe-more mt-2" *ngIf="transportCode">
+          <nz-spin *ngIf="isLoadMore" [nzSpinning]="isLoadMore"></nz-spin>
+          <table *ngIf="!isLoadMore" class="table">
+            <thead>
+              <tr>
+                <th style="width: 210px">Tuến phát</th>
+                <th class="text-center" style="width: 190px">Bưu gửi</th>
+                <th style="width: 50px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let item of listMore">
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div>
+                        <a
+                          href="#"
+                          class="text-body font-weight-semibold letter-icon-title"
+                          >{{ item.DeliverRouteName }}</a
+                        >
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{item.DaPhat | number}}/{{item.SoLuong | number}}
+                  </td>
+                  <td class="text-center">
+                    <a
+                      (click)="viewDataDialog(item.MailtripID)"
+                      href="javascript:;"
+                      class="badge badge-pill badge-muted"
+                      >Xem</a
+                    >
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

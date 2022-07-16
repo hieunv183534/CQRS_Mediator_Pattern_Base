@@ -1,0 +1,151 @@
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Quản Lý Nhóm Quyền</span></h4>
+    </div>
+    <div class="header-elements">
+      <button type="button" class="btn btn-primary" (click)="getData()">
+        <i class="mr-2" nz-icon nzType="search" nzTheme="outline"></i>
+        Tìm kiếm
+      </button>
+      <button type="button" class="btn btn-primary" (click)="addDataDialog()">
+        <i class="mr-2" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+        Thêm mới
+      </button>
+      <!-- <button type="button" class="btn btn-primary" (click)="editDialog()">
+        <i class="mr-2" nz-icon nzType="edit" nzTheme="outline"></i>
+        Sửa
+      </button>
+      <button type="button" class="btn btn-primary" (click)="cancel()">
+        <i class="mr-2" nz-icon nzType="bars" nzTheme="outline"></i>
+        hủy
+      </button>
+      <button type="button" class="btn btn-primary" (click)="active()">
+        <i class="mr-2" nz-icon nzType="bars" nzTheme="outline"></i>
+        kích hoạt
+      </button>
+      <button type="button" class="btn btn-primary" (click)="disable()">
+        <i class="mr-2" nz-icon nzType="bars" nzTheme="outline"></i>
+        vô hiệu hóa
+      </button>
+      <button type="button" class="btn btn-primary" >
+        <i class="mr-2" nz-icon nzType="bars" nzTheme="outline"></i>
+        kết xuất
+      </button> -->
+    </div>
+  </div>
+</div>
+
+<div class="content pt-0">
+
+  <div class="card">
+    <div class="card-body">
+      <form class="form-horizontal" nz-form *ngIf="formSearch" [formGroup]="formSearch" (ngSubmit)="getData()" novalidate>
+        <ng-template #controlErrorTpl let-control>
+          <app-render-errors [control]="control"></app-render-errors>
+        </ng-template>
+        <div class="row">
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Tên nhóm quyền</nz-form-label>
+              <nz-form-control>
+                <nz-input-group >
+                  <input-text formControlName="name" placeholder="Tên nhóm quyền"></input-text>
+                </nz-input-group>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <!-- <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Trạng thái</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-select formControlName="status" [items]="[{value:0,text:'Tất cả'},{value:1, text:'Đang sử dụng'},{value:2,text:'Đã xóa'}]"
+                  placeholder="Trạng thái">
+                </input-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div> -->
+        </div>
+        <!-- <div class="row">
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Ngày tạo từ</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-date formControlName="dateStart" placeholder="dd/mm/yyyy"></input-date>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Ngày tạo đến</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-date formControlName="dateEnd" placeholder="dd/mm/yyyy"></input-date>
+              </nz-form-control>
+            </nz-form-item>
+          </div> -->
+         <!--  <div class="col-md-6">
+            <button nz-button [nzLoading]="isSubmit" type="submit" class="btn btn-primary" >
+              <i class="mr-2" nz-icon nzType="search" nzTheme="outline"></i>
+              Tìm kiếm
+            </button>
+          </div> -->
+        <!-- </div> -->
+        <button type="submit" [hidden]="true">Enter Submit</button>
+      </form>
+      <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+        [nzScroll]="{ x: false }">
+        <thead>
+          <tr>
+            <th nzWidth="40px"></th>
+            <th>Stt</th>
+            <th>Mã nhóm quyền</th>
+            <th>Tên nhóm quyền</th>
+            <th>mô tả nhóm quyền</th>
+            <th class="action text-center">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of listOfData;let i = index">
+            <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+            (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)"></td>
+            <td>
+              {{ i + 1 + ((paging.page - 1)*paging.size)}}
+            </td>
+            <td>
+              {{item.id}}
+            </td>
+            <td>
+              <!-- item.permissonId -->
+              <a class="data-link" href="javascript:;" (click)="showDataDialog(item.id)">
+              {{item.name}}
+            </a>
+            </td>
+            <td>
+                {{item.concurrencyStamp}}
+            </td>
+            <td class="text-center">
+              <div class="list-icons list-icons-extended text-center">
+                <a class="list-icons-item" href="javascript:;" (click)="showDataDialog(item.id)">
+                  <span nz-tooltip nzTooltipTitle="Xem">
+                    <i nz-icon nzType="eye" nzTheme="outline"></i>
+                  </span>
+                </a>
+                <a class="list-icons-item text-primary" href="javascript:;" (click)="editDataDialog(item.id)">
+                  <span nz-tooltip nzTooltipTitle="Sửa">
+                    <i nz-icon nzType="form" nzTheme="outline"></i>
+                  </span>
+                </a>
+                <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteData([item.id])">
+                  <span nz-tooltip nzTooltipTitle="Xóa">
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                  </span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+      <app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+    </div>
+  </div>
+</div>

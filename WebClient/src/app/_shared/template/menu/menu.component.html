@@ -1,0 +1,98 @@
+<!-- Main sidebar -->
+<div class="sidebar sidebar-main sidebar-expand-md" [ngClass]="{'sidebar-fullscreen': isShowFullMenuMobile }">
+
+  <!-- Sidebar mobile toggler -->
+  <div class="sidebar-mobile-toggler text-center">
+    <a href="javascript:;" class="sidebar-mobile-main-toggle" (click)="hideMenuMobile()">
+      <i class="icon-arrow-left8"></i>
+    </a>
+    Menu
+    <a href="javascript:;" class="sidebar-mobile-expand" (click)="showFullMenuMobile()">
+      <i *ngIf="!isShowFullMenuMobile" class="icon-screen-full"></i>
+      <i *ngIf="isShowFullMenuMobile" class="icon-screen-normal"></i>
+    </a>
+  </div>
+  <!-- /sidebar mobile toggler -->
+
+
+  <!-- Sidebar content -->
+  <div class="sidebar-content">
+
+    <!-- Main navigation -->
+    <div class="card card-sidebar-mobile">
+      <ul class="nav nav-sidebar" data-nav-type="accordion">
+
+        <!-- Main -->
+        <li class="nav-item-header">
+          <div class="text-uppercase font-size-xs line-height-xs"></div> <i class="icon-menu" title="Main"></i>
+        </li>
+        <ng-container *ngIf="!isLoading">
+          <ng-container *ngFor="let item of menuData">
+            <li class="nav-item" [ngClass]="{'nav-item-submenu':item.child.length > 0,'nav-item-open': item.isOpen}">
+              <ng-container *ngIf="item.url; else elseTemplateLink">
+                <a [routerLink]="[item.url]" [queryParams]="item.params" routerLinkActive="active"
+                  [routerLinkActiveOptions]="{exact: item.exact}" class="nav-link" (click)="openMenu(item)">
+                  <i class="{{item.icon}}"></i>
+                  <span>
+                    {{item.name}}
+                  </span>
+                </a>
+              </ng-container>
+              <ng-template #elseTemplateLink>
+                <a href="javascript:;" routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.exact}"
+                  class="nav-link" (click)="openMenu(item)">
+                  <i class="{{item.icon}}"></i>
+                  <span>
+                    {{item.name}}
+                  </span>
+                </a>
+              </ng-template>
+              <ng-container *ngIf="item.child.length > 0">
+                <ul class="nav nav-group-sub" [ngClass]="{'d-block':item.isOpen}">
+                  <ng-container *ngTemplateOutlet="detailChild; context: { $implicit: item.child }"></ng-container>
+                </ul>
+              </ng-container>
+            </li>
+          </ng-container>
+        </ng-container>
+        <nz-spin *ngIf="isLoading" [nzSpinning]="isLoading"></nz-spin>
+        <!-- /Main -->
+      </ul>
+    </div>
+    <!-- /main navigation -->
+
+  </div>
+  <!-- /sidebar content -->
+
+</div>
+<!-- /main sidebar -->
+<ng-template #detailChild let-childs>
+  <ng-container *ngFor="let item of childs;let i = index">
+    <li class="nav-item" [ngClass]="{'nav-item-submenu':item.child.length > 0,'nav-item-open': item.isOpen}">
+      <ng-container *ngIf="item.url; else elseTemplateLink">
+        <a [ngStyle]="{'padding-left': (8 + 17*item.level)+'px'}" [routerLink]="[item.url]" [queryParams]="item.params"
+          routerLinkActive="active" [routerLinkActiveOptions]="{exact: item.exact}" class="nav-link"
+          (click)="openMenu(item)">
+          <i class="{{item.icon}}"></i>
+          <span>
+            {{item.name}}
+          </span>
+        </a>
+      </ng-container>
+      <ng-template #elseTemplateLink>
+        <a [ngStyle]="{'padding-left': (8 + 17*item.level)+'px'}" href="javascript:;" routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: item.exact}" class="nav-link" (click)="openMenu(item)">
+          <i class="{{item.icon}}"></i>
+          <span>
+            {{item.name}}
+          </span>
+        </a>
+      </ng-template>
+      <ng-container *ngIf="item.child.length > 0">
+        <ul class="nav nav-group-sub" [ngClass]="{'d-block':item.isOpen}">
+          <ng-container *ngTemplateOutlet="detailChild; context: { $implicit: item.child }"></ng-container>
+        </ul>
+      </ng-container>
+    </li>
+  </ng-container>
+</ng-template>

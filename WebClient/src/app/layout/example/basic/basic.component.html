@@ -1,0 +1,273 @@
+<div class="page-header page-header-light">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a [routerLink]="['/']" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Trang chủ</a>
+        <a href="javascript:;" class="breadcrumb-item">Example</a>
+        <a href="javascript:;" class="breadcrumb-item">Quản lý</a>
+        <span class="breadcrumb-item active">Form mẫu</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Content area -->
+<div class="content pt-0">
+
+  <div class="card">
+    <div class="card-header header-elements-inline">
+      <h5 class="card-title">Tiêu đề</h5>
+    </div>
+
+    <div class="card-body">
+      <nz-spin [nzSpinning]="isLoading">
+        <form class="form-horizontal" nz-form [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+
+          <div class="row">
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text enter event</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search formControlName="textSearch" placeholder="Nhập mã {enter}"
+                    (onKeyEnter)="textSearchOnKeyEnter()">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text group seach</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <nz-input-group [nzAddOnAfter]="suffixCheckBox">
+                    <input-text formControlName="textSearchExtra" placeholder="Nhập từ khóa tìm kiếm"
+                      (onKeyEnter)="textSearchExtraOnKeyEnter()"></input-text>
+                  </nz-input-group>
+                  <ng-template #suffixCheckBox>
+                    <i nz-icon nzType="scan" nzTheme="outline" (click)="textSearchExtraOnKeyEnter()"></i>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text search</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search formControlName="textSearch" placeholder="Nhập từ khóa tìm kiếm">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text group</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <nz-input-group [nzAddOnAfter]="suffixCheckBox2">
+                    <input-text formControlName="textSearchExtra" placeholder="Nhập từ khóa tìm kiếm"></input-text>
+                  </nz-input-group>
+                  <ng-template #suffixCheckBox2>
+                    <label nz-checkbox formControlName="isExtra" [nzValue]="true">Tìm chính xác</label>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text Basic</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text formControlName="textBasic" placeholder="Nhập text"></input-text>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text Number</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-number formControlName="textNumber" placeholder="Nhập số"></input-number>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Input Date</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-date formControlName="inputDate" placeholder="DD/MM/YYYY"></input-date>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Input Month</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-month formControlName="inputMonth" placeholder="MM/YYYY"></input-month>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Input Float</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-float formControlName="inputFloat" placeholder="Nhập số thap phan"></input-float>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-radio formControlName="gender" [items]="[{id:1,name:'Nam'},{id:2,name:'Nu'}]"></input-radio>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <nz-input-group nzCompact>
+                    <input-check-box class="w-auto" formControlName="optionSentMail" [nzValue]="true">Gui Email
+                    </input-check-box>
+                    <input-check-box class="w-auto" formControlName="optionSentNotification" [nzValue]="true">Gui Thong
+                      Bao</input-check-box>
+                  </nz-input-group>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Select Sigle</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select formControlName="selectSigle" [items]="[{value:1,text:'test'},{value:2, text:'test 2'}]"
+                    placeholder="Chon tinh thanh"></input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Select Multi</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select-multiple formControlName="selectMulti"
+                    [items]="[{value:1,text:'test'},{value:2, text:'test 2'}]" placeholder="Chon tinh thanh">
+                  </input-select-multiple>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <!-- <nz-form-label nzRequired>Input swith</nz-form-label> -->
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <nz-input-group nzCompact>
+                    <input-switch class="w-auto mr-2" formControlName="isSyn" classControl="mr-2">Dong bo</input-switch>
+                    <input-switch class="w-auto" formControlName="isChekout" classControl="mr-2">Check out
+                    </input-switch>
+                  </nz-input-group>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label nzRequired>Group multi control</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <nz-input-group nzCompact>
+                    <input-select-api [items]="[{ value: null, text: 'Tất cả' }]" formControlName="religionId"
+                      [apiService]="mailRouteApi" [apiParams]="{ page: 1 }" placeholder="Chon tinh thanh">
+                    </input-select-api>
+                    <input-text></input-text>
+                    <input-number></input-number>
+                  </nz-input-group>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label nzRequired>Text EnterBarcode</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text [(select)]="selectBarcode" (onKeyEnter)="selectBarcode = true" formControlName="textSearch" placeholder="Nhập code">
+                  </input-text>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Select Sigle Api</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select-api [items]="[{ value: null, text: 'Tất cả' }]" formControlName="religionId"
+                    [apiService]="mailRouteApi" [apiParams]="{ page: 1 }" placeholder="Chon tinh thanh">
+                  </input-select-api>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Select Multi Api</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select-multiple-api placeholder="Chọn tỉnh thành" [apiService]="exampleBasicApi"
+                    formControlName="listReligionId"></input-select-multiple-api>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Autocomplte Api</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-autocomplate-api placeholder="Nhap tu khoa" [apiService]="exampleBasicApi"
+                    formControlName="autoComplate"></input-autocomplate-api>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <app-area-place [provinceValue]="myForm.get('province').value" [districtValue]="myForm.get('province').value"
+            [communeValue]="myForm.get('province').value" (onChange)="onChangeAreaPlace($event)"></app-area-place>
+
+          <div class="row">
+            <div class="col-4">
+              <nz-form-item>
+                <nz-form-label>Date time</nz-form-label>
+                <nz-form-control>
+                  <input-date-time formControlName="datetime" placeholder="DD/MM/YYYY HH:MM"></input-date-time>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <nz-form-item>
+                <nz-form-label>Textarea</nz-form-label>
+                <nz-form-control>
+                  <input-textarea formControlName="textarea" placeholder="Nhập ghi chú"></input-textarea>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <div class="text-center mt-2">
+            <button nz-button class="btn btn-primary" [nzLoading]="isSubmit" type="button">
+              Lưu dữ liệu
+            </button>
+          </div>
+        </form>
+      </nz-spin>
+    </div>
+    <!-- /content area -->
+  </div>

@@ -1,0 +1,337 @@
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form [formGroup]="myForm" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-2">
+        <nz-form-item>
+          <nz-form-label nzRequired>Mã báo cáo</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="Nhập mã" formControlName="name"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-4">
+        <nz-form-item>
+          <nz-form-label>Tên báo cáo</nz-form-label>
+          <nz-form-control>
+            <input-text formControlName="description" placeholder="Nhập tên"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn 1 file</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-file placeholder="" [size]="1" folder="reportManager" formControlName="fileTemplate"></input-file>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <!--    <div class="col-md-4">-->
+    <!--      <nz-form-item>-->
+    <!--        <nz-form-control [nzErrorTip]="controlErrorTpl">-->
+    <!--          <input-radio formControlName="dataType" [items]="[{id:1,name:'câu lệnh sql'},{id:2,name:'api'}]"></input-radio>-->
+    <!--        </nz-form-control>-->
+    <!--      </nz-form-item>-->
+    <!--    </div>-->
+    <!--    <div class="row">-->
+    <!--      <div class="col-12">-->
+    <!--        <nz-form-item>-->
+    <!--          <nz-form-label>Nguồn báo cáo</nz-form-label>-->
+    <!--          <nz-form-control>-->
+    <!--            <input-textarea formControlName="dataSource" placeholder="Nhập nguồn báo cáo"></input-textarea>-->
+    <!--          </nz-form-control>-->
+    <!--        </nz-form-item>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <!--    begin::: params dưới client truyền lên-->
+    <nz-table formArrayName="params" [nzData]="[1]" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+      [nzScroll]="{ x: false }">
+      <thead>
+        <tr>
+          <th class="text-center">STT</th>
+          <th class="text-center" style="min-width: 120px">Tên param</th>
+          <!--        <th class="text-center" style="min-width: 120px">Loại dữ liệu</th>-->
+          <th class="text-center" style="min-width: 120px">Kiểu dữ liệu</th>
+          <th class="text-center" style="min-width: 120px">Giá trị mặc định</th>
+          <th class="text-center" style="width: 30px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of reportParamsFormArray.controls;let i = index">
+          <tr [formGroupName]="i">
+            <td class="text-center">
+              {{ i + 1}}
+            </td>
+            <!--          Tên param-->
+            <td class="text-center">
+              <a class="data-link" href="javascript:;">
+                <nz-form-item>
+                  <nz-form-control [nzErrorTip]="controlErrorTpl">
+                    <input-text formControlName="name"></input-text>
+                  </nz-form-control>
+                </nz-form-item>
+              </a>
+            </td>
+            <!--          Loại dữ liệu-->
+            <!--          <td class="text-center">-->
+            <!--            <input-select formControlName="inputType"-->
+            <!--                          [items]="[{value:1,text:'Tự định nghĩa'},{value:2, text:'Lấy từ cài đặt'}]">-->
+            <!--            </input-select>-->
+            <!--          </td>-->
+            <!--          Kiểu dữ liệu-->
+            <td class="text-center">
+              <input-select formControlName="dataType"
+                [items]="[{value:1,text:'String'},{value:2, text:'Number'},{value:3, text:'Date'}]">
+              </input-select>
+            </td>
+            <!--          Giá trị mặc định-->
+            <td class="text-center">
+              <a class="data-link" href="javascript:;">
+                <ng-container [ngSwitch]="reportParamsFormArray.at(i).get('dataType').value">
+                  <ng-container *ngSwitchCase="1">
+                    <input-text formControlName="dataDefault"></input-text>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="2">
+                    <input-text formControlName="dataDefault"></input-text>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="3">
+                    <input-date formControlName="dataDefault" placeholder="DD/MM/YYYY"></input-date>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <input-file placeholder="" [size]="1" folder="reportManager" formControlName="dataFileDefault">
+                    </input-file>
+                  </ng-container>
+                </ng-container>
+              </a>
+            </td>
+            <td class="text-center">
+              <div class="list-icons list-icons-extended text-center">
+                <a class="list-icons-item text-danger" href="javascript:;" (click)="removeReportParamsFormArray(i)">
+                  <span nz-tooltip nzTooltipTitle="Xóa">
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                  </span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr>
+          <td colspan="20" class="text-center">
+            <div class="list-icons list-icons-extended text-center">
+              <a class="list-icons-item text-success" href="javascript:;" (click)="addReportParamsFormArray()">
+                <span nz-tooltip nzTooltipTitle="Xóa">
+                  <i nz-icon nzType="plus" nzTheme="outline"></i> Thêm params
+                </span>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <!--    end:::  params dưới client truyền lên-->
+
+    <!--    begin::: data set-->
+    <nz-table formArrayName="reportManagerDataSet" [nzData]="[1]" [nzBordered]="true" [nzFrontPagination]="false"
+      nzSize="small" [nzScroll]="{ x: false }">
+      <thead>
+        <tr>
+          <th class="text-center">STT</th>
+          <th class="text-center" style="min-width: 120px">Tên dataSet</th>
+          <th class="text-center" style="min-width: 120px">Nguồn dữ liệu</th>
+          <th class="text-center" style="min-width: 120px">Connection</th>
+          <th class="text-center" style="min-width: 120px">Kiểu dữ liệu</th>
+          <th class="text-center" style="min-width: 120px">Giá trị mặc định</th>
+          <th class="text-center" style="width: 30px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of reportDataSetFormArray.controls;let i = index">
+          <tr [formGroupName]="i">
+            <td class="text-center">
+              {{ i + 1}}
+            </td>
+            <!--          Tên dataSet-->
+            <td class="text-center">
+              <a class="data-link" href="javascript:;">
+                <nz-form-item>
+                  <nz-form-control [nzErrorTip]="controlErrorTpl">
+                    <input-text formControlName="name"></input-text>
+                  </nz-form-control>
+                </nz-form-item>
+              </a>
+            </td>
+            <!--          Nguồn dữ liệu-->
+            <td class="text-center">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select formControlName="sourceType"
+                    [items]="[{value:1,text:'Câu lệnh sql'},{value:2, text:'Api'},{value:3, text:'Lấy từ hệ thống'},{value:4, text:'Dữ liệu tĩnh'}]">
+                  </input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td class="text-center">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select [items]="listConnection" formControlName="connectString">
+                  </input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <!--          Kiểu dữ liệu-->
+            <td class="text-center">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select formControlName="dataType"
+                    [items]="[{value:1,text:'String'},
+                    {value:2, text:'Number'},
+                    {value:3, text:'Date'},
+                    {value: 4, text: 'File'},
+                    {value: 5, text: 'Object'},
+                    {value: 6, text: 'Array'},
+                    {value: 7, text: 'Table Dynamic'},
+                    {value: 8, text: 'Array Custom'}]">
+                  </input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <!--          Giá trị mặc định-->
+            <td class="text-center">
+              <a class="data-link" href="javascript:;">
+                <ng-container *ngIf="reportDataSetFormArray.at(i).get('sourceType').value === 4"
+                  [ngSwitch]="item.get('dataType').value">
+                  <ng-container *ngSwitchCase="1">
+                    <input-text formControlName="dataValue"></input-text>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="2">
+                    <input-number formControlName="dataValue"></input-number>
+                  </ng-container>
+                  <ng-container *ngSwitchCase="3">
+                    <input-date formControlName="dataValue" placeholder="DD/MM/YYYY"></input-date>
+                  </ng-container>
+                  <ng-container *ngSwitchDefault>
+                    <input-file placeholder="" [size]="1" folder="reportManagerDataSet" formControlName="dataValue">
+                    </input-file>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="item.get('sourceType').value === 3">
+                  <input-select formControlName="dataValue"
+                    [items]="[{value:'1',text:'Tên website'},{value:'2', text:'Tài khoản hiện tại'},{value:'3', text:'Địa chỉ'},{value: '4', text: 'Số điện thoại'}]">
+                  </input-select>
+                </ng-container>
+                <ng-container *ngIf="[1,2].includes(item.get('sourceType').value)">
+                  <input-text formControlName="dataValue"></input-text>
+                </ng-container>
+              </a>
+            </td>
+            <td class="text-center">
+              <div class="list-icons list-icons-extended text-center">
+                <a class="list-icons-item text-danger" href="javascript:;" (click)="removeReportDataSetFormArray(i)">
+                  <span nz-tooltip nzTooltipTitle="Xóa">
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                  </span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr>
+          <td colspan="20" class="text-center">
+            <div class="list-icons list-icons-extended text-center">
+              <a class="list-icons-item text-success" href="javascript:;" (click)="addReportDataSetFormArray()">
+                <span nz-tooltip nzTooltipTitle="Xóa">
+                  <i nz-icon nzType="plus" nzTheme="outline"></i> Thêm data set
+                </span>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <!--    end::: dataset-->
+
+    <!--    begin::: group by-->
+    <nz-table formArrayName="reportManagerGroupBy" [nzData]="[1]" [nzBordered]="true" [nzFrontPagination]="false"
+      nzSize="small" [nzScroll]="{ x: false }">
+      <thead>
+        <tr>
+          <th class="text-center">STT</th>
+          <th class="text-center" style="min-width: 120px">Tên nguồn dữ liệu</th>
+          <th class="text-center" style="min-width: 120px">Path</th>
+          <th class="text-center">Tên cột group</th>
+          <th class="text-center" style="width: 30px"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of reportGroupByFormArray.controls;let i = index">
+          <tr [formGroupName]="i">
+            <td class="text-center">
+              {{ i + 1}}
+            </td>
+
+            <td class="text-center">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select [items]="listDataSet" formControlName="dataSetId"></input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+
+            <td class="text-center">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text formControlName="name"></input-text>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+
+            <td class="text-center">
+              <nz-form-item>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text formControlName="key"></input-text>
+                </nz-form-control>
+              </nz-form-item>
+            </td>
+            <td class="text-center">
+              <div class="list-icons list-icons-extended text-center">
+                <a class="list-icons-item text-danger" href="javascript:;" (click)="removeReportGroupbyFormArray(i)">
+                  <span nz-tooltip nzTooltipTitle="Xóa">
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                  </span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+        <tr>
+          <td colspan="20" class="text-center">
+            <div class="list-icons list-icons-extended text-center">
+              <a class="list-icons-item text-success" href="javascript:;" (click)="addReportGroupbyFormArray()">
+                <span nz-tooltip nzTooltipTitle="Xóa">
+                  <i nz-icon nzType="plus" nzTheme="outline"></i> Thêm group by
+                </span>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+    <!--    end::: group by-->
+
+    <div class="text-center mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button type="submit" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="save()">
+          Ghi
+        </button>
+        <button type="button" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="testDataSet()">
+          Test Report
+        </button>
+      </ng-container>
+      <button type="button" class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

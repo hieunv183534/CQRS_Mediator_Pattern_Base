@@ -1,0 +1,67 @@
+<form [formGroup]="formAdd" (ngSubmit)="handleOk()" (keydown.enter)="handleOk()">
+  <p-dialog header="{{'title_modal_add_role' | translate }}" [(visible)]="isVisibleAdd" modal="true" (onHide)="handleCancel()" [style]="{width: '50vw'}">
+      <p-divider align="left"> <b>Thông tin cơ bản</b> </p-divider>
+      <div class="p-fluid grid">
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <input type="text" id="roleName" pInputText formControlName="roleName" autofocus/>
+          <label for="roleName">{{'name' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.roleName.errors">
+          <ng-container  *ngIf="f.roleName.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'roleName' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.roleName.errors.minlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'roleName' | translate }} {{'ms_validate_more_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.roleName.errors.maxlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'roleName' | translate }} {{'ms_validate_less_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <!-- ----------------------------------------------------------------->
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <p-dropdown id="status" [options]="statusOptions" formControlName="status" optionLabel="label" placeholder="."  [showClear]="true" optionValue="value"></p-dropdown>
+          <label for="status">{{'status' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.status.errors">
+          <ng-container  *ngIf="f.status.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'status' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <!-- ----------------------------------------------------------------->
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <p-dropdown id="entityId" [options]="entities" formControlName="entityId" optionLabel="name" [filter]="true" filterBy="name" placeholder="."  [showClear]="true" optionValue="entityId"></p-dropdown>
+          <!-- <input type="text" id="entityId" pInputText formControlName="entityId"/> -->
+          <label for="entityId">{{'Entity' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.entityId.errors">
+          <ng-container  *ngIf="f.entityId.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'Entity' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <!-- ----------------------------------------------------------------->
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <p-dropdown id="actionId" [options]="actions" formControlName="actionId" optionLabel="name" placeholder="."  [showClear]="true" optionValue="actionId"></p-dropdown>
+          <!-- <input type="text" id="actionId" pInputText formControlName="actionId"/> -->
+          <label for="actionId">{{'name_action' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.actionId.errors">
+          <ng-container  *ngIf="f.actionId.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name_action' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <!-- ----------------------------------------------------------------->
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button (click)="handleCancel()" label="{{'cancel' | translate }}" styleClass="p-button-warning"></p-button>
+      <p-button (click)="handleOk()" label="{{'save' | translate }}" styleClass="p-button-success"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>

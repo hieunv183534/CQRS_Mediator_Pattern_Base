@@ -1,0 +1,19 @@
+input-month {
+  width: 100%;
+  display: block;
+  
+  nz-month-picker {
+    width: 100%;
+    .form-control {
+      padding: 0px;
+      .ant-input {
+        border: none;
+        height: calc(100% - 2px);
+        margin-left: 1px;
+        margin-top: 1px;
+        margin-right: 1px;
+        width: calc(100% - 2px);
+      }
+    }
+  }
+}

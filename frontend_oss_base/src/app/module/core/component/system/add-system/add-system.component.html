@@ -1,0 +1,55 @@
+<form [formGroup]="formAdd" (ngSubmit)="handleOk()" (keydown.enter)="handleOk()">
+  <p-dialog header="Thêm mới phân hệ" [(visible)]="isVisibleAdd" modal="true" (onHide)="handleCancel()" [style]="{width: '50vw'}">
+      <p-divider align="left"> <b>Thông tin cơ bản</b> </p-divider>
+      <div class="p-fluid grid">
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+            <input type="text" id="code" pInputText formControlName="code" autofocus/>
+            <label for="code">Code <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.code.errors">
+          <ng-container  *ngIf="f.code.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'code' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.code.errors.minlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'code' | translate }} {{'ms_validate_more_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.code.errors.maxlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'code' | translate }} {{'ms_validate_less_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.code.errors.cannotContainSpace">
+            <p-tag styleClass="p-mr-2" severity="warning" *ngIf="f.code.errors.cannotContainSpace" value="{{'code' | translate }} {{'ms_validate_space' | translate }}"></p-tag>
+          </ng-container >
+        </div>
+      </div>
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+            <input type="text" id="name" pInputText formControlName="name"/>
+            <label for="name">Tên <span style="color: red;">*</span></label>
+        </span>
+        <div *ngIf="submitted && f.name.errors">
+          <ng-container  *ngIf="f.name.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.name.errors.minlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_more_characters_long' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.name.errors.maxlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_less_characters_long' | translate }}" ></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <div class="p-field col-12 md-12">
+        <span class="p-float-label">
+            <!-- <input type="text" id="desciption" pInputText formControlName="desciption"/> -->
+            <textarea id="description" formControlName="description" [rows]="10" pInputTextarea></textarea>
+            <label for="description">Description</label>
+        </span>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button (click)="handleCancel()" label="Hủy" styleClass="p-button-warning"></p-button>
+      <p-button (click)="handleOk()" label="Lưu" styleClass="p-button-success"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>

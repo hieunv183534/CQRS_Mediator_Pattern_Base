@@ -1,0 +1,52 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Mã</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-number placeholder="" formControlName="holidayCode"></input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="holidayName"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Ngày nghỉ</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date placeholder="" formControlName="holidayDate"></input-date>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

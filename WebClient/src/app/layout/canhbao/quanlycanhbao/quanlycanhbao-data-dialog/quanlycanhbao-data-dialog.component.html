@@ -1,0 +1,56 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+      <div class="row">                
+        <div class="col-md-4"> 
+          <nz-form-item>
+            <nz-form-label nzRequired>Ngày giờ cảnh báo</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-date-time formControlName="DateCreated" [disabled]='true' placeholder="DD/MM/YYYY HH:MM"></input-date-time>
+            </nz-form-control>
+          </nz-form-item>
+        </div>           
+      </div>    
+      <hr class="mt-0 margin-bottom-20">
+      <div class="row">
+        <div class="col-md-4">
+          <nz-form-item>
+            <nz-form-label nzRequired>Loại cảnh báo</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-text formControlName="WarningType" [disabled]='true' placeholder="Loại cảnh báo"></input-text>
+            </nz-form-control>
+          </nz-form-item>
+        </div>        
+        <div class="col-md-4">
+          <nz-form-item>
+            <nz-form-label nzRequired>Mức độ cảnh báo</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-text formControlName="WarningLevel" [disabled]='true' placeholder="Mức độ cảnh báo"></input-text>
+            </nz-form-control>
+          </nz-form-item>
+        </div>        
+      </div>  
+      <div class="row">
+        <div class="col-md-12">
+          <nz-form-item>
+            <nz-form-label nzRequired>Nội dung cảnh báo</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-textarea [rows]="5" placeholder="Nội dung" formControlName="WarningContent"></input-textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>  
+      </div>       
+   
+    <hr class="mt-0 margin-bottom-20">
+    <div class="text-right mt-2">  
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

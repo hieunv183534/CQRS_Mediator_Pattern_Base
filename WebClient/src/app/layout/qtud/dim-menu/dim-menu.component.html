@@ -1,0 +1,116 @@
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Danh sách menu hệ thống</span></h4>
+    </div>
+
+    <div class="header-elements">
+      <button type="button" class="btn btn-primary" (click)="getData()">
+        <i class="mr-2 icon-search4"></i>Tìm kiếm
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="addDataDialog()">
+        <i class="icon-plus-circle2 mr-2"></i>Thêm menu
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <form *ngIf="myForm" [formGroup]="myForm" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label>Phần mềm</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select-api [items]="[{ value: null, text: 'Tất cả' }]" formControlName="applicationId"
+                    [apiService]="applicationApi" placeholder="Chọn phần mềm"></input-select-api>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label>Tên Menu</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search  placeholder="Nhập từ khóa tìm kiếm"
+                    formControlName="menuName">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+
+          <button type="submit" [hidden]="true">Tìm kiếm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <hr class="mt-0 margin-bottom-10">
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: null }">
+    <thead>
+      <tr>
+        <!-- <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+          (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th> -->
+        <!-- <th nzWidth="40px"></th> -->
+        <th nzWidth="50px">STT</th>
+        <th class="text-center">Sắp xếp</th>
+        <th nzWidth="420px">Tên chức năng</th>
+        <th>Url</th>
+        <th>Tham số</th>
+        <th>Thuộc phần mền</th>
+        <th class="text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of listOfData;let i = index">
+        <ng-container *ngFor="let item of tableTreeConfig.mapOfExpandedData[data[tableTreeConfig.keyId]];let j = index">
+          <tr *ngIf="(item.parent && item.parent.expand) || !item.parent">
+            <td class="text-center">{{i+1}}<span *ngIf="j > 0">.{{j}}</span></td>
+            <td class="text-center">{{ item.order }}</td>
+            <td [ngStyle]="{'padding-left': 5 + (item.level! * 20) + (item.children.length > 0? 0: 25) +'px'}"
+              [nzShowExpand]="!!item.children && item.children.length > 0" [(nzExpand)]="item.expand"
+              (nzExpandChange)="tableTreeConfig.collapse(tableTreeConfig.mapOfExpandedData[data[tableTreeConfig.keyId]], item, $event)">
+              <i class="{{item.icon}}"></i> {{ item.name }}
+            </td>
+            <td>{{ item.link }}</td>
+            <td>{{ item.queryParams }}</td>
+            <td>{{ item.applicationName }}</td>
+            <td class="text-center">
+              <div class="list-icons list-icons-extended text-center">
+                <a class="list-icons-item" href="javascript:;" (click)="showDataDialog(item.id)">
+                  <span nz-tooltip nzTooltipTitle="Xem">
+                    <i nz-icon nzType="eye" nzTheme="outline"></i>
+                  </span>
+                </a>
+                <a class="list-icons-item text-primary" href="javascript:;" (click)="editDataDialog(item.id)">
+                  <span nz-tooltip nzTooltipTitle="Sửa">
+                    <i nz-icon nzType="form" nzTheme="outline"></i>
+                  </span>
+                </a>
+                <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteData([item.id])">
+                  <span nz-tooltip nzTooltipTitle="Xóa">
+                    <i nz-icon nzType="delete" nzTheme="outline"></i>
+                  </span>
+                </a>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </nz-table>
+</div>

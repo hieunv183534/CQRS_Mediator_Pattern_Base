@@ -1,0 +1,76 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form [formGroup]="myForm" novalidate (ngSubmit)="getData()">
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Mã nhóm quyền</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text-search placeholder="Nhập từ khóa tìm kiếm"
+                               formControlName="posCode">
+            </input-text-search>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Tên nhóm quyền</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text-search placeholder="Nhập từ khóa tìm kiếm"
+                               formControlName="posName">
+            </input-text-search>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <ng-container>
+      <button [hidden]="true" type="submit"></button>
+    </ng-container>
+    <br/>
+
+    <nz-table #basicTable [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false"
+              nzSize="small" [nzScroll]="{ x: false }">
+      <thead>
+      <tr>
+        <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+            (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th>
+        <th nzWidth="40px">Stt</th>
+        <th>Mã nhóm quyền</th>
+        <th>Tên nhóm quyền</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+            (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)">
+        </td>
+        <td class="text-center">
+          {{ i + 1 + ((paging.page - 1) * paging.size)}}
+        </td>
+        <td>
+          {{item.id}}
+        </td>
+        <td>
+          {{item.name}}
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+    <app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+
+    <div class="text-center mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button [nzLoading]="isSubmit" type="button" class="btn btn-primary mr-2 w-2" (click)="save()">
+          Thêm
+        </button>
+      </ng-container>
+    </div>
+  </form>
+</nz-spin>

@@ -1,0 +1,17 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+    <span class="ant-modal-close-x">
+        <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+    </span>
+</button>
+
+<ng-container *ngIf="!nodata">
+    <iframe width="100%" height="500px" [src]="url | safeIframe"></iframe>
+</ng-container>
+<ng-container *ngIf="nodata">
+    <div class="text-center">Không có dữ liệu tọa độ phát</div>
+</ng-container>
+
+<hr class="mt-0 margin-bottom-20">
+<div class="text-right mt-2">
+    <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+</div>

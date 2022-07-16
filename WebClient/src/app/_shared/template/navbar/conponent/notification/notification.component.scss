@@ -1,0 +1,134 @@
+/***
+  notification
+   */
+.notification {
+  position: relative;
+}
+.notification-content {
+  position: absolute;
+  left: -170px;
+  width: 350px;
+  height: 80vh;
+  z-index: 100;
+  background-color: white;
+  box-shadow: 0px 2px 16px #888888;
+  //border: 2px solid red;
+  border-radius: 10px;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+.notification-content:hover {
+  overflow-y: scroll;
+}
+.header-notification {
+  font-size: 20px;
+  color: black;
+}
+.header-1-notification {
+  font-size: 15px;
+  color: black;
+  margin-top: 5px;
+  font-weight: bold;
+}
+.un-read {
+  float: right;
+  width: 10px;
+  min-width: 10px;
+  height: 10px;
+  background-color: #168ff1;
+  border-radius: 20px;
+  margin-right: 0.625rem !important;
+}
+.box-notification {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 5px;
+  border-radius: 10px;
+  min-height: 50px;
+}
+.box-notification:hover {
+  background-color: #a2a2a042;
+  cursor: pointer;
+}
+.avatar-content-notification {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  margin-right: 0.625rem !important;
+}
+.content-notification {
+  display: flex;
+  align-items: center;
+}
+.title-notification {
+  color: black;
+  font-size: 14px;
+}
+.time-ago {
+  color: #1e94f3;
+  font-weight: bold;
+}
+.navbar-nav-link {
+  border-radius: 50px;
+}
+/**
+ẩn hiện notification
+ */
+#icon-notification-label {
+  margin: 0;
+}
+.notification-content {
+  display: none;
+}
+#toggle-notification:checked ~ .notification-content {
+  display: block;
+}
+#toggle-notification:checked ~ #icon-notification-label > .navbar-nav-link {
+  background-color: #1890ff;
+}
+#background-container-notification {
+  //background-color: red;
+  width: 2000px;
+  left: -1000px;
+  top: -200px;
+  height: 2000px;
+  position: absolute;
+  display: none;
+  z-index: 99;
+}
+#toggle-notification:checked ~ #background-container-notification {
+  display: block;
+}
+/**
+css scroll bar
+ */
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  //box-shadow: inset 0 0 5px grey;
+  //border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #a2a2a042;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(152, 152, 150, 0.26);
+}
+
+.notifi-all {
+  color: black;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+}

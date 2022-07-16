@@ -1,0 +1,5 @@
+<nz-radio-group [(ngModel)]="controlValue" (ngModelChange)="onChange()" [nzDisabled]="disabled" (mousedown)="onBlur()"
+  (mouseup)="onUnBlur()">
+  <label nz-radio [className]="class" [nzValue]="item.id" [nzDisabled]="item.disable"
+    *ngFor="let item of items">{{item.name}}</label>
+</nz-radio-group>

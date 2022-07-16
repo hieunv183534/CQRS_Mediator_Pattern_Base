@@ -1,0 +1,27 @@
+<div class="card">
+  <div class="card-body">
+    <nz-spin [nzSpinning]="isLoading">
+      <nz-steps [nzCurrent]="stepCurent">
+        <nz-step nzTitle="Thông tin nhóm quyền" (click)="changeStep(0)"></nz-step>
+        <nz-step nzTitle="Quyền chức năng" (click)="changeStep(1)"> </nz-step>
+        <nz-step nzTitle="Danh sách thành viên" (click)="changeStep(2)"></nz-step>
+      </nz-steps>
+      <div class="steps-content mt-3" *ngIf="!isLoading">
+        <div [ngSwitch]="stepCurent">
+          <div *ngSwitchCase="0">
+            <app-quan-ly-nhom-quyen-step1 [formValue]="formFistValue" (onSubmit)="formFistSubmit($event)"
+              (onClose)="closeDialog()"></app-quan-ly-nhom-quyen-step1>
+          </div>
+          <div *ngSwitchCase="1">
+            <app-quan-ly-nhom-quyen-step2 [formValue]="formSecondValue" (onCancel)="formCancel()"
+              (onSubmit)="formSecondSubmit($event)" (onClose)="closeDialog()"></app-quan-ly-nhom-quyen-step2>
+          </div>
+          <div *ngSwitchDefault>
+            <app-quan-ly-nhom-quyen-step3 [formValue]="formThreeValue" (onCancel)="formCancel()"
+              (onSubmit)="formThreeForm($event)" (onClose)="closeDialog()"></app-quan-ly-nhom-quyen-step3>
+          </div>
+        </div>
+      </div>
+    </nz-spin>
+  </div>
+</div>

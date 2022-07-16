@@ -1,0 +1,1917 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Diagnostics" #>
+<#@ include file="EF6.Utility.CS.ttinclude"#><#@ 
+ output extension=".cs"#><#
+    return "//Edit file TT";
+    const string inputFile = @"../../../GenCode/GenCode.edmx";
+    const string module="GenCode";
+    string root = Host.ResolvePath("");
+    //Gen lai code cho table. False - Folder cua table da ton tai thì bo qua - True thì kiem tra regen neu file da ton tai, tao file neu file chua ton tai
+    const bool regenEntity = false;
+    //Gen lai file. False - File da toan tai thi bo qua - True thi ghi de lai file
+    const bool regen= false;
+    //danh sach gen lai neu regenEntity=false hoac khong gen lai regenEntity = true
+    List<string> lstEntity= new List<string>(){"",""};
+    //danh sach khong gen code
+    List<string> lstEntityIgnore= new List<string>(){"",""};
+
+    var textTransform = DynamicTextTransformation.Create(this);
+    var code = new CodeGenerationTools(this);
+    var ef = new MetadataTools(this);
+    var typeMapper = new TypeMapper(code, ef, textTransform.Errors);
+    var	fileManager = EntityFrameworkTemplateFileManager.Create(this);
+    var itemCollection = new EdmMetadataLoader(textTransform.Host, textTransform.Errors).CreateEdmItemCollection(inputFile);
+    var codeStringGenerator = new CodeStringGenerator(code, typeMapper, ef);
+    if (!typeMapper.VerifyCaseInsensitiveTypeUniqueness(typeMapper.GetAllGlobalItems(itemCollection), inputFile))
+    {
+        return string.Empty;
+    }
+
+    //WriteHeader(codeStringGenerator, fileManager);
+
+    foreach (var entity in typeMapper.GetItemsToGenerate<EntityType>(itemCollection))
+    {
+        if(ContainList(lstEntityIgnore, entity.Name))
+            continue;
+        string pathEntity = Path.Combine(root, entity.Name.Replace("_",""));
+        if(((!regenEntity && !ContainList(lstEntity, entity.Name)) || (regenEntity && ContainList(lstEntity, entity.Name))) &!CreateDirectory(pathEntity))
+            continue;
+        string pathCommands = Path.Combine(pathEntity, "Commands");
+        CreateDirectory(pathCommands);
+        CreateDirectory(Path.Combine(pathCommands, "Create"));
+        CreateDirectory(Path.Combine(pathCommands, "Delete"));
+        CreateDirectory(Path.Combine(pathCommands, "Update"));
+        string pathQueries = Path.Combine(pathEntity, "Queries") +"\\";
+        CreateDirectory(pathQueries);
+        CreateDirectory(Path.Combine(pathQueries, "Combobox"));
+        CreateDirectory(Path.Combine(pathQueries, "FindOne"));
+        CreateDirectory(Path.Combine(pathQueries, "GetCount"));
+        CreateDirectory(Path.Combine(pathQueries, "GetPaging"));
+        var keys = typeMapper.GetPrimaryKeyProperties(entity);
+        var propertiesWithDefaultValues = typeMapper.GetPropertiesWithDefaultValues(entity);
+        var collectionNavigationProperties = typeMapper.GetCollectionNavigationProperties(entity);
+        var complexProperties = typeMapper.GetComplexProperties(entity);
+        var simpleProperties = typeMapper.GetSimpleProperties(entity);
+
+        string keyType = string.Empty;
+        string keyName= string.Empty;
+        string keyReturnFormat= string.Empty;
+        string keySetValueFormat= string.Empty;
+        bool multiKey= false;
+        if(keys.Count() == 1)
+        {
+            keyType = typeMapper.GetTypeName(keys.First().TypeUsage);
+            keyName = code.Escape(keys.First());
+        }
+        else{
+            multiKey = true;
+            keyType = "(";
+            foreach(var key in keys)
+            {
+                keyType += typeMapper.GetTypeName(key.TypeUsage) + " " + code.Escape(key) + ", ";
+                keyReturnFormat += "{0}." + code.Escape(key) + ", ";
+                keySetValueFormat += code.Escape(key) + " = {0}." + code.Escape(key) + ", ";
+            }
+            keyType += ")";
+            keyType = keyType.Replace(", )",")");
+
+            keyReturnFormat += ")";
+            keyReturnFormat = keyReturnFormat.Replace(", )","");
+
+            keySetValueFormat += ")";
+            keySetValueFormat = keySetValueFormat.Replace(", )","");
+
+            keyName = "Id";
+        }
+        if(multiKey && (regen || !File.Exists(Path.Combine(pathCommands, "Create", "CreateCommandKey.cs"))))
+        {
+            fileManager.StartNewFile(Path.Combine(pathCommands, "Create", "CreateCommandKey.cs"));
+       
+#>
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class CreateCommandKey
+    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+    }
+#>
+    }
+}
+<#
+        } 
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Create","CreateCommand.cs")))
+        {
+            fileManager.StartNewFile(Path.Combine(pathCommands, "Create","CreateCommand.cs"));
+       
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using MediatR;
+using System;
+using System.Linq;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class CreateCommand : IRequest<<#=multiKey? "CreateCommandKey" : keyType#>>, IMapTo<Dao.Entities.<#=code.Escape(entity)#>>
+    {
+<#
+            if(multiKey)
+            {
+#>
+        public CreateCommandKey Id { get; set; }
+<#
+            }
+            if (simpleProperties.Any())
+            {
+                foreach (var edmProperty in simpleProperties)
+                {
+                    if((multiKey || keyType=="System.Guid") && ef.IsKey(edmProperty))
+                        continue;
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+                }
+            }
+
+            if (complexProperties.Any())
+            {
+#>
+
+<#
+                foreach(var complexProperty in complexProperties)
+                {
+#>
+        <#= codeStringGenerator.Property(complexProperty)#>
+<#
+                }
+            }
+#>
+        
+        public void Mapping(Profile profile)
+        {
+<#            
+            if(multiKey)
+            {
+#>
+                profile.CreateMap<CreateCommand, Dao.Entities.<#=code.Escape(entity)#>>()
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+                    .ForMember(d => d.<#=code.Escape(edmProperty) #>, otp => otp.MapFrom(s => s.Id.<#=code.Escape(edmProperty) #>))
+<#
+    }
+#>
+                    ;
+<#
+            }
+            else if(keyType=="System.Guid")
+            {
+#>
+			profile.CreateMap<CreateCommand, Dao.Entities.<#= code.Escape(entity)#>>().ForMember(a=>a.<#= keyName #>,opt => opt.MapFrom(o=> RT.Comb.Provider.Sql.Create()));
+<#
+            }
+            else
+            {
+ #>
+			profile.CreateMap<CreateCommand, Dao.Entities.<#= code.Escape(entity)#>>();
+<#            } #>
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Create", "CreateCommandHandler.cs")))
+        {
+              fileManager.StartNewFile(Path.Combine(pathCommands, "Create", "CreateCommandHandler.cs"));;
+#>
+using AutoMapper;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Exceptions;
+using NOM.Domain._Base.Extentions;
+using NOM.Domain.Interfaces;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using RT.Comb;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class CreateCommandHandler : IRequestHandler<CreateCommand, <#=multiKey? "CreateCommandKey" : keyType#>>
+    {
+        private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
+        private IUserService _user;
+
+        public CreateCommandHandler(ApplicationDbContext context, IMapper mapper, IUserService user)
+        {
+            _mapper = mapper;
+            _context = context;
+            _user = user;
+        }
+
+        public async Task<<#=multiKey? "CreateCommandKey" : keyType#>> Handle(CreateCommand request, CancellationToken cancellationToken)
+        {
+            var <#=code.Escape(entity).ToLower()#> = _mapper.Map<NOM.Dao.Entities.<#=code.Escape(entity)#>>(request);
+
+<#          if(multiKey)
+{
+#>
+             var whereAndLoopBack = new
+            {
+                and = new object[]
+                {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+                    new { request.Id.<#=code.Escape(edmProperty) #> },
+<#
+    }
+#>
+                }
+            };
+
+            // where nghiệp vụ ở đây
+            if (await _context.<#=code.Escape(entity)#>.WhereLoopback(JObject.FromObject(whereAndLoopBack)).AnyAsync())
+            {
+                throw new ValidationException("", "Mã đã bị trùng");
+            }
+<#            
+            }
+            else
+            {
+#>
+            //if (await _context.<#= code.Escape(entity)#>.AnyAsync(x=>x.ColText == request.ColText))
+            //{
+                //throw new ValidationException("ColText", "Tên đã bị trùng");
+            //}
+
+            // sinh mã nếu db không dùng identity
+           // <#=code.Escape(entity).ToLower()#>.Id = Provider.Sql.CreateDoubleID(_user.GetUserInfo().PostId);
+<#
+            }
+#>
+            _context.<#= code.Escape(entity)#>.Add(<#= code.Escape(entity).ToLower()#>);
+            await _context.SaveChangesAsync(cancellationToken);
+<#                if(multiKey)
+                {
+        #>
+            return  new CreateCommandKey{<#= string.Format(keySetValueFormat, code.Escape(entity).ToLower())#>};
+<#                }
+                else
+                {
+        #>
+            return <#= code.Escape(entity).ToLower()#>.<#= keyName#>;
+<#
+                }
+#>
+        }
+    }
+}
+
+<#
+            }
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Create","CreateCommandValidator.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathCommands, "Create","CreateCommandValidator.cs"));
+#>
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class CreateCommandValidator : AbstractValidator<CreateCommand>
+    {
+        public CreateCommandValidator()
+        {
+<# 
+            if(multiKey)
+            {
+#>
+            RuleFor(v => v.Id).NotEmpty().WithMessage("Id Không được để trống");
+<#
+            }
+            if (simpleProperties.Any())
+            {
+                foreach (var edmProperty in simpleProperties)
+                {
+                    if(multiKey && ef.IsKey(edmProperty))
+                        continue;
+#>
+            <#= codeStringGenerator.PropertyValidate(edmProperty, true)#>
+<#
+                }
+            }
+#>
+        }
+    }
+}
+<#
+        }
+        if(multiKey && (regen || !File.Exists(Path.Combine(pathCommands, "Delete", "DeleteCommandKey.cs"))))
+        {
+            fileManager.StartNewFile(Path.Combine(pathCommands, "Delete", "DeleteCommandKey.cs"));
+#>
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class DeleteCommandKey
+    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+    }
+#>
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Delete","DeleteCommand.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathCommands, "Delete","DeleteCommand.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using MediatR;
+using System;
+using System.Linq;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class DeleteCommand : IRequest<<#= multiKey? "DeleteCommandKey" : keyType#>[]>
+    {
+        public <#= multiKey? "DeleteCommandKey" : keyType#>[] <#=  multiKey? "ListId" : keyName#> { get; set; }
+    }
+}
+
+
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Delete","DeleteCommandHandler.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathCommands, "Delete","DeleteCommandHandler.cs"));
+#>
+using AutoMapper;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Exceptions;
+using NOM.Domain._Base.Extentions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class DeleteCommandHandler : IRequestHandler<DeleteCommand, <#=multiKey? "DeleteCommandKey" : keyType#>[]>
+    {
+        private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
+
+        public DeleteCommandHandler(ApplicationDbContext context, IMapper mapper)
+        {
+            _mapper = mapper;
+            _context = context;
+        }
+
+        public async Task<<#=multiKey? "DeleteCommandKey" : keyType#>[]> Handle(DeleteCommand request, CancellationToken cancellationToken)
+        {
+<#        if(multiKey)
+        {
+        #>
+            if (request.ListId.Length == 0)
+            {
+                throw new ValidationException("ListId", "Id Không được để trống");
+            }
+
+            // where với list id cần xóa
+            var listOr = new List<object>();
+            foreach (var item in request.ListId)
+            {
+                listOr.Add(new
+                {
+                    and = new object[]
+                    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+                        new { item.<#=code.Escape(edmProperty) #> },
+<#
+    }
+#>
+                    }
+                });
+            }
+            var whereOrLoopBack = new
+            {
+                or = listOr
+            };
+            await _context.<#=code.Escape(entity)#>.AsQueryable()
+                .WhereLoopback(JObject.FromObject(whereOrLoopBack))
+                .DeleteFromQueryAsync(cancellationToken);
+            return request.ListId;
+<#        }
+        else
+        {
+        #>
+            if (request.<#= keyName#>.Length == 0)
+            {
+                throw new ValidationException("<#= keyName#>", "Id Không được để trống");
+            }
+            var listItemDelete = await _context.<#= code.Escape(entity)#>.Where(x => request.<#= keyName#>.Contains(x.<#= keyName#>)).ToArrayAsync();
+            if (listItemDelete.Length == 0)
+            {
+                throw new ValidationException("", "Không tìm thấy dữ liệu cần xóa");
+            }
+
+            _context.<#=code.Escape(entity)#>.RemoveRange(listItemDelete);
+            await _context.SaveChangesAsync(cancellationToken);
+            return request.<#=keyName#>;
+<#
+        }
+#>
+        }
+    }
+}
+<#
+        }
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Delete","DeleteCommandValidator.cs")))
+        {
+            fileManager.StartNewFile(Path.Combine(pathCommands, "Delete","DeleteCommandValidator.cs"));
+#>
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class DeleteCommandValidator : AbstractValidator<DeleteCommand>
+    {
+        public DeleteCommandValidator()
+        {
+            RuleFor(v => v.<#=multiKey? "ListId" : keyName#>).NotEmpty().WithMessage("<#=multiKey? "ListId" : keyName#> Không được để trống");
+        }
+    }
+}
+<#
+        }
+        if(multiKey && (regen || !File.Exists(Path.Combine(pathCommands, "Update","UpdateCommandKey.cs"))))
+        {
+            fileManager.StartNewFile(Path.Combine(pathCommands, "Update","UpdateCommandKey.cs"));
+#>
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class UpdateCommandKey
+    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+    }
+#>
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Update","UpdateCommand.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathCommands, "Update","UpdateCommand.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using MediatR;
+using System;
+using System.Linq;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class UpdateCommand : IRequest<<#=multiKey? "UpdateCommandKey" : keyType#>>, IMapTo<Dao.Entities.<#=code.Escape(entity)#>>
+    {
+<# 
+        if(multiKey)
+        {
+#>
+        public UpdateCommandKey Id { get; set; }
+<#
+        }
+        if (simpleProperties.Any())
+        {
+            foreach (var edmProperty in simpleProperties)
+            {
+                    if(multiKey && ef.IsKey(edmProperty))
+                        continue;
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+            }
+        }
+
+        if (complexProperties.Any())
+        {
+#>
+
+<#
+            foreach(var complexProperty in complexProperties)
+            {
+#>
+        <#= codeStringGenerator.Property(complexProperty)#>
+<#
+            }
+        }
+#>
+        public void Mapping(Profile profile)
+        {
+<#
+        if(multiKey)
+        {
+#>
+            profile.CreateMap<UpdateCommand, Dao.Entities.<#=code.Escape(entity)#>>()
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+                .ForMember(d => d.<#=code.Escape(edmProperty) #>, otp => otp.MapFrom(s => s.Id.<#=code.Escape(edmProperty) #>))
+<#
+    }
+#>
+                ;
+<#
+        }
+        else
+        {
+#>
+            profile.CreateMap<UpdateCommand, Dao.Entities.<#=code.Escape(entity)#>>();
+<#
+            }
+ #>
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Update","UpdateCommandHandler.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathCommands, "Update","UpdateCommandHandler.cs"));
+#>
+using AutoMapper;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Exceptions;
+using NOM.Domain._Base.Extentions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class UpdateCommandHandler : IRequestHandler<UpdateCommand, <#=multiKey? "UpdateCommandKey" : keyType#>>
+    {
+        private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
+
+        public UpdateCommandHandler(ApplicationDbContext context, IMapper mapper)
+        {
+            _mapper = mapper;
+            _context = context;
+        }
+
+        public async Task<<#=multiKey? "UpdateCommandKey" : keyType#>> Handle(UpdateCommand request, CancellationToken cancellationToken)
+        {
+<#        if(multiKey)
+        {
+        #>
+            var whereAndLoopBack = new
+            {
+                and = new object[]
+                {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+                    new { request.Id.<#=code.Escape(edmProperty) #> },
+<#
+    }
+#>
+                }
+            };
+            var dataOld = await _context.<#=code.Escape(entity)#>.WhereLoopback(JObject.FromObject(whereAndLoopBack))
+                .FirstOrDefaultAsync();
+<#        }
+        else
+        {
+        #>
+            var dataOld = await _context.<#= code.Escape(entity)#>.FindAsync(request.<#= keyName#>);
+<#
+        }
+#>
+            if (dataOld == null)
+            {
+                throw new ValidationException("", "Không tìm thấy dữ liệu cần update");
+            }
+            var update = _mapper.Map<Dao.Entities.<#=code.Escape(entity)#>>(request);
+            //if (update.ColText != dataOld.ColText && await _context.<#=code.Escape(entity)#>.AnyAsync(x => x.ColText == update.ColText))
+            //{
+                //throw new ValidationException("ColText", "Tên đã bị trùng");
+            //}
+
+            _context.Entry(dataOld).CurrentValues.SetValues(update);
+            await _context.SaveChangesAsync(cancellationToken);
+<#        if(multiKey)
+        {
+        #>
+            return request.Id;
+<#        }
+        else
+        {
+        #>
+            return request.<#= keyName#>;
+<#
+        }
+#>
+        }
+    }
+}
+
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathCommands, "Update","UpdateCommandValidator.cs")))
+        {
+            fileManager.StartNewFile(Path.Combine(pathCommands, "Update","UpdateCommandValidator.cs"));
+#>
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Commands
+{
+    public class UpdateCommandValidator : AbstractValidator<UpdateCommand>
+    {
+        public UpdateCommandValidator()
+        {
+<# 
+            if(multiKey)
+            {
+#>
+            RuleFor(v => v.Id).NotEmpty().WithMessage("Id Không được để trống");
+<#
+            }
+            if (simpleProperties.Any())
+            {
+                foreach (var edmProperty in simpleProperties)
+                {
+                    if(multiKey && ef.IsKey(edmProperty))
+                        continue;
+#>
+            <#= codeStringGenerator.PropertyValidate(edmProperty, true)#>
+<#
+                }
+            }
+#>
+        }
+    }
+}
+<#
+        }
+        if(multiKey && (regen || !File.Exists(Path.Combine(pathQueries, "Combobox", "ComboboxQueryKey.cs"))))
+        {
+        fileManager.StartNewFile(Path.Combine(pathQueries, "Combobox", "ComboboxQueryKey.cs"));
+#>
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class ComboboxQueryKey
+    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+    }
+#>
+    }
+}
+<#
+        }
+        if(regen || !File.Exists(Path.Combine(pathQueries, "Combobox", "ComboboxQuery.cs")))
+        {
+        fileManager.StartNewFile(Path.Combine(pathQueries, "Combobox", "ComboboxQuery.cs"));
+#>
+using MediatR;
+using NOM._Base.Models;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class ComboboxQuery : BasePagingModel, IRequest<PagingResultModel<ComboboxQueryResult>>
+    {
+        public <#= multiKey ? "ComboboxQueryKey" : keyType #>[] ValueSearch { get; set; }
+
+        public string TextSearch { get; set; }
+    }
+
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "Combobox", "ComboboxQueryHandler.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "Combobox", "ComboboxQueryHandler.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM._Base.Models;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Extentions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class ComboboxQueryHandler : IRequestHandler<ComboboxQuery, PagingResultModel<ComboboxQueryResult>>
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public ComboboxQueryHandler(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<PagingResultModel<ComboboxQueryResult>> Handle(ComboboxQuery request, CancellationToken cancellationToken)
+        {
+            var query = _context.<#=code.Escape(entity)#>.AsQueryable();
+
+            // where custom in here
+
+            // where constain
+            if (request.ValueSearch != null && request.ValueSearch.Length > 0)
+            {
+<#        if(multiKey)
+        {
+            #>
+                var listOr = new List<object>();
+                foreach (var item in request.ValueSearch)
+                {
+                    listOr.Add(new
+                    {
+                        and = new object[]
+                        {
+<#
+                        foreach (var edmProperty in keys)
+                        {
+#>
+                            new { item.<#=code.Escape(edmProperty)#> },
+<#
+                        }
+#>
+                        }
+                    });
+                }
+                var whereOrLoopBack = new
+                {
+                    or = listOr
+                };
+                query = query.WhereLoopback(JObject.FromObject(whereOrLoopBack));
+<#
+        }
+        else
+        {
+ #>
+                query = query.Where(x => request.ValueSearch.Contains(x.<#= keyName #>));
+<#        } #>
+            }
+
+            //if (request.TextSearch.HasValue())
+            //{
+                //query = query.Where(x => x.ColText.StartsWith(request.TextSearch));
+            //}
+
+            // where loopback default
+            if (request.Where.HasValue())
+            {
+                query = query.WhereLoopback(request.WhereLoopBack);
+            }
+
+            // order by paging by lookback default
+            if (request.Order.HasValue())
+            {
+                query = query.OrderByLoopback(request.OrderLoopBack);
+            }
+
+            return await query.ProjectTo<ComboboxQueryResult>(_mapper.ConfigurationProvider)
+                .ToPagedListAsync(request, cancellationToken);
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "Combobox", "ComboboxQueryResult.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "Combobox", "ComboboxQueryResult.cs"));
+#>
+using AutoMapper;
+using NOM._Base.Models;
+using NOM.Domain._Base.Mappings;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class ComboboxQueryResult : ComboboxModel<<#= multiKey ? "ComboboxQueryKey" : keyType #>>, IMapFrom<Dao.Entities.<#=code.Escape(entity)#>>
+    {
+
+        public void Mapping(Profile profile)
+        {
+            profile.CreateMap<Dao.Entities.<#=code.Escape(entity)#>, ComboboxQueryResult>()
+                //.ForMember(d => d.Text, opt => opt.MapFrom(s => s.ColText))
+<#        if(multiKey)
+        {
+            #>
+			    .ForMember(d => d.Value, opt => opt.MapFrom(s => new ComboboxQueryKey { <#= string.Format(keySetValueFormat,"s") #>}));
+<#
+        }
+        else
+        {
+ #>
+			    .ForMember(d => d.Value, opt => opt.MapFrom(s => s.<#= keyName #>));
+<#        } #>
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "Combobox", "ComboboxQueryValidation.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "Combobox", "ComboboxQueryValidation.cs"));
+#>
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class ComboboxQueryValidation : AbstractValidator<ComboboxQuery>
+    {
+        public ComboboxQueryValidation()
+        {
+            
+        }
+    }
+}
+<#
+        }
+        if(multiKey && (regen || !File.Exists(Path.Combine(pathQueries, "FindOne", "FindOneQueryKey.cs"))))
+        {
+        fileManager.StartNewFile(Path.Combine(pathQueries, "FindOne", "FindOneQueryKey.cs"));
+#>
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class FindOneQueryKey
+    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+    }
+#>
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "FindOne", "FindOneQuery.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "FindOne", "FindOneQuery.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM.Common.Enums;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using NOM._Base.Models;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class FindOneQuery : BaseWhereModel, IRequest<FindOneQueryResult>
+    {
+        
+    }
+
+}
+
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "FindOne", "FindOneQueryHandler.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "FindOne", "FindOneQueryHandler.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM._Base.Models;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Extentions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class FindOneQueryHandler : IRequestHandler<FindOneQuery, FindOneQueryResult>
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public FindOneQueryHandler(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<FindOneQueryResult> Handle(FindOneQuery request, CancellationToken cancellationToken)
+        {
+            var query = _context.<#=code.Escape(entity)#>.AsQueryable();
+
+            // where custom in here
+
+            // where loopback default
+            if (request.Where.HasValue())
+            {
+                query = query.WhereLoopback(request.WhereLoopBack);
+            }
+
+            // order by paging by lookback default
+            if (request.Order.HasValue())
+            {
+                query = query.OrderByLoopback(request.OrderLoopBack);
+            }
+
+            return await query.ProjectTo<FindOneQueryResult>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+    }
+}
+
+
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "FindOne", "FindOneQueryResult.cs")))
+        {
+            fileManager.StartNewFile(Path.Combine(pathQueries, "FindOne", "FindOneQueryResult.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using System;
+
+namespace NOM.Domain.Application.<#=            module#>.<#=            code.Escape(entity)#>.Queries
+{
+    public class FindOneQueryResult: IMapFrom<Dao.Entities.<#=            code.Escape(entity)#>>
+    {
+<# 
+        if(multiKey)
+        {
+#>
+        public FindOneQueryKey Id { get; set; }
+<#
+        }
+        if (simpleProperties.Any())
+        {
+            foreach (var edmProperty in simpleProperties)
+            {
+                    if(multiKey && ef.IsKey(edmProperty))
+                        continue;
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+            }
+        }
+
+        if (complexProperties.Any())
+        {
+            foreach(var complexProperty in complexProperties)
+            {
+#>
+        <#= codeStringGenerator.Property(complexProperty)#>
+<#
+            }
+        }
+#>
+        public void Mapping(Profile profile)
+        {
+<#
+            if(multiKey)
+            {
+#>
+            profile.CreateMap<Dao.Entities.<#= code.Escape(entity) #>, FindOneQueryResult>()
+
+            .ForMember(d => d.Id, otp => otp.MapFrom(s => new FindOneQueryKey {<#= string.Format(keySetValueFormat,"s") #>}));
+<#
+            }
+            else
+            {
+#>
+            profile.CreateMap<Dao.Entities.<#=code.Escape(entity)#>, FindOneQueryResult>();
+<#
+            }
+ #>
+        }
+    }
+}
+
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "FindOne", "FindOneQueryValidation.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "FindOne", "FindOneQueryValidation.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using NOM.Common.Entities;
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class FindOneQueryValidation : AbstractValidator<FindOneQuery>
+    {
+        public FindOneQueryValidation()
+        {
+            
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetCount", "GetCountQuery.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetCount", "GetCountQuery.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM.Common.Enums;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using NOM._Base.Models;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetCountQuery : BaseWhereModel, IRequest<long>
+    {
+
+    }
+
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetCount", "GetCountQueryHandler.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetCount", "GetCountQueryHandler.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM._Base.Models;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Extentions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetCountQueryHandler : IRequestHandler<GetCountQuery, long>
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public GetCountQueryHandler(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<long> Handle(GetCountQuery request, CancellationToken cancellationToken)
+        {
+            var query = _context.<#=code.Escape(entity)#>.AsQueryable();
+
+            // where custom in here
+
+            // where loopback default
+            if (request.Where.HasValue())
+            {
+                query = query.WhereLoopback(request.WhereLoopBack);
+            }
+
+            return await query.CountAsync();
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetCount", "GetCountQueryValidation.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetCount", "GetCountQueryValidation.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using NOM.Common.Entities;
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetCountQueryValidation : AbstractValidator<GetCountQuery>
+    {
+        public GetCountQueryValidation()
+        {
+            
+        }
+    }
+}
+<#
+        }
+        if(multiKey && (regen || !File.Exists(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryKey.cs"))))
+        {
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryKey.cs"));
+#>
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetPagingQueryKey
+    {
+<#
+    foreach (var edmProperty in keys)
+    {
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+    }
+#>
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetPaging", "GetPagingQuery.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetPaging", "GetPagingQuery.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM.Common.Enums;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using NOM._Base.Models;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetPagingQuery : BasePagingModel, IRequest<PagingResultModel<GetPagingQueryResult>>
+    {
+
+    }
+
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryHandler.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryHandler.cs"));
+#>
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using NOM._Base.Models;
+using NOM.Dao.Entities;
+using NOM.Domain._Base.Extentions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetPagingQueryHandler : IRequestHandler<GetPagingQuery, PagingResultModel<GetPagingQueryResult>>
+    {
+        private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+
+        public GetPagingQueryHandler(ApplicationDbContext context, IMapper mapper)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<PagingResultModel<GetPagingQueryResult>> Handle(GetPagingQuery request, CancellationToken cancellationToken)
+        {
+            var query = _context.<#=code.Escape(entity)#>.AsQueryable();
+
+            // where custom in here
+
+            // where loopback default
+            if (request.Where.HasValue())
+            {
+                query = query.WhereLoopback(request.WhereLoopBack);
+            }
+
+            // order by paging by lookback default
+            if (request.Order.HasValue())
+            {
+                query = query.OrderByLoopback(request.OrderLoopBack);
+            }
+
+            return await query.ProjectTo<GetPagingQueryResult>(_mapper.ConfigurationProvider)
+                .ToPagedListAsync(request, cancellationToken);
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryResult.cs")))
+{
+        fileManager.StartNewFile(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryResult.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using System;
+
+namespace NOM.Domain.Application.<#=module#>.<#=code.Escape(entity)#>.Queries
+{
+    public class GetPagingQueryResult : IMapFrom<Dao.Entities.<#=code.Escape(entity)#>>
+    {
+<# 
+        if(multiKey)
+        {
+#>
+        public GetPagingQueryKey Id { get; set; }
+<#
+        }
+        if (simpleProperties.Any())
+        {
+            foreach (var edmProperty in simpleProperties)
+            {
+                    if(multiKey && ef.IsKey(edmProperty))
+                        continue;
+#>
+        <#= codeStringGenerator.Property(edmProperty)#>
+<#
+            }
+        }
+
+        if (complexProperties.Any())
+        {
+            foreach(var complexProperty in complexProperties)
+            {
+#>
+        <#= codeStringGenerator.Property(complexProperty)#>
+<#
+            }
+        }
+#>
+        public void Mapping(Profile profile)
+        {
+<#
+            if(multiKey)
+            {
+#>
+            profile.CreateMap<Dao.Entities.<#= code.Escape(entity) #>, GetPagingQueryResult>()
+
+            .ForMember(d => d.Id, otp => otp.MapFrom(s => new GetPagingQueryKey {<#= string.Format(keySetValueFormat,"s") #>}));
+<#
+            }
+            else
+            {
+#>
+            profile.CreateMap<Dao.Entities.<#=code.Escape(entity)#>, GetPagingQueryResult>();
+<#
+            }
+ #>
+        }
+    }
+}
+<#
+}
+        if(regen || !File.Exists(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryValidation.cs")))
+        {
+            fileManager.StartNewFile(Path.Combine(pathQueries, "GetPaging", "GetPagingQueryValidation.cs"));
+#>
+using AutoMapper;
+using NOM.Domain._Base.Mappings;
+using NOM.Common.Entities;
+using FluentValidation;
+
+namespace NOM.Domain.Application.<#= module#>.<#= code.Escape(entity)#>.Queries
+{
+    public class GetPagingQueryValidation : AbstractValidator<GetPagingQuery>
+    {
+        public GetPagingQueryValidation()
+        {
+            
+        }
+    }
+}
+<#
+        }
+    }
+
+    fileManager.Process();
+
+#>
+<#+
+
+public void WriteHeader(CodeStringGenerator codeStringGenerator, EntityFrameworkTemplateFileManager fileManager)
+{
+    fileManager.StartHeader();
+#>
+//------------------------------------------------------------------------------
+// <auto-generated>
+// <#=CodeGenerationTools.GetResourceString("Template_GeneratedCodeCommentLine1")#>
+//
+// <#=CodeGenerationTools.GetResourceString("Template_GeneratedCodeCommentLine2")#>
+// <#=CodeGenerationTools.GetResourceString("Template_GeneratedCodeCommentLine3")#>
+// </auto-generated>
+//------------------------------------------------------------------------------
+<#=codeStringGenerator.UsingDirectives(true, true)#>
+<#+
+    fileManager.EndBlock();
+}
+
+public void BeginNamespace(CodeGenerationTools code)
+{
+    var codeNamespace = code.VsNamespaceSuggestion();
+    if (!String.IsNullOrEmpty(codeNamespace))
+    {
+#>
+namespace <#=code.EscapeNamespace(codeNamespace)#>
+{
+<#+
+        PushIndent("    ");
+    }
+}
+
+public void EndNamespace(CodeGenerationTools code)
+{
+    if (!String.IsNullOrEmpty(code.VsNamespaceSuggestion()))
+    {
+        PopIndent();
+#>
+}
+<#+
+    }
+}
+
+bool DoesFileExist(string root, string pathCommands)
+{			
+	return File.Exists(Path.Combine(root,pathCommands));	
+}
+
+bool ContainList(List<string> lst, string entityName)
+{			
+	return lst.Any(a=>a.ToLower()== entityName.ToLower());
+}
+
+string OutputFile(string root, string pathCommands)
+{
+	using(StreamReader sr = new StreamReader(Path.Combine(root,pathCommands)))
+	{
+		string contents = sr.ReadToEnd();
+		return contents;
+	}
+}
+
+bool  CreateDirectory(string patch)
+{
+    if (!System.IO.Directory.Exists(patch))
+    {
+        System.IO.Directory.CreateDirectory(patch);
+        return true;
+    }
+    return false;
+}
+
+public const string TemplateId = "CSharp_DbContext_Types_EF6";
+
+public class CodeStringGenerator
+{
+    private readonly CodeGenerationTools _code;
+    private readonly TypeMapper _typeMapper;
+    private readonly MetadataTools _ef;
+
+    public CodeStringGenerator(CodeGenerationTools code, TypeMapper typeMapper, MetadataTools ef)
+    {
+        ArgumentNotNull(code, "code");
+        ArgumentNotNull(typeMapper, "typeMapper");
+        ArgumentNotNull(ef, "ef");
+
+        _code = code;
+        _typeMapper = typeMapper;
+        _ef = ef;
+    }
+
+    public string Property(EdmProperty edmProperty)
+    {
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} {1} {2} {{ {3}get; {4}set; }}",
+            Accessibility.ForProperty(edmProperty),
+            _typeMapper.GetTypeName(edmProperty.TypeUsage),
+            _code.Escape(edmProperty),
+            _code.SpaceAfter(Accessibility.ForGetter(edmProperty)),
+            _code.SpaceAfter(Accessibility.ForSetter(edmProperty)));
+    }
+
+    public string PropertyValidate(EdmProperty edmProperty, bool isRequired)
+    {
+        string format = string.Empty;
+        string name = _code.Escape(edmProperty);
+        if(edmProperty.TypeUsage.EdmType.Name == "String")
+        {
+            if(isRequired && !_ef.IsNullable(edmProperty.TypeUsage))
+            {
+                format = "RuleFor(v => v.{0}).NotEmpty().WithMessage(\"Không được để trống\");" + Environment.NewLine;
+            }
+            if(edmProperty.TypeUsage.Facets["MaxLength"].Value.ToString() != "Max")
+            {
+                format += "RuleFor(v => v.{0}).MaximumLength({1}).WithMessage(\"Tối đa {1} ký tự\");" + Environment.NewLine;
+            }
+            return string.Format(CultureInfo.InvariantCulture,format, _code.Escape(edmProperty),edmProperty.TypeUsage.Facets["MaxLength"].Value);
+        }
+        return string.Empty;
+    }
+
+    public string NavigationProperty(NavigationProperty navProp)
+    {
+        var endType = _typeMapper.GetTypeName(navProp.ToEndMember.GetEntityType());
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} {1} {2} {{ {3}get; {4}set; }}",
+            AccessibilityAndVirtual(Accessibility.ForNavigationProperty(navProp)),
+            navProp.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many ? ("ICollection<" + endType + ">") : endType,
+            _code.Escape(navProp),
+            _code.SpaceAfter(Accessibility.ForGetter(navProp)),
+            _code.SpaceAfter(Accessibility.ForSetter(navProp)));
+    }
+    
+    public string AccessibilityAndVirtual(string accessibility)
+    {
+        return accessibility + (accessibility != "private" ? " virtual" : "");
+    }
+    
+    public string EntityClassOpening(EntityType entity)
+    {
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} {1}partial class {2}{3}",
+            Accessibility.ForType(entity),
+            _code.SpaceAfter(_code.AbstractOption(entity)),
+            _code.Escape(entity),
+            _code.StringBefore(" : ", _typeMapper.GetTypeName(entity.BaseType)));
+    }
+    
+    public string EnumOpening(SimpleType enumType)
+    {
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} enum {1} : {2}",
+            Accessibility.ForType(enumType),
+            _code.Escape(enumType),
+            _code.Escape(_typeMapper.UnderlyingClrType(enumType)));
+        }
+    
+    public void WriteFunctionParameters(EdmFunction edmFunction, Action<string, string, string, string> writeParameter)
+    {
+        var parameters = FunctionImportParameter.Create(edmFunction.Parameters, _code, _ef);
+        foreach (var parameter in parameters.Where(p => p.NeedsLocalVariable))
+        {
+            var isNotNull = parameter.IsNullableOfT ? parameter.FunctionParameterName + ".HasValue" : parameter.FunctionParameterName + " != null";
+            var notNullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", " + parameter.FunctionParameterName + ")";
+            var nullInit = "new ObjectParameter(\"" + parameter.EsqlParameterName + "\", typeof(" + TypeMapper.FixNamespaces(parameter.RawClrTypeName) + "))";
+            writeParameter(parameter.LocalVariableName, isNotNull, notNullInit, nullInit);
+        }
+    }
+    
+    public string ComposableFunctionMethod(EdmFunction edmFunction, string modelNamespace)
+    {
+        var parameters = _typeMapper.GetParameters(edmFunction);
+        
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} IQueryable<{1}> {2}({3})",
+            AccessibilityAndVirtual(Accessibility.ForMethod(edmFunction)),
+            _typeMapper.GetTypeName(_typeMapper.GetReturnType(edmFunction), modelNamespace),
+            _code.Escape(edmFunction),
+            string.Join(", ", parameters.Select(p => TypeMapper.FixNamespaces(p.FunctionParameterType) + " " + p.FunctionParameterName).ToArray()));
+    }
+    
+    public string ComposableCreateQuery(EdmFunction edmFunction, string modelNamespace)
+    {
+        var parameters = _typeMapper.GetParameters(edmFunction);
+        
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<{0}>(\"[{1}].[{2}]({3})\"{4});",
+            _typeMapper.GetTypeName(_typeMapper.GetReturnType(edmFunction), modelNamespace),
+            edmFunction.NamespaceName,
+            edmFunction.Name,
+            string.Join(", ", parameters.Select(p => "@" + p.EsqlParameterName).ToArray()),
+            _code.StringBefore(", ", string.Join(", ", parameters.Select(p => p.ExecuteParameterName).ToArray())));
+    }
+    
+    public string FunctionMethod(EdmFunction edmFunction, string modelNamespace, bool includeMergeOption)
+    {
+        var parameters = _typeMapper.GetParameters(edmFunction);
+        var returnType = _typeMapper.GetReturnType(edmFunction);
+
+        var paramList = String.Join(", ", parameters.Select(p => TypeMapper.FixNamespaces(p.FunctionParameterType) + " " + p.FunctionParameterName).ToArray());
+        if (includeMergeOption)
+        {
+            paramList = _code.StringAfter(paramList, ", ") + "MergeOption mergeOption";
+        }
+
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} {1} {2}({3})",
+            AccessibilityAndVirtual(Accessibility.ForMethod(edmFunction)),
+            returnType == null ? "int" : "ObjectResult<" + _typeMapper.GetTypeName(returnType, modelNamespace) + ">",
+            _code.Escape(edmFunction),
+            paramList);
+    }
+    
+    public string ExecuteFunction(EdmFunction edmFunction, string modelNamespace, bool includeMergeOption)
+    {
+        var parameters = _typeMapper.GetParameters(edmFunction);
+        var returnType = _typeMapper.GetReturnType(edmFunction);
+
+        var callParams = _code.StringBefore(", ", String.Join(", ", parameters.Select(p => p.ExecuteParameterName).ToArray()));
+        if (includeMergeOption)
+        {
+            callParams = ", mergeOption" + callParams;
+        }
+        
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction{0}(\"{1}\"{2});",
+            returnType == null ? "" : "<" + _typeMapper.GetTypeName(returnType, modelNamespace) + ">",
+            edmFunction.Name,
+            callParams);
+    }
+    
+    public string DbSet(EntitySet entitySet)
+    {
+        return string.Format(
+            CultureInfo.InvariantCulture,
+            "{0} virtual DbSet<{1}> {2} {{ get; set; }}",
+            Accessibility.ForReadOnlyProperty(entitySet),
+            _typeMapper.GetTypeName(entitySet.ElementType),
+            _code.Escape(entitySet));
+    }
+
+    public string UsingDirectives(bool inHeader, bool includeCollections)
+    {
+        return inHeader == string.IsNullOrEmpty(_code.VsNamespaceSuggestion())
+            ? string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}using System;{1}" +
+                "{2}",
+                inHeader ? Environment.NewLine : "",
+                includeCollections ? (Environment.NewLine + "using System.Collections.Generic;") : "",
+                inHeader ? "" : Environment.NewLine)
+            : "";
+    }
+}
+
+public class TypeMapper
+{
+    private const string ExternalTypeNameAttributeName = @"http://schemas.microsoft.com/ado/2006/04/codegeneration:ExternalTypeName";
+
+    private readonly System.Collections.IList _errors;
+    private readonly CodeGenerationTools _code;
+    private readonly MetadataTools _ef;
+
+    public TypeMapper(CodeGenerationTools code, MetadataTools ef, System.Collections.IList errors)
+    {
+        ArgumentNotNull(code, "code");
+        ArgumentNotNull(ef, "ef");
+        ArgumentNotNull(errors, "errors");
+
+        _code = code;
+        _ef = ef;
+        _errors = errors;
+    }
+
+    public static string FixNamespaces(string typeName)
+    {
+        return typeName.Replace("System.Data.Spatial.", "System.Data.Entity.Spatial.");
+    }
+
+    public string GetTypeName(TypeUsage typeUsage)
+    {
+        return typeUsage == null ? null : GetTypeName(typeUsage.EdmType, _ef.IsNullable(typeUsage), null);
+    }
+
+    public string GetTypeName(EdmType edmType)
+    {
+        return GetTypeName(edmType, null, null);
+    }
+
+    public string GetTypeName(TypeUsage typeUsage, string modelNamespace)
+    {
+        return typeUsage == null ? null : GetTypeName(typeUsage.EdmType, _ef.IsNullable(typeUsage), modelNamespace);
+    }
+
+    public string GetTypeName(EdmType edmType, string modelNamespace)
+    {
+        return GetTypeName(edmType, null, modelNamespace);
+    }
+
+    public string GetTypeName(EdmType edmType, bool? isNullable, string modelNamespace)
+    {
+        if (edmType == null)
+        {
+            return null;
+        }
+
+        var collectionType = edmType as CollectionType;
+        if (collectionType != null)
+        {
+            return String.Format(CultureInfo.InvariantCulture, "ICollection<{0}>", GetTypeName(collectionType.TypeUsage, modelNamespace));
+        }
+
+        var typeName = _code.Escape(edmType.MetadataProperties
+                                .Where(p => p.Name == ExternalTypeNameAttributeName)
+                                .Select(p => (string)p.Value)
+                                .FirstOrDefault())
+            ?? (modelNamespace != null && edmType.NamespaceName != modelNamespace ?
+                _code.CreateFullName(_code.EscapeNamespace(edmType.NamespaceName), _code.Escape(edmType)) :
+                _code.Escape(edmType));
+
+        if (edmType is StructuralType)
+        {
+            return typeName;
+        }
+
+        if (edmType is SimpleType)
+        {
+            var clrType = UnderlyingClrType(edmType);
+            if (!IsEnumType(edmType))
+            {
+                typeName = _code.Escape(clrType);
+            }
+
+            typeName = FixNamespaces(typeName);
+
+            return clrType.IsValueType && isNullable == true ?
+                String.Format(CultureInfo.InvariantCulture, "{0}?", typeName) :
+                typeName;
+        }
+
+        throw new ArgumentException("edmType");
+    }
+    
+    public Type UnderlyingClrType(EdmType edmType)
+    {
+        ArgumentNotNull(edmType, "edmType");
+
+        var primitiveType = edmType as PrimitiveType;
+        if (primitiveType != null)
+        {
+            return primitiveType.ClrEquivalentType;
+        }
+
+        if (IsEnumType(edmType))
+        {
+            return GetEnumUnderlyingType(edmType).ClrEquivalentType;
+        }
+
+        return typeof(object);
+    }
+    
+    public object GetEnumMemberValue(MetadataItem enumMember)
+    {
+        ArgumentNotNull(enumMember, "enumMember");
+        
+        var valueProperty = enumMember.GetType().GetProperty("Value");
+        return valueProperty == null ? null : valueProperty.GetValue(enumMember, null);
+    }
+    
+    public string GetEnumMemberName(MetadataItem enumMember)
+    {
+        ArgumentNotNull(enumMember, "enumMember");
+        
+        var nameProperty = enumMember.GetType().GetProperty("Name");
+        return nameProperty == null ? null : (string)nameProperty.GetValue(enumMember, null);
+    }
+
+    public System.Collections.IEnumerable GetEnumMembers(EdmType enumType)
+    {
+        ArgumentNotNull(enumType, "enumType");
+
+        var membersProperty = enumType.GetType().GetProperty("Members");
+        return membersProperty != null 
+            ? (System.Collections.IEnumerable)membersProperty.GetValue(enumType, null)
+            : Enumerable.Empty<MetadataItem>();
+    }
+    
+    public bool EnumIsFlags(EdmType enumType)
+    {
+        ArgumentNotNull(enumType, "enumType");
+        
+        var isFlagsProperty = enumType.GetType().GetProperty("IsFlags");
+        return isFlagsProperty != null && (bool)isFlagsProperty.GetValue(enumType, null);
+    }
+
+    public bool IsEnumType(GlobalItem edmType)
+    {
+        ArgumentNotNull(edmType, "edmType");
+
+        return edmType.GetType().Name == "EnumType";
+    }
+
+    public PrimitiveType GetEnumUnderlyingType(EdmType enumType)
+    {
+        ArgumentNotNull(enumType, "enumType");
+
+        return (PrimitiveType)enumType.GetType().GetProperty("UnderlyingType").GetValue(enumType, null);
+    }
+
+    public string CreateLiteral(object value)
+    {
+        if (value == null || value.GetType() != typeof(TimeSpan))
+        {
+            return _code.CreateLiteral(value);
+        }
+
+        return string.Format(CultureInfo.InvariantCulture, "new TimeSpan({0})", ((TimeSpan)value).Ticks);
+    }
+    
+    public bool VerifyCaseInsensitiveTypeUniqueness(IEnumerable<string> types, string sourceFile)
+    {
+        ArgumentNotNull(types, "types");
+        ArgumentNotNull(sourceFile, "sourceFile");
+        
+        var hash = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+        if (types.Any(item => !hash.Add(item)))
+        {
+            _errors.Add(
+                new CompilerError(sourceFile, -1, -1, "6023",
+                    String.Format(CultureInfo.CurrentCulture, CodeGenerationTools.GetResourceString("Template_CaseInsensitiveTypeConflict"))));
+            return false;
+        }
+        return true;
+    }
+    
+    public IEnumerable<SimpleType> GetEnumItemsToGenerate(IEnumerable<GlobalItem> itemCollection)
+    {
+        return GetItemsToGenerate<SimpleType>(itemCollection)
+            .Where(e => IsEnumType(e));
+    }
+    
+    public IEnumerable<T> GetItemsToGenerate<T>(IEnumerable<GlobalItem> itemCollection) where T: EdmType
+    {
+        return itemCollection
+            .OfType<T>()
+            .Where(i => !i.MetadataProperties.Any(p => p.Name == ExternalTypeNameAttributeName))
+            .OrderBy(i => i.Name);
+    }
+
+    public IEnumerable<string> GetAllGlobalItems(IEnumerable<GlobalItem> itemCollection)
+    {
+        return itemCollection
+            .Where(i => i is EntityType || i is ComplexType || i is EntityContainer || IsEnumType(i))
+            .Select(g => GetGlobalItemName(g));
+    }
+
+    public string GetGlobalItemName(GlobalItem item)
+    {
+        if (item is EdmType)
+        {
+            return ((EdmType)item).Name;
+        }
+        else
+        {
+            return ((EntityContainer)item).Name;
+        }
+    }
+
+    public IEnumerable<EdmProperty> GetPrimaryKeyProperties(EntityType type)
+    {
+        return type.KeyMembers.Select(s => (EdmProperty)s);
+    }
+
+    public IEnumerable<EdmProperty> GetSimpleProperties(EntityType type)
+    {
+        return type.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == type);
+    }
+    
+    public IEnumerable<EdmProperty> GetSimpleProperties(ComplexType type)
+    {
+        return type.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == type);
+    }
+    
+    public IEnumerable<EdmProperty> GetComplexProperties(EntityType type)
+    {
+        return type.Properties.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == type);
+    }
+    
+    public IEnumerable<EdmProperty> GetComplexProperties(ComplexType type)
+    {
+        return type.Properties.Where(p => p.TypeUsage.EdmType is ComplexType && p.DeclaringType == type);
+    }
+
+    public IEnumerable<EdmProperty> GetPropertiesWithDefaultValues(EntityType type)
+    {
+        return type.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == type && p.DefaultValue != null);
+    }
+    
+    public IEnumerable<EdmProperty> GetPropertiesWithDefaultValues(ComplexType type)
+    {
+        return type.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == type && p.DefaultValue != null);
+    }
+
+    public IEnumerable<NavigationProperty> GetNavigationProperties(EntityType type)
+    {
+        return type.NavigationProperties.Where(np => np.DeclaringType == type);
+    }
+    
+    public IEnumerable<NavigationProperty> GetCollectionNavigationProperties(EntityType type)
+    {
+        return type.NavigationProperties.Where(np => np.DeclaringType == type && np.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many);
+    }
+    
+    public FunctionParameter GetReturnParameter(EdmFunction edmFunction)
+    {
+        ArgumentNotNull(edmFunction, "edmFunction");
+
+        var returnParamsProperty = edmFunction.GetType().GetProperty("ReturnParameters");
+        return returnParamsProperty == null
+            ? edmFunction.ReturnParameter
+            : ((IEnumerable<FunctionParameter>)returnParamsProperty.GetValue(edmFunction, null)).FirstOrDefault();
+    }
+
+    public bool IsComposable(EdmFunction edmFunction)
+    {
+        ArgumentNotNull(edmFunction, "edmFunction");
+
+        var isComposableProperty = edmFunction.GetType().GetProperty("IsComposableAttribute");
+        return isComposableProperty != null && (bool)isComposableProperty.GetValue(edmFunction, null);
+    }
+
+    public IEnumerable<FunctionImportParameter> GetParameters(EdmFunction edmFunction)
+    {
+        return FunctionImportParameter.Create(edmFunction.Parameters, _code, _ef);
+    }
+
+    public TypeUsage GetReturnType(EdmFunction edmFunction)
+    {
+        var returnParam = GetReturnParameter(edmFunction);
+        return returnParam == null ? null : _ef.GetElementType(returnParam.TypeUsage);
+    }
+    
+    public bool GenerateMergeOptionFunction(EdmFunction edmFunction, bool includeMergeOption)
+    {
+        var returnType = GetReturnType(edmFunction);
+        return !includeMergeOption && returnType != null && returnType.EdmType.BuiltInTypeKind == BuiltInTypeKind.EntityType;
+    }
+}
+
+public static void ArgumentNotNull<T>(T arg, string name) where T : class
+{
+    if (arg == null)
+    {
+        throw new ArgumentNullException(name);
+    }
+}
+#>

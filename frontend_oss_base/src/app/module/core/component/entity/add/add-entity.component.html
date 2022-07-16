@@ -1,0 +1,76 @@
+<form [formGroup]="formAdd" (ngSubmit)="handleOk()" (keydown.enter)="handleOk()">
+  <p-dialog header="{{'entities.add_form.title' | translate }}" [(visible)]="isVisibleAdd" modal="true" (onHide)="handleCancel()" [style]="{width: '50vw'}">
+      <p-divider align="left"> <b>Thông tin cơ bản</b> </p-divider>
+      <div class="p-fluid grid">
+      <!-- ------------------------------------------------------------ -->
+      <div class="p-field col-12 md-12">
+        <span class="p-float-label">
+          <!-- <p-dropdown id="systemId" [options]="systems" formControlName="systemId" optionLabel="name" optionValue="id"
+            [filter]="true" filterBy="name" [showClear]="true" placeholder="." autofocus></p-dropdown>           -->
+            <p-multiSelect id="systemIds" [options]="systems" formControlName="systemIds" optionLabel="name" optionValue="id"
+            [filter]="true" filterBy="name" [showClear]="true" placeholder="." display="chip" ></p-multiSelect>
+          <label for="systemIds">{{'application' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.systemIds.errors">
+          <ng-container  *ngIf="f.systemIds.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'application' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <!-- ------------------------------------------------------------ -->
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <input type="text" id="name" pInputText formControlName="name" autofocus/>
+          <label for="name">{{'entities.add_form.name_label' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.name.errors">
+          <ng-container  *ngIf="f.name.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.name.errors.minlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_more_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.name.errors.maxlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_less_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <!-- ------------------------------------------------------------ -->
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <input type="text" id="nameAscii" pInputText formControlName="nameAscii" autofocus/>
+          <label for="nameAscii">{{'nameAscii' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.nameAscii.errors">
+          <ng-container  *ngIf="f.nameAscii.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'nameAscii' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.nameAscii.errors.minlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'nameAscii' | translate }} {{'ms_validate_more_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.nameAscii.errors.maxlength">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'nameAscii' | translate }} {{'ms_validate_less_characters_long' | translate }}"></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.nameAscii.errors.cannotContainSpace">
+            <p-tag styleClass="p-mr-2" severity="warning" *ngIf="f.nameAscii.errors.cannotContainSpace" value="{{'nameAscii' | translate }} {{'ms_validate_space' | translate }}"></p-tag>
+          </ng-container >
+        </div>
+      </div>
+      <!-- --------------------------------------------------------------------->
+      <div class="p-field col-12 md-12">
+        <span class="p-float-label">
+            <!-- <input type="text" id="description" pInputText formControlName="description"/> -->
+            <textarea id="description" formControlName="description" [rows]="10" pInputTextarea></textarea>
+            <label for="description">{{'description' | translate }}</label>
+        </span>
+      </div>
+      <!-- --------------------------------------------------------------------->
+    </div>
+
+    <ng-template pTemplate="footer">
+      <p-button (click)="handleCancel()" label="{{'cancel' | translate }}" styleClass="p-button-warning"></p-button>
+      <p-button (click)="handleOk()" label="{{'save' | translate }}" styleClass="p-button-success"></p-button>
+    </ng-template>
+  </p-dialog>
+
+</form>

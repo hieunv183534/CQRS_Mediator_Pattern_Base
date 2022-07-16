@@ -1,0 +1,244 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>BCCP.Domain</RootNamespace>
+    <AssemblyName>BCCP.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Application\BanGiaoCa\MailtripDelivery\**" />
+    <Compile Remove="Application\Dim\**" />
+    <Compile Remove="MessageHandlers\**" />
+    <EmbeddedResource Remove="Application\BanGiaoCa\MailtripDelivery\**" />
+    <EmbeddedResource Remove="Application\Dim\**" />
+    <EmbeddedResource Remove="MessageHandlers\**" />
+    <None Remove="Application\BanGiaoCa\MailtripDelivery\**" />
+    <None Remove="Application\Dim\**" />
+    <None Remove="MessageHandlers\**" />
+    <None Remove="Application\KhaiThac\Mailtrip\Queries\GetPagingReplac\" />
+    <None Remove="Application\KhaiThac\Mailtrip\Commands\CreateReplace\" />
+    <None Remove="Application\KhaiThac\Mailtrip\Commands\UpdateReeplace\" />
+    <None Remove="NETCore.MailKit" />
+    <None Remove="Application\Identity\AspNetUser\Commands\AciticeUser\" />
+    <None Remove="Application\DanhMuc\FeedBack\Commands\New Folder\" />
+    <None Remove="Application\KhieuNai\FeedBack\" />
+    <None Remove="Application\KhaiThac\Mailtrip\Commands\DeleteReplace\" />
+    <None Remove="Application\DooiSoat\" />
+    <None Remove="Application\DooiSoat\Item\" />
+    <None Remove="Application\DooiSoat\Item\GetPaging\" />
+    <None Remove="Application\DoiSoat\Item\Queries\GetPaging\" />
+    <None Remove="Application\DoiSoat\Mailtrip\" />
+    <None Remove="Application\DoiSoat\Mailtrip\Queries\" />
+    <None Remove="Application\DoiSoat\Mailtrip\Queries\GetPaging\" />
+    <None Remove="Application\DoiSoat\Mailtrip\Queries\FindOne\" />
+    <None Remove="Application\DoiSoat\Mailtrip\Commands\" />
+    <None Remove="Application\DoiSoat\Mailtrip\Commands\Update\" />
+    <None Remove="Application\DoiSoat\PostBag\" />
+    <None Remove="Application\DoiSoat\PostBag\Queries\" />
+    <None Remove="Application\DoiSoat\PostBag\Queries\GetPaging\" />
+    <None Remove="Application\TiepNhanGiaoDich\Item\Commands\ModifyReplace\" />
+    <None Remove="Application\TraCuu\TransportError\" />
+    <None Remove="Application\TraCuu\TransportError\Queries\" />
+    <None Remove="Application\TraCuu\TransportError\Commands\" />
+    <None Remove="Application\TraCuu\TransportError\Commands\Create\" />
+    <None Remove="Application\TraCuu\TransportError\Commands\Delete\" />
+    <None Remove="Application\TraCuu\TransportError\Commands\Update\" />
+    <None Remove="Application\TraCuu\TransportError\Queries\Combobox\" />
+    <None Remove="Application\TraCuu\TransportError\Queries\FindOne\" />
+    <None Remove="Application\TraCuu\TransportError\Queries\GetAll\" />
+    <None Remove="Application\TraCuu\TransportError\Queries\GetCount\" />
+    <None Remove="Application\TraCuu\TransportError\Queries\GetPaging\" />
+    <None Remove="Application\DanhMuc\Transport\Queries\Combobox\" />
+    <None Remove="Application\DanhMuc\Transport\Queries\ComboboxByPos\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Services\ConsumingService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NSwag.Annotations" Version="13.8.2" />
+    <PackageReference Include="Templater" Version="2.9.6" />
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.1" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.17" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.17" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.17" />
+
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="FluentValidation" Version="8.6.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="8.6.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
+    <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="3.1.5" />
+    <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\Dao\Dao.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Application\BanGiaoCa\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\DanhMuc\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\GiaoNhan\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\Domestic\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\HoTro\GenCode.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+    </None>
+    <None Update="Application\KhaiThac\GenCode.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+    </None>
+    <None Update="Application\KhieuNai\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\Log\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\Phat\GenCode.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+    </None>
+    <None Update="Application\SuVu\GenCode.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+    </None>
+    <None Update="Application\TiepNhanGiaoDich\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+    <None Update="Application\TraCuu\GenCode.tt">
+      <LastGenOutput>GenCode.cs</LastGenOutput>
+      <Generator>TextTemplatingFileGenerator</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Application\BanGiaoCa\GenCode.cs">
+      <DependentUpon>GenCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Application\Domestic\GenCode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenCode.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Application\GiaoNhan\GenCode.cs">
+      <DependentUpon>GenCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Application\DanhMuc\GenCode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenCode.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Application\HoTro\GenCode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenCode.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Application\KhaiThac\GenCode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenCode.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Application\KhieuNai\GenCode.cs">
+      <DependentUpon>GenCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Application\Log\GenCode.cs">
+      <DependentUpon>GenCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Application\Phat\GenCode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenCode.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Application\SuVu\GenCode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GenCode.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Application\TiepNhanGiaoDich\GenCode.cs">
+      <DependentUpon>GenCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Application\TraCuu\GenCode.cs">
+      <DependentUpon>GenCode.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\TiepNhanGiaoDich\Item\Queries\CheckPermissioModify\" />
+    <Folder Include="GenCode\" />
+    <Folder Include="Application\KhaiThac\Mailtrip\Queries\GetPagingReplace\" />
+    <Folder Include="Application\KhaiThac\Mailtrip\Commands\CreateReplace\" />
+    <Folder Include="Application\KhaiThac\Mailtrip\Commands\UpdateReeplace\" />
+    <Folder Include="Application\Identity\AspNetUser\Commands\AciticeUser\" />
+    <Folder Include="Application\KhieuNai\FeedBack\Commands\Create\" />
+    <Folder Include="Application\KhieuNai\FeedBack\Commands\Delete\" />
+    <Folder Include="Application\KhieuNai\FeedBack\Commands\Update\" />
+    <Folder Include="Application\KhieuNai\FeedBack\" />
+    <Folder Include="Application\KhaiThac\Mailtrip\Commands\DeleteReplace\" />
+    <Folder Include="Application\DoiSoat\" />
+    <Folder Include="Application\DoiSoat\Item\" />
+    <Folder Include="Application\DoiSoat\Item\Queries\" />
+    <Folder Include="Application\DoiSoat\Item\Queries\GetPaging\" />
+    <Folder Include="Application\DoiSoat\Mailtrip\" />
+    <Folder Include="Application\DoiSoat\Mailtrip\Queries\" />
+    <Folder Include="Application\DoiSoat\Mailtrip\Queries\GetPaging\" />
+    <Folder Include="Application\DoiSoat\Mailtrip\Queries\FindOne\" />
+    <Folder Include="Application\DoiSoat\Mailtrip\Commands\" />
+    <Folder Include="Application\DoiSoat\Mailtrip\Commands\Update\" />
+    <Folder Include="Application\DoiSoat\PostBag\" />
+    <Folder Include="Application\DoiSoat\PostBag\Queries\" />
+    <Folder Include="Application\DoiSoat\PostBag\Queries\GetPaging\" />
+    <Folder Include="Application\TiepNhanGiaoDich\Item\Commands\ModifyReplace\" />
+    <Folder Include="Application\TraCuu\TransportError\" />
+    <Folder Include="Application\TraCuu\TransportError\Queries\" />
+    <Folder Include="Application\TraCuu\TransportError\Commands\" />
+    <Folder Include="Application\TraCuu\TransportError\Commands\Create\" />
+    <Folder Include="Application\TraCuu\TransportError\Commands\Delete\" />
+    <Folder Include="Application\TraCuu\TransportError\Commands\Update\" />
+    <Folder Include="Application\TraCuu\TransportError\Queries\Combobox\" />
+    <Folder Include="Application\TraCuu\TransportError\Queries\FindOne\" />
+    <Folder Include="Application\TraCuu\TransportError\Queries\GetAll\" />
+    <Folder Include="Application\TraCuu\TransportError\Queries\GetCount\" />
+    <Folder Include="Application\TraCuu\TransportError\Queries\GetPaging\" />
+    <Folder Include="Application\DanhMuc\Transport\Queries\Combobox\" />
+    <Folder Include="Application\DanhMuc\Transport\Queries\ComboboxByPos\" />
+  </ItemGroup>
+
+</Project>

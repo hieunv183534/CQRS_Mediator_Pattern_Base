@@ -1,0 +1,115 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Tài khoản</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="Nhập tài khoản" formControlName="username"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Họ và Tên</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="Nhập tên" formControlName="fullName"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>   
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Mật khẩu</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-password [placeholder]="mode === 'edit'?'Để trống nếu không muốn thay đổi':'Nhập mật khẩu'" formControlName="password"></input-password>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Xác nhận mật khẩu</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-password [placeholder]="mode === 'edit'?'Để trống nếu không muốn thay đổi': 'Xác nhận mật khẩu'" formControlName="confirmPassword"></input-password>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <nz-form-item>
+          <nz-form-label>Địa chỉ</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="Nhập địa chỉ" formControlName="address"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <nz-form-item>
+          <nz-form-label nzRequired>Số điện thoại</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="Nhập số điện thoại" formControlName="tel"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-3">
+        <nz-form-item>
+          <nz-form-label nzRequired>Địa chỉ email</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="example@gmail.com" formControlName="email"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6" *ngIf="type === 2">
+        <nz-form-item>
+          <nz-form-label nzRequired>Khách hàng lớn</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api [apiService]="customerApi" placeholder="Chọn khách hàng lớn" formControlName="customerCode"></input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row" *ngIf="type === 1">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Phạm vi bưu cục quản lý</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-multiple-api [apiService]="posApi" placeholder="Chọn bưu cục" formControlName="areaPos"></input-select-multiple-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Bưu cục mặc định chọn</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api [apiService]="posApi" placeholder="Chọn bưu cục" formControlName="posCode"></input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

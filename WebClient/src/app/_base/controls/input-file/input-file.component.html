@@ -1,0 +1,25 @@
+<ng-container *ngIf="tempType===1">
+  <nz-upload [class]="className" 
+  [(nzFileList)]="controlValue" 
+  [nzBeforeUpload]="beforeUpload"
+  [nzShowButton]="!disabled && controlValue.length < size"
+  [nzShowUploadList] = "showUploadList"
+  (nzFileListChange)="changeFile()"
+  >
+    <button type="button" nz-button class="btn-upload">{{placeholder}}</button>
+  </nz-upload>
+</ng-container>
+
+<ng-container *ngIf="tempType===2">
+  <nz-upload [class]="className" 
+  [(nzFileList)]="controlValue" 
+  [nzBeforeUpload]="beforeUpload"
+  [nzShowButton]="!disabled && controlValue.length < size"
+  [nzShowUploadList] = "showUploadList"
+  nzListType="picture-card"
+  [nzPreview]="handlePreview"
+  (nzFileListChange)="changeFile()"
+  >
+    <button type="button" nz-button class="btn-upload">{{placeholder}}</button>
+  </nz-upload>
+</ng-container>

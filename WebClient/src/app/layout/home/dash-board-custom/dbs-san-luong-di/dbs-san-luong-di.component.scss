@@ -1,0 +1,19 @@
+.card-header {
+  .header-elements {
+    flex-wrap: nowrap;
+  }
+}
+
+.card{
+  .cbx-posCode{
+      width: 160px;
+  }
+}
+
+.total{
+  position: absolute;
+    right: 45%;
+    top: 58px;
+    color: #e70c0c;
+    font-weight: bold;
+}

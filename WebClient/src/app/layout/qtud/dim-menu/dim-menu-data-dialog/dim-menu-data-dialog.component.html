@@ -1,0 +1,160 @@
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+
+    <nz-tabset>
+      <nz-tab nzTitle="Thông tin menu">
+
+        <div class="row">
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label nzRequired>Mã menu</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-text placeHolder="Mã menu" formControlName="code"></input-text>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label nzRequired>Tên menu</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-text placeHolder="Tên menu" formControlName="name"></input-text>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Thuộc phần mềm</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-select-api [apiService]="applicationApi" formControlName="applicationId"
+                  placeholder="Chọn phần mềm"></input-select-api>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Menu cha</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-select-api formControlName="parentId" [apiService]="menuApi" placeholder="Chọn menu cha">
+                </input-select-api>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <nz-form-item>
+              <nz-form-label nzRequired>URL chức năng</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-text placeHolder="URL" formControlName="link"></input-text>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-3">
+            <nz-form-item>
+              <nz-form-label>Icon</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-text placeHolder="icon" formControlName="icon"></input-text>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div class="col-md-3">
+            <nz-form-item>
+              <nz-form-label>Thứ tự</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-float placeHolder="Thứ tự" formControlName="order"></input-float>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div class="col-md-6">
+            <nz-form-item>
+              <nz-form-label>Tham số JSON</nz-form-label>
+              <nz-form-control [nzErrorTip]="controlErrorTpl">
+                <input-textarea placeHolder="JSON format" formControlName="queryParams"></input-textarea>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </div>
+      </nz-tab>
+      <nz-tab nzTitle="Quyền Api" >
+        <div class="page-header page-header-light border-bottom-0 d-inline-block w-100">
+          <h4 class="float-left"><span class="font-weight-semibold">Danh sach thao tac</span></h4>
+          <a href="javascript:;" class="btn btn-primary float-right" (click)="addActionForm()">
+            <i class="mr-2" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+            Thêm thao tac</a>
+        </div>
+        <nz-table formArrayName="actions" [nzData]="[{id:0}]" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false"
+          nzSize="small" [nzScroll]="{ x: false }">
+          <thead>
+            <tr>
+              <th nzWidth="50px">Stt</th>
+              <th nzWidth="140px">Mã thao tác</th>
+              <!-- <th>Tên thao tác</th> -->
+              <th>API</th>
+              <th class="action text-center"  nzWidth="100px">Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of getActionForm().controls;let i = index">
+              <tr [formGroupName]="i">
+                <td>
+                  {{ i + 1 }}
+                </td>
+                <td>
+                  <input-select [items]="[
+                  {value:'-1', text: 'Mặc định'},
+                  {value:'R', text: 'Xóa'},
+                  {value:'C', text: 'Thêm'},
+                  {value:'U', text: 'Sửa'},
+                  {value:'D', text: 'Xóa'}
+                  ]" formControlName="actionCode"></input-select>
+                </td>
+                <td>
+                  <div *ngFor="let a of item.get('endPoints').value">
+                    {{a.method}} {{a.url}}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="list-icons list-icons-extended text-center">
+                    <a class="list-icons-item text-primary" href="javascript:;" (click)="editDataDialog(item, i)">
+                      <span nz-tooltip nzTooltipTitle="Sửa">
+                        <i nz-icon nzType="form" nzTheme="outline"></i>
+                      </span>
+                    </a>
+                    <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteActionForm(i)">
+                      <span nz-tooltip nzTooltipTitle="Loại bỏ">
+                        <i nz-icon nzType="delete" nzTheme="outline"></i>
+                      </span>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+
+    <div class="text-center mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button type="button" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="save()">
+          Ghi
+        </button>
+      </ng-container>
+      <ng-container *ngIf="!(mode === 'view' || mode === 'edit')">
+        <button nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2" (click)="saveAndNew()">
+          Ghi và thêm mới
+        </button>
+      </ng-container>
+      <button type="button" class="btn btn-light" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

@@ -1,0 +1,104 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+
+<form nz-form *ngIf="myForm" [formGroup]="myForm" novalidate>
+  <ng-template #controlErrorTpl let-control>
+    <app-render-errors [control]="control"></app-render-errors>
+  </ng-template>
+
+  <div class="row">
+    <div class="col-md-4">
+      <nz-form-item>
+        <nz-form-label nzRequired>Mã thao tác</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text placeHolder="Mã thao tác" formControlName="actionCode"></input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4">
+      <nz-form-item>
+        <nz-form-label nzRequired>Tên thao tác</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text placeHolder="Tên thao tác" formControlName="actionName"></input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-4">
+      <nz-form-item>
+        <nz-form-label nzRequired>Doamin</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text placeHolder="" formControlName="domain"></input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="page-header-content header-elements-md-inline" nzRequired>
+        <div class="page-title d-flex">
+          <input-text formControlName="endPointAuto" (onKeyEnter)="autoGenderEndPoint()"></input-text>
+        </div>
+        <div class="header-elements">
+          <button type="button" class="btn btn-primary" (click)="addEndpointForm()">
+            <i class="mr-2" nz-icon nzType="plus-circle" nzTheme="outline"></i>Thêm thao tác</button>
+        </div>
+      </div>
+      <br>
+      <nz-table formArrayName="endPoints" [nzData]="[{id:0}]" [nzLoading]="isLoading" [nzBordered]="true"
+        [nzFrontPagination]="false" nzSize="small" [nzScroll]="{ x: false }">
+        <thead>
+          <tr>
+            <th nzWidth="50px">Stt</th>
+            <th nzWidth="100px" class="text-center">Phương thức</th>
+            <th class="text-center">Api</th>
+            <th nzWidth="80px" class="text-center">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of getEndpointForm().controls;let i = index">
+            <tr [formGroupName]="i">
+              <td class="text-center">
+                {{i}}
+              </td>
+
+              <td class="text-center">
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select [items]="[
+                  { value: 'POST', text: 'POST' },
+                  { value: 'GET', text: 'GET' },
+                  { value: 'DELETE', text: 'DELETE' }
+                  ]" formControlName="method" placeholder="Chọn phương thức"></input-select>
+                </nz-form-control>
+              </td>
+              <td class="text-center">
+                <input-text formControlName="url"></input-text>
+              </td>
+              <td class="text-center">
+                <div class="list-icons list-icons-extended text-center">
+                  <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteEndpointForm(i)">
+                    <span nz-tooltip nzTooltipTitle="Xóa">
+                      <i nz-icon nzType="delete" nzTheme="outline"></i>
+                    </span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+
+  <div class="text-center mt-2">
+    <ng-container *ngIf="mode !== 'view'">
+      <button type="button" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="save()">
+        Ghi
+      </button>
+    </ng-container>
+    <button type="button" class="btn btn-light" (click)="closeDialog()">Đóng</button>
+  </div>
+</form>

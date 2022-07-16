@@ -1,0 +1,25 @@
+<nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>
+        <th>Stt</th>
+        <th>Tên</th>
+        <th class="action text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td>
+          {{ i + 1 }}
+        </td>
+        <td>
+          <a class="data-link" href="javascript:;">
+            {{item}}
+          </a>
+        </td>
+        <td class="text-center">
+          <button type="button" class="btn btn-primary" (click)="saveData(item)">Chọn</button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>

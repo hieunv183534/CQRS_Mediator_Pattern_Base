@@ -1,0 +1,23 @@
+<div class="content pt-0">
+      <nz-spin [nzSpinning]="isLoading">
+      <nz-steps [nzCurrent]="stepCurent">
+            <nz-step nzTitle="Tỉnh"></nz-step>
+            <nz-step nzTitle="Huyện"> </nz-step>
+            <nz-step nzTitle="Bưu Cục"></nz-step>
+      </nz-steps>
+      <div class="steps-content mt-3">
+            <div [ngSwitch]="stepCurent">
+            <div *ngSwitchCase="0">
+                  <app-cuocphi-phankhuvuc-steptinh [mode]="mode" [ruleCode]="ruleCode" [serviceCode]="serviceCode" (onNext)="nextHuyen($event)"></app-cuocphi-phankhuvuc-steptinh>
+            </div>
+            <div *ngSwitchCase="1">
+                  <app-cuocphi-phankhuvuc-stephuyen [mode]="mode" [ruleCode]="ruleCode" [serviceCode]="serviceCode" [lstProvinceCode]="lstProvinceCode" (onPre)="preStep()" (onNext)="nextBuuCuc($event)"></app-cuocphi-phankhuvuc-stephuyen>
+            </div>
+            <div *ngSwitchDefault>
+                  <app-cuocphi-phankhuvuc-stepbuucuc [mode]="mode" [ruleCode]="ruleCode" [serviceCode]="serviceCode" [lstDistrictCode]="lstDistrictCode" (onPre)="preStep()"></app-cuocphi-phankhuvuc-stepbuucuc>
+            </div>
+            </div>
+      </div>
+      </nz-spin>
+</div>
+      

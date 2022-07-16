@@ -1,0 +1,25 @@
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form [formGroup]="myForm" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-12">
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="Nhập tên" formControlName="name"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div class="text-center mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="save()">
+          Lưu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

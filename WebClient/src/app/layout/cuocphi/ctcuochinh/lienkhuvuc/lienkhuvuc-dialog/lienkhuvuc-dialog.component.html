@@ -1,0 +1,91 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Mã dịch vụ</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text [readonly]="true" formControlName="serviceCode" placeholder="">
+            </input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Mã bảng cước</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text [readonly]="true" formControlName="domesticFreightRuleCode" placeholder="">
+            </input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Từ vùng</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api [items]="[{ value: null, text: 'Chọn khu vục' }]" formControlName="fromFreightRegionId"
+                [apiService]="freightRegionApi" [actionName]="'getCombobox'" [apiParams]="{ page: 1, where: {and: [{domesticFreightRuleId: ruleId}]}}" placeholder="">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Đến vùng</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api [items]="[{ value: null, text: 'Chọn khu vực' }]" formControlName="toFreightRegionId"
+                      [apiService]="freightRegionApi" [actionName]="'getCombobox'" [apiParams]="{ page: 1, where: {and: [{domesticFreightRuleId: ruleId}]}}" placeholder="">
+                  </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Cước</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float placeholder="Nhập cước" formControlName="freight"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>% cước chính trong nước</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float [readonly]="true" placeholder="" formControlName="domesticMainFreightPercent"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>% phụ cước máy bay</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float [readonly]="true" placeholder="" formControlName="domesticAirSurchargeFreightPercent"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

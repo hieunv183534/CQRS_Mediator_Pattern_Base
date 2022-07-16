@@ -1,0 +1,11 @@
+﻿b1. Cài đặt ef core bằng lệnh: dotnet tool install --global dotnet-ef
+b2. Bật PowerShell (Shift + chuột phải chọn PowerShell) tại thư mục Dao
+b3. Chạy 1 trong các lện dưới đây tùy vào loại db sử dụng
+
+dotnet ef dbcontext scaffold "User Id=nom_struct;Password=nom123;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.0.10.85)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=VMSREP)))" Oracle.EntityFrameworkCore -c ApplicationDbContext --use-database-names --json -o Entities -f
+
+dotnet ef dbcontext scaffold "User Id=nom_struct;Password=nom123;Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=10.0.10.85)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=VMSREP)))" Oracle.EntityFrameworkCore -c ApplicationDbContext --json -o Entities -d -f --no-onconfiguring
+
+dotnet ef dbcontext scaffold "Server=vnpost.ddns.net;Database=KT1;User ID=sa;Password=bccp@123;Trusted_Connection=False;" Microsoft.EntityFrameworkCore.SqlServer -c ApplicationDbContext --use-database-names --json -o Entities -f
+
+dotnet ef dbcontext scaffold "User ID=postgres;Password=admin;Server=localhost;Port=5432;Database=BCCP;Integrated Security=true;Pooling=true;" Npgsql.EntityFrameworkCore.PostgreSQL -c ApplicationDbContext --use-database-names --json -o Entities -f

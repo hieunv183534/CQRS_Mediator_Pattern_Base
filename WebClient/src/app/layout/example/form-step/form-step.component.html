@@ -1,0 +1,48 @@
+
+<div class="page-header page-header-light">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a [routerLink]="['/']" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Trang chủ</a>
+        <a href="javascript:;" class="breadcrumb-item">Example</a>
+        <a href="javascript:;" class="breadcrumb-item">Quản lý</a>
+        <span class="breadcrumb-item active">Form step mẫu</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Content area -->
+<div class="content pt-0">
+
+  <div class="card">
+    <div class="card-header header-elements-inline">
+      <h5 class="card-title">Tiêu đề</h5>
+    </div>
+
+    <div class="card-body">
+      <nz-spin [nzSpinning]="isLoading">
+        <div>Chi tiết xem tại: <a href="https://ng.ant.design/components/overview/en">https://ng.ant.design/components/overview/en</a></div>
+        <nz-steps [nzCurrent]="stepCurent">
+          <nz-step nzTitle="Finished" nzDescription="This is a description."></nz-step>
+          <nz-step nzTitle="In Progress" nzSubtitle="Left 00:00:08" nzDescription="This is a description."> </nz-step>
+          <nz-step nzTitle="Waiting" nzDescription="This is a description."></nz-step>
+        </nz-steps>
+        <div class="steps-content mt-3">
+          <div [ngSwitch]="stepCurent">
+            <div *ngSwitchCase="0">
+              <app-form-step-first [formValue]="formFistValue" (onSubmit)="formFistSubmit($event)"></app-form-step-first>
+            </div>
+            <div *ngSwitchCase="1">
+              <app-form-step-second [formValue]="formSecondValue" (onCancel)="formCancel()" (onSubmit)="formSecondSubmit($event)"></app-form-step-second>
+            </div>
+            <div *ngSwitchDefault>
+              <app-form-step-three [formValue]="formThreeValue" (onCancel)="formCancel()" (onSubmit)="formThreeForm($event)"></app-form-step-three>
+            </div>
+          </div>
+        </div>
+      </nz-spin>
+    </div>
+    <!-- /content area -->
+  </div>

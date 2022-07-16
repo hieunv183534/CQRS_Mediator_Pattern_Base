@@ -1,0 +1,41 @@
+<div class="row">
+  <form class="form-horizontal col-md-12" nz-form *ngIf="formAreaPlace" [formGroup]="formAreaPlace" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+
+    <div class="row">
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn đường thư</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="mailroute" [apiService]="mailrouteApi" [apiParams]="whereMailroute"
+              placeholder="Chọn đường thư" (onChange)="onChangeMailroute()" [disabled]= "disabledControl">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn chuyến</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="mailrouteschedule" [apiService]="mailroutescheduleApi" [apiParams]="whereMailrouteSchedule"
+              placeholder="Chọn chuyến" (onChange)="onChangeMailrouteSchedule()" [disabled]= "disabledControl">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn bưu cục</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="mailroutepos" [apiService]="mailrouteposApi" [apiParams]="whereMailroutePOS"
+              placeholder="Chọn bưu cục" (onChange)="onChangeMailroutePOS()" [disabled]= "disabledControl">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+  </form>
+</div>

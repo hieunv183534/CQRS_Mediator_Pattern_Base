@@ -1,0 +1,23 @@
+<nz-input-group [nzSuffix]="inputClearTpl">
+  <input [class]="classControl" nz-input [hidden]="hidden" [disabled]="disabled" [(ngModel)]="controlValue"
+    [nzAutocomplete]="auto" [placeholder]="!disabled ? placeholder : ''" (ngModelChange)="onChange()"
+    (focusin)="onBlur()" (focusout)="onUnBlur()">
+</nz-input-group>
+
+<ng-template #inputClearTpl>
+  <i nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" *ngIf="controlValue && !disabled"
+    (click)="onClear()"></i>
+</ng-template>
+
+
+<nz-autocomplete #auto>
+  <ng-container *ngFor="let item of items">
+    <nz-auto-option [nzValue]="item.text">{{item.text}}</nz-auto-option>
+  </ng-container>
+  <ng-container *ngFor="let item of listOption">
+    <nz-auto-option [nzValue]="item.text">{{item.text}}</nz-auto-option>
+  </ng-container>
+  <nz-auto-option *ngIf="isLoading" nzDisabled nzCustomContent>
+    <i nz-icon nzType="loading" class="loading-icon"></i> Đang tải dữ liệu...
+  </nz-auto-option>
+</nz-autocomplete>

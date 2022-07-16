@@ -1,0 +1,96 @@
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <form *ngIf="formSearch" [formGroup]="formSearch" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <ng-container *ngIf="mode === 'edit'">
+              <div class="col-md-6">
+                <app-quanhuyen [provinceValue]="formSearch.get('province').value" [districtValue]="formSearch.get('province').value"
+                (onChange)="onChangeAreaPlace($event)"></app-quanhuyen>
+              </div>           
+              <div class="col-md-3">
+                <button type="button" class="btn btn-primary"  (click)="addDataDialog()">
+                  <i class="icon-plus-circle2 mr-2"></i>Thêm mới
+                </button>
+              </div>
+            </ng-container>
+           
+          </div>
+          <div class="row ">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Mã Huyện</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập từ khóa tìm kiếm" formControlName="districtCode">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tên Huyện</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập từ khóa tìm kiếm" formControlName="districtName">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <button type="submit" class="btn btn-primary">
+                <i class="icon-search4 mr-2"></i>Tìm kiếm
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <hr class="mt-0 margin-bottom-10">
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>
+        <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+          (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th>
+        <th>Stt</th>
+        <th>Mã huyện</th>
+        <th>Tên huyện</th>
+        <th class="action text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+          (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)"></td>
+        <td>
+          {{ i + 1 + ((paging.page-1)*paging.size) }}
+        </td>
+        <td>
+            {{item.districtCode}}
+        </td>
+        <td>
+            {{item.districtName}}
+        </td>
+        <td class="text-center">
+          <div class="list-icons list-icons-extended text-center">            
+            <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteData([item.id])" *ngIf="mode !== 'view'">
+              <span nz-tooltip nzTooltipTitle="Xóa">
+                <i nz-icon nzType="delete" nzTheme="outline"></i>
+              </span>
+            </a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+<app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+</div>

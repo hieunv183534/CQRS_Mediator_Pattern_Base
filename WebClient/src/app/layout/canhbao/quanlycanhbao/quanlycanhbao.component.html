@@ -1,0 +1,131 @@
+<div class="page-header page-header-light">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a [routerLink]="['/']" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Trang chủ</a>
+        <a href="javascript:;" class="breadcrumb-item"> Quản lý cảnh báo </a>
+        <span class="breadcrumb-item active">Quản lý cảnh báo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Quản lý cảnh báo</span></h4>
+    </div>
+    <div class="header-elements">
+      <button type="button" class="btn btn-primary" (click)="getData()">
+        <i class="mr-2 icon-search4"></i>Tìm kiếm
+      </button>          
+    </div>
+  </div>
+</div>
+
+
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <form *ngIf="formSearch" [formGroup]="formSearch" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label nzRequired>Loại cảnh báo</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select formControlName="WarningType" [items]="[{value: 0,text:'Cảnh báo tiếp nhận'},{value:1, text:'Cảnh báo giao dịch'}
+                  ,{value:2, text:'Cảnh báo khai thác'},{value:3, text:'Cảnh báo giao nhận'},{value:4, text:'Cảnh báo phát'}]"
+                    placeholder="Chọn loại cảnh báo"></input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Ngày cảnh báo từ</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-date formControlName="fromDateCreated"></input-date>
+                </nz-form-control>
+              </nz-form-item>
+            </div>     
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>đến ngày</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-date formControlName="toDateCreated"></input-date>
+                </nz-form-control>
+              </nz-form-item>
+            </div>        
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Nội dung cảnh báo</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nội dung" formControlName="WarningContent">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+              
+            </div>
+          </div>
+          <button type="submit" hidden>Tìm kiếm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <hr class="mt-0 margin-bottom-10">
+
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>       
+        <th>STT</th>
+        <th>Ngày cảnh báo</th>
+        <th>Loại cảnh báo</th>
+        <th>Mức độ</th>
+        <th>Nội dung cảnh báo</th>
+        <th>Trạng thái</th>
+        <th class="action text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">      
+        <td>
+          {{ i + 1 + ((paging.page - 1)*paging.size)}}
+        </td>
+        <td>         
+            {{item.dateCreated | datetimeFormat}}        
+        </td>
+        <td>
+          {{item.warningTypeName}}
+        </td>
+        <td>
+          {{item.warningLevelName}}
+        </td>
+        <td>
+          {{item.warningContent.substring(0,100) }}
+        </td>       
+        <td>
+          {{item.statusName}}
+        </td>            
+        <td class="text-center">
+          <div class="list-icons list-icons-extended text-center">
+            <a class="list-icons-item" href="javascript:;" (click)="showDataDialog(item.id)">
+              <span nz-tooltip nzTooltipTitle="Xem">
+                <i nz-icon nzType="eye" nzTheme="outline"></i>
+              </span>
+            </a>           
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+</div> 

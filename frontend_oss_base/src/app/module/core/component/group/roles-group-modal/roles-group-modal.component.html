@@ -1,0 +1,9 @@
+<p-toast position="top-right" ></p-toast>
+<p-dialog header="{{'title_modal_edit_user' | translate }}" [(visible)]="isVisibleRole" modal="true" (onHide)="handleCancelRole()" [style]="{width: '50vw'}">
+  <h5>Gán role cho nhóm quyền</h5>
+  <p-tree [value]="nodes" selectionMode="checkbox" [(selection)]="selectedNodes" [filter]="true" filterMode="strict"></p-tree>
+  <ng-template pTemplate="footer">    
+    <p-button (click)="handleCancelRole()" label="{{'cancel' | translate }}" styleClass="p-button-warning"></p-button>
+    <p-button (click)="handleOkRole()" label="{{'save' | translate }}" styleClass="p-button-success"></p-button>
+  </ng-template>
+</p-dialog>

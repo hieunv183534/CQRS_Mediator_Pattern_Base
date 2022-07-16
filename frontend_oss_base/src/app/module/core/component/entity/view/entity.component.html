@@ -1,0 +1,105 @@
+<p-toast position="top-right" key="toastEntityView"></p-toast>
+<div class="grid">
+  <div class="col-12">        
+    <div class="card"> 
+      <h5 class="m-0">Danh sách entity</h5>
+      <br>  
+      <p-table #dt [value]="entities" [columns]="cols" [rows]="10" [paginator]="true" [globalFilterFields]="['name','nameAscii']"
+            [rowHover]="true" dataKey="entityId"
+            styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped p-datatable-sm"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+      <ng-template pTemplate="caption">
+          <div class="flex flex-column md:flex-row md:justify-content-between table-header"> 
+            <span class="p-buttonset">
+                  <button pButton pRipple label="{{'add_user' | translate }}" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="showModalAdd()" *ngIf="checkAdd"></button>&nbsp;              
+                </span>
+
+              <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+          </span>
+          </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+          <tr>             
+              <th pSortableColumn="nameAscii">Tên Ascii<p-sortIcon field="nameAscii"></p-sortIcon></th>
+              <th pSortableColumn="name">Tên <p-sortIcon field="name"></p-sortIcon></th>              
+              <th>Ứng dụng
+                <p-columnFilter field="systemsStr" matchMode="contains" display="menu">
+                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-dropdown [ngModel]="value" [options]="systems" (onChange)="filter($event.value)" placeholder="Any" optionLabel="name" optionValue="name">
+                      </p-dropdown>
+                  </ng-template>
+                </p-columnFilter>
+              </th>
+              <th>{{ 'description' | translate }}</th>
+              <th>Thao tác</th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-entity>
+          <tr>             
+              <td>{{entity.nameAscii}}</td>
+              <td>{{entity.name}}</td>
+              <!-- <td><p-tag styleClass="p-mr-2" value="{{entity.systemDto.name}}"></p-tag></td> -->
+              <td><p-tag styleClass="p-mr-2" 
+                value="{{entity.systemsDto !=null && entity.systemsDto.length> 0 ? 
+                  (entity.systemsDto.length == 1 ? entity.systemsDto[0].name : entity. systemsDto[0].name + ' ...' ) : ''}}" (click)="showListSystems($event, op, entity)"> </p-tag>
+              </td>
+              <td>{{entity.description}}</td>
+              <td>
+                <button *ngIf="checkUpdate" pButton pRipple icon="pi pi-pencil" (click)="showModalUpdate(entity)" pTooltip="Sửa thông tin entity" tooltipPosition="top" class="p-button-rounded p-button-success mr-2 p-button-sm"></button>                
+            </td>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="summary">
+          <div class="flex align-items-center justify-content-between">
+              In total there are {{entities ? entities.length : 0 }} entities.
+          </div>
+      </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="checkAdd && isVisibleAdd">
+<app-add-entity 
+  [isVisibleAdd]="isVisibleAdd"
+  [systems]="systems"
+  (submitAdd)="addEntity($event)"
+  (closeAdd)="closeModelAdd()"
+  >
+</app-add-entity>
+</ng-container>
+
+<ng-container *ngIf="checkUpdate && isVisibleUpdate">
+  <app-update-entity 
+    [entity] = "entity"
+    [isVisibleUpdate]="isVisibleUpdate"
+    [systems]="systems"
+    (submitUpdate)="updateEntity($event)"
+    (closeUpdate)="closeModelUpdate()"
+    >
+  </app-update-entity>
+</ng-container>
+
+<p-overlayPanel #op [showCloseIcon]="true" [style]="{width: '550px', height: '450px'}">
+  <ng-template pTemplate>
+    <p-table #dtSystem [value]="entity.systemsDto" [columns]="['name']" [globalFilterFields]="['name']" [paginator]="true" [rows]="10"
+                dataKey="name" styleClass="p-datatable-customers p-datatable-sm" 
+                currentPageReportTemplate="{totalRecords} systems" [showCurrentPageReport]="true">
+          <ng-template pTemplate="caption">
+              <div class="flex flex-column md:flex-row md:justify-content-between table-header">
+                  <h5 class="m-0">Danh sách ứng dụng</h5>                  
+                  <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dtSystem.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                  </span>
+              </div>              
+          </ng-template>
+          <ng-template pTemplate="body" let-system>
+              <tr>                                    
+                  <td>{{system.name}}</td>                  
+              </tr>
+          </ng-template>          
+      </p-table>
+  </ng-template>
+</p-overlayPanel>

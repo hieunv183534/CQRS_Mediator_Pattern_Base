@@ -1,0 +1,58 @@
+<ng-container>
+  <li class="nav-item dropdown notification">
+    <input type="checkbox" id="toggle-notification" hidden />
+    <label for="toggle-notification" id="icon-notification-label">
+      <a class="navbar-nav-link">
+        <nz-badge [nzDot]="listOfData | seen">
+          <i class="icon-bell2"></i>
+        </nz-badge>
+      </a>
+    </label>
+    <div class="notification-content" (scroll)="onScroll($event)">
+      <div class="mx-2 my-1 header-notification">Thông báo</div>
+      <div class="notifi-all">
+        <a [routerLink]="['canhbao','canhbao-toantrinh']" target="_blank">Xem hết</a>
+      </div>
+      <!-- <div class="mx-2 my-1 header-1-notification">Mới</div> -->
+      <ng-container *ngFor="let item of listOfData; let i = index">
+        <ng-container
+          *ngTemplateOutlet="itemNotification; context: { $implicit: item }"
+        ></ng-container>
+      </ng-container>
+      <!--      <div class="mx-2 my-2 header-1-notification">Trước đó</div>-->
+      <!--      <ng-container *ngFor="let item of listOfData; let i = index;">-->
+      <!--        <ng-container *ngTemplateOutlet="itemNotification; context: { $implicit: item }"></ng-container>-->
+      <!--      </ng-container>-->
+    </div>
+    <label
+      for="toggle-notification"
+      id="background-container-notification"
+    ></label>
+  </li>
+</ng-container>
+
+<ng-template #itemNotification let-item>
+  <a
+    [routerLink]="['tracuu', 'tracuubuugui']"
+    [queryParams]="{ itemCode: item.id }"
+    target="_blank"
+  >
+    <div class="box-notification">
+      <div class="px-2 py-2 content-notification">
+        <div>
+          <!--        <img class="avatar-content-notification" src="https://toplist.vn/images/800px/dan-ong-thuong-cam-thay-ho-co-the-la-chinh-minh-khi-hen-ho-voi-mot-co-gai-binh-thuong-444281.jpg">-->
+          <img
+            class="avatar-content-notification"
+            src="assets/images/notification_warning.png"
+          />
+        </div>
+        <div class="body-content">
+          <div class="title-notification">{{ item?.title }}</div>
+          <div class="title-notification">{{ item?.description }}</div>
+          <div class="time-ago">{{ item?.createDate | csTimeAgo }}</div>
+        </div>
+      </div>
+      <div class="un-read" [hidden]="!!item?.readTime"></div>
+    </div>
+  </a>
+</ng-template>

@@ -1,0 +1,102 @@
+<form nz-form [formGroup]="myForm" novalidate>
+  <ng-template #controlErrorTpl let-control>
+    <app-render-errors [control]="control"></app-render-errors>
+  </ng-template>
+
+  <div class="row">
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Mã biểu đồ</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text
+            placeholder="customerCode"
+            formControlName="code"
+          ></input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Tên biểu đồ</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text placeholder="Tên" formControlName="name"></input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label>Dữ liệu biểu đồ</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-select-api
+            formControlName="datasetId"
+            [apiService]="dimDashboardDatasetApi"
+            placeholder="Chọn"
+          >
+          </input-select-api>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Loại biểu đồ</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-select
+            formControlName="type"
+            [items]="lstType"
+            placeholder="Chọn"
+          ></input-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Định kỳ lấy dữ liệu</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-select
+            formControlName="period"
+            [items]="[
+              { value: 1, text: 'Ngày' },
+              { value: 2, text: 'Tháng' },
+              { value: 3, text: 'Quý' },
+              { value: 4, text: 'Năm' }
+            ]"
+            placeholder="Chọn"
+          ></input-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label>Kích thước biểu đồ (1-12)</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-select
+            formControlName="width"
+            [items]="[
+              { value: 3, text: '1/4 đơn vị màn hình' },
+              { value: 4, text: '1/3 đơn vị màn hình' },
+              { value: 6, text: '1/2 đơn vị màn hình' },
+              { value: 12, text: '1 đơn vị màn hình' }
+            ]"
+            placeholder="Chọn"
+          ></input-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="text-center mt-2">
+    <button
+      nz-button
+      class="btn btn-primary"
+      [nzLoading]="isSubmit"
+      type="button"
+      (click)="submitForm()"
+    >
+      Kế tiếp
+    </button>
+  </div>
+  <!--  {{formValue | json}}-->
+</form>

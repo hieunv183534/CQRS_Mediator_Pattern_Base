@@ -1,0 +1,110 @@
+<form [formGroup]="formUpdate" (ngSubmit)="handleOk()" (keydown.enter)="handleOk()">
+  <p-dialog header="{{'title_modal_edit_user' | translate }}" [(visible)]="isVisible" modal="true" (onHide)="handleCancel()" [style]="{width: '50vw'}">
+    <p-divider align="left"> <b>Thông tin cơ bản</b> </p-divider>    
+    <div class="p-fluid grid">    
+        <div class="col-6 md-6">
+          <span class="p-float-label">
+            <input type="text" id="email" pInputText formControlName="email"/>
+            <label for="email">Email <span style="color: red;">*</span> </label>            
+          </span>
+          <div *ngIf="submitted && f.email.errors">
+            <ng-container  *ngIf="f.email.errors.required">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'email' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+            </ng-container >
+            <ng-container  *ngIf="f.email.errors.minlength">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'email' | translate }} {{'ms_validate_more_characters_long' | translate }}"></p-tag><br>
+            </ng-container >
+            <ng-container  *ngIf="f.email.errors.maxlength">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'email' | translate }} {{'ms_validate_less_characters_long' | translate }}"></p-tag><br>
+            </ng-container >
+            <ng-container  *ngIf="f.email.errors.email">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'email' | translate }} {{'ms_validate_email_invalid_address' | translate }}"></p-tag><br>
+            </ng-container >
+            <ng-container  *ngIf="f.email.errors.cannotContainSpace">
+              <p-tag styleClass="p-mr-2" severity="warning" *ngIf="f.email.errors.cannotContainSpace" value="{{'email' | translate }} {{'ms_validate_space' | translate }}"></p-tag>
+            </ng-container >
+            </div>
+        </div>
+        <div class="col-6 md-6">
+          <span class="p-float-label">
+            <input type="text" id="name" pInputText formControlName="name"/>
+            <label for="name">Tên <span style="color: red;">*</span></label>
+          </span>
+          <div *ngIf="submitted && f.name.errors">
+            <ng-container  *ngIf="f.name.errors.required">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+            </ng-container >
+            <ng-container  *ngIf="f.name.errors.minlength">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_more_characters_long' | translate }}" ></p-tag><br>
+            </ng-container >
+            <ng-container  *ngIf="f.name.errors.maxlength">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_less_characters_long' | translate }}" ></p-tag><br>
+            </ng-container >            
+          </div>
+        </div>      
+        <div class="col-6 md-6">
+          <span class="p-float-label">
+            <input type="text" id="userName" pInputText formControlName="userName" disabled="true"/>
+            <label for="userName">Username <span style="color: red;">*</span></label>
+            </span>        
+        </div>
+        <div class="col-6 md-6">
+          <span class="p-float-label">
+            <input type="text" id="phoneNumber" pInputText formControlName="phoneNumber"/>
+            <label for="phoneNumber">Phone <span style="color: red;">*</span></label>
+          </span>
+          <div *ngIf="submitted && f.phoneNumber.errors">
+            <ng-container  *ngIf="f.phoneNumber.errors.required">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'mobile' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+            </ng-container >  
+            <ng-container  *ngIf="f.phoneNumber.errors.pattern">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'mobile' | translate }} {{'ms_validate_phone_invalid_address' | translate }}" ></p-tag><br>
+            </ng-container >
+          </div>
+        </div>
+        </div>
+        <p-divider align="left"> <b>Thông tin nâng cao</b> </p-divider>
+        <div class="p-fluid grid">
+        <div class="col-6 md-6">
+          <span class="p-float-label">            
+            <p-dropdown id="groupId" [options]="groups" formControlName="groupId" optionLabel="name" optionValue="groupId" [filter]="true" filterBy="name" [showClear]="true" placeholder="."></p-dropdown>
+            <label for="groupId">Nhóm quyền<span style="color: red;">*</span></label>
+          </span>
+          <div *ngIf="submitted && f.groupId.errors">
+            <ng-container  *ngIf="f.groupId.errors.required">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'group' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+            </ng-container >
+          </div>
+        </div>
+     
+        <div class="col-6 md-6">
+          <span class="p-float-label">            
+            <p-dropdown id="status" [options]="statusOptions" formControlName="status" optionLabel="label" placeholder="."  [showClear]="true" optionValue="value"></p-dropdown>
+            <label for="status">Trạng thái <span style="color: red;">*</span></label>            
+          </span>
+          <div *ngIf="submitted && f.status.errors">
+            <ng-container  *ngIf="f.status.errors.required">
+              <p-tag styleClass="p-mr-2" severity="warning" value="{{'status' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+            </ng-container >
+          </div>
+        </div>
+        <div class="col-6 md-6">
+          <span class="p-float-label">
+            <p-dropdown id="requireOtp" [options]="loginTypeOptions" formControlName="requireOtp" optionLabel="label" placeholder="."  [showClear]="true" optionValue="value"></p-dropdown>            
+            <label for="requireOtp">Kiểu đăng nhập<span style="color: red;">*</span></label>
+          </span>
+          <div *ngIf="submitted && f.requireOtp.errors">
+            <ng-container  *ngIf="f.requireOtp.errors.required">
+              <p-tag styleClass="p-mr-2" severity="warning" value="Kiểu đăng nhập {{'ms_validate_required' | translate }}" ></p-tag><br>
+            </ng-container >          
+          </div>
+        </div>    
+      </div>
+    <ng-template pTemplate="footer">
+      <p-button *ngIf="onChangeAction && requireOtp ===2" (click)="handleGetTotp()">{{'send_totp' | translate }}</p-button>                
+      <p-button (click)="handleCancel()" label="{{'cancel' | translate }}" styleClass="p-button-warning"></p-button>
+      <p-button (click)="handleOk()" label="{{'save' | translate }}" styleClass="p-button-success"></p-button>
+    </ng-template>
+  </p-dialog>
+</form>
+

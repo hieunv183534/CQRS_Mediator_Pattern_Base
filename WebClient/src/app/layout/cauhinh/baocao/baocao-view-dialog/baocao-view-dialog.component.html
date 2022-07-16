@@ -1,0 +1,23 @@
+<nz-spin [nzSpinning]="isLoading">
+
+  <ng-container *ngIf="reportViewUrl">
+    <iframe id="{{nameReport}}" name="{{nameReport}}" [src]="reportViewUrl | safeIframe"
+      (load)="printReportLoading()"></iframe>
+  </ng-container>
+
+  <div class="text-center mt-2" *ngIf="mode !== 'dowload'">
+    <button type="button" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="printReport()" >
+      Print
+    </button>
+    <div class="btn-group justify-content-center">
+      <a href="javascript:;" class="btn btn-success mr-2 w-2 dropdown-toggle" data-toggle="dropdown">Kết xuất</a>
+      <div class="dropdown-menu">
+        <a href="javascript:;" class="dropdown-item" (click)="dowloadReport(1)">Pdf</a>
+        <a href="javascript:;" class="dropdown-item" (click)="dowloadReport(3)">Doc</a>
+        <a href="javascript:;" class="dropdown-item" (click)="dowloadReport(2)">Excel</a>
+      </div>
+    </div>
+    <button type="button" class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+  </div>
+
+</nz-spin>

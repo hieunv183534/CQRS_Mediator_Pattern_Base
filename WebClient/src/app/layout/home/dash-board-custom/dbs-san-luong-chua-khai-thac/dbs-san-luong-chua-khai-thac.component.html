@@ -1,0 +1,107 @@
+<div class="card">
+  <div class="card-header header-elements-inline">
+    <h6 class="card-title">{{ options ? options.name : "" }}</h6>
+    <div class="header-elements">
+      <span class="badge badge-primary badge-pill mr-2">Tỉnh</span>
+      <input-select
+        class="cbx-posCode"
+        [items]="listPos"
+        [(ngModel)]="posCode"
+        (onChange)="changePos()"
+        placeholder="Cả cục"
+      ></input-select>
+    </div>
+  </div>
+
+  <div
+    class="card-body d-sm-flex align-items-sm-center justify-content-sm-between flex-sm-wrap"
+  >
+    <div class="d-flex align-items-center mb-3 mb-sm-0">
+      <div id="campaigns-donut">
+        <svg width="42" height="42">
+          <g transform="translate(21,21)">
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M1.1634144591899855e-15,19A19,19 0 0,1 -14.050144241469582,12.790365389381929L-7.025072120734791,6.3951826946909645A9.5,9.5 0 0,0 5.817072295949927e-16,9.5Z"
+                style="fill: rgb(102, 187, 106)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M-14.050144241469582,12.790365389381929A19,19 0 0,1 0.6493373977393208,-18.988900993577726L0.3246686988696604,-9.494450496788863A9.5,9.5 0 0,0 -7.025072120734791,6.3951826946909645Z"
+                style="fill: rgb(149, 117, 205)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M0.6493373977393208,-18.988900993577726A19,19 0 0,1 5.817072295949928e-15,19L2.908536147974964e-15,9.5A9.5,9.5 0 0,0 0.3246686988696604,-9.494450496788863Z"
+                style="fill: rgb(255, 112, 67)"
+              ></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h5 class="font-weight-semibold mb-0">
+          {{totalData.total | number}}
+        </h5>
+        <span class="badge badge-mark border-success mr-1"></span>
+        <span class="text-muted">Tổng số bưu gửi chưa khai thác</span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center mb-3 mb-sm-0">
+    </div>
+    <div>
+    </div>
+  </div>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table">
+      <thead>
+        <tr>
+          <th style="width: 130px">Chấp nhận gửi</th>
+          <th style="width: 150px">Mã bưu gửi</th>
+          <th>Thông tin bưu gửi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of listOfData">
+          <td class="text-center">
+            <h6 class="mb-0">{{ item.SendingTime | datetimeFormat }}</h6>
+          </td>
+          <td>
+            <div class="align-items-center">
+              <div>
+                <a
+                  [routerLink]="['/tracuu', 'tracuubuugui']"
+                  [queryParams]="{ itemCode: item.ItemCode }"
+                  target="_blank"
+                  class="text-body font-weight-semibold letter-icon-title"
+                  >{{ item.ItemCode }}</a
+                >
+                <div class="text-muted font-size-sm">
+                  <span class="badge badge-mark border-primary mr-1"></span>
+                  {{ item.POSCode }}
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <a href="javascript:;" class="text-body">
+              <div class="font-weight-semibold">
+                [{{ item.SenderCustomerName }}] - {{ item.SenderAddress }} -
+                {{ item.SenderProvinceName }}
+              </div>
+              <span class="text-muted"
+                >{{ item.ReceiverAddress }} -
+                {{ item.ReceiverProvinceName }}</span
+              >
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <nz-spin *ngIf="loading" [nzSpinning]="true"></nz-spin>
+</div>

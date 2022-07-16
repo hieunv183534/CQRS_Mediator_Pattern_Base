@@ -1,0 +1,3 @@
+<textarea nz-input [class]="class" [placeholder]="!disabled ? placeholder : ''" cols="{{cols}}" rows="{{rows}}"
+  [(ngModel)]="controlValue" (change)="onChange()" [disabled]="disabled" [readonly]="readonly" [hidden]="hidden"
+  (focusin)="onBlur()" (focusout)="onUnBlur()"></textarea>

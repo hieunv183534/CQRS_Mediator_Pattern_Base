@@ -1,0 +1,4 @@
+<ng-container *ngIf="url">
+    <iframe width="100%" height="500px" [src]="url | safeIframe"></iframe>
+</ng-container>
+{{noData}}

@@ -1,0 +1,80 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Text</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="colText"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Number</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-number placeholder="" formControlName="colNumber"></input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Float</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float placeholder="" formControlName="colFloat"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Date time Text</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date formControlName="colDateString"></input-date>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Combobox</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api placeholder="" [apiService]="exampleBasicApi" formControlName="colSelectSingle"></input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Date time</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date-time formControlName="colDateTime"></input-date-time>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

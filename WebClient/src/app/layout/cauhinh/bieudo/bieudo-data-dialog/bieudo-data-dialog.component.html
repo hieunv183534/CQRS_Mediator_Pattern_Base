@@ -1,0 +1,48 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <!--    steps-->
+    <nz-steps [nzCurrent]="current">
+      <nz-step nzTitle="Thông tin biểu đồ"></nz-step>
+      <nz-step nzTitle="Phân quyền cho nhóm quyền"></nz-step>
+      <!--      <nz-step nzTitle="Waiting"></nz-step>-->
+    </nz-steps>
+
+    <!--    content thiet lap bieu do-->
+    <div class="steps-content" *ngIf="current == 0">
+      <app-thongtincoban-bieudo
+          *ngIf="!isLoading"
+          [formValue]="formThongTinCoBanBieuDoValue"
+          [formError]="formThongTinCoBanBieuDoError"
+          (onSubmit)="formThongTinCoBanBieuDoSubmit($event)"
+          [mode]="mode"
+      >
+      </app-thongtincoban-bieudo>
+    </div>
+    <!--    end content thiet lap bieu do-->
+
+    <!--    content phan quyen-->
+    <div class="steps-content" *ngIf="current == 1">
+      <app-phanquyen-bieudo
+          *ngIf="!isLoading"
+          [formValue]="formPhanQuyenBieuDoValue"
+          (onSubmit)="formPhanQuyenBieuDoSubmit($event)"
+          (onPreStep)="preStep($event)"
+          [mode]="mode"
+      >
+      </app-phanquyen-bieudo>
+    </div>
+    <!--    end content phan quyen-->
+    <!--    end steps-->
+
+    <div class="text-center mt-2">
+    </div>
+  </form>
+</nz-spin>

@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>NOM.MOBILE.Domain</RootNamespace>
+    <AssemblyName>NOM.MOBILE.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Application\Dim\**" />
+    <Compile Remove="Application\FileCloud\**" />
+    <Compile Remove="MessageHandlers\**" />
+    <EmbeddedResource Remove="Application\Dim\**" />
+    <EmbeddedResource Remove="Application\FileCloud\**" />
+    <EmbeddedResource Remove="MessageHandlers\**" />
+    <None Remove="Application\Dim\**" />
+    <None Remove="Application\FileCloud\**" />
+    <None Remove="MessageHandlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="_Services\ConsumingService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\" />
+    <Folder Include="_Interfaces\" />
+    <Folder Include="Models\" />
+    <Folder Include="_Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetTopologySuite" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DomainGlobal\DomainGlobal.csproj" />
+  </ItemGroup>
+
+</Project>

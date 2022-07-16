@@ -1,0 +1,32 @@
+// input-date {
+//   width: 100%;
+//   display: block;
+
+//   nz-date-picker {
+//     width: 100%;
+//     .form-control {
+//       padding: 0px;
+//       .ant-input {
+//         border: none;
+//         height: calc(100% - 2px);
+//         margin-left: 1px;
+//         margin-top: 1px;
+//         margin-right: 1px;
+//         width: calc(100% - 2px);
+//       }
+//     }
+//   }
+// }
+
+input-date {
+  width: 100%;
+  display: block;
+
+  nz-date-picker {
+    width: 100%;
+    position: absolute !important;
+    z-index: -1;
+    opacity: 0;
+    left: 0;
+  }
+}

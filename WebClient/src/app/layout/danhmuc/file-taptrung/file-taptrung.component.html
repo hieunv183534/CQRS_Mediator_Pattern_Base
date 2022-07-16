@@ -1,0 +1,133 @@
+<div class="page-header page-header-light">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a [routerLink]="['/']" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Trang chủ</a>
+        <a href="javascript:;" class="breadcrumb-item">Danh mục</a>
+        <span class="breadcrumb-item active">File tập trung</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Quản lý file tập trung</span></h4>
+    </div>
+
+    <div class="header-elements">
+      <button type="button" class="btn btn-primary" (click)="getData()">
+        <i class="mr-2 icon-search4"></i>Tìm kiếm
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="addDataDialog()">
+        <i class="icon-plus-circle2 mr-2"></i>Thêm
+      </button>
+
+      <button type="button" class="btn btn-danger" [disabled]="tableConfig.itemSelected.size === 0"
+        (click)="deleteData(tableConfig.getItemSelectedArray())">
+        <i class="icon-bin mr-2"></i>Xóa
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <form *ngIf="formSearch" [formGroup]="formSearch" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tìm theo tên file</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập tên thiết bị" formControlName="name">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tìm theo loại file</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select placeholder="Chọn thông tin" [items]="lstType" formControlName="type"></input-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <hr class="mb-1 mt-1">
+          <button type="submit" hidden>Tìm kiếm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>
+        <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+          (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th>
+        <th>STT</th>
+        <th>Tên file</th>
+        <th>Loại file</th>
+        <th>Version</th>
+        <th class="action text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+          (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)"></td>
+        <td>
+          {{ i + 1 + ((paging.page - 1)*paging.size)}}
+        </td> 
+        <td>
+          <a class="data-link" href="javascript:;">
+            {{item.name}}
+          </a>
+        </td>
+        <td>
+          <div [ngSwitch]="item.type">
+            <div *ngSwitchCase="1">Mobile App</div>
+            <div *ngSwitchCase="2">Máy in</div>
+            <div *ngSwitchCase="3">File hướng dẫn</div>
+            <div *ngSwitchDefault>Không xác định</div>
+          </div>
+        </td>
+        <td>
+          {{item.version}}
+        </td>
+        <td class="text-center">
+          <div class="list-icons list-icons-extended text-center">
+            <a class="list-icons-item" href="javascript:;" (click)="showDataDialog(item.id)">
+              <span nz-tooltip nzTooltipTitle="Xem">
+                <i nz-icon nzType="eye" nzTheme="outline"></i>
+              </span>
+            </a>
+            <a class="list-icons-item text-primary" href="javascript:;" (click)="editDataDialog(item.id)">
+              <span nz-tooltip nzTooltipTitle="Sửa">
+                <i nz-icon nzType="form" nzTheme="outline"></i>
+              </span>
+            </a>
+            <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteData([item.id])">
+              <span nz-tooltip nzTooltipTitle="Xóa">
+                <i nz-icon nzType="delete" nzTheme="outline"></i>
+              </span>
+            </a>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+</div>

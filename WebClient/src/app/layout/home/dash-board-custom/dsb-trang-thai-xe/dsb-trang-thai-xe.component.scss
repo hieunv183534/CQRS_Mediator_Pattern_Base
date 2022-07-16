@@ -1,0 +1,38 @@
+.card {
+  .cbx-posCode-title {
+    margin-right: 4px;
+  }
+  .cbx-posCode {
+    width: 200px;
+  }
+}
+
+.card-body {
+  height: 1080px;
+}
+
+iframe {
+  border: none;
+}
+
+.xe-content {
+  width: 100%;
+  display: inline-block;
+  .xe-thong-tin {
+    float: right;
+
+    .xe-list{
+        max-height: 700px;
+        overflow: auto;
+    }
+  }
+
+  .xe-map {
+    width: calc(100% - 465px);
+    float: left;
+  }
+}
+
+.table td, .table th {
+    padding: 5px 10px;
+}

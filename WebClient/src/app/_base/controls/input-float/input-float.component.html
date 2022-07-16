@@ -1,0 +1,14 @@
+<nz-input-group [nzAddOnAfter]="suffixControlNumber">
+  <input type="text" nz-input [class]="class" [(ngModel)]="controlValue" [textMask]="{mask: maskFomat}" [disabled]="disabled"
+    [readonly]="readonly" [hidden]="hidden" [placeholder]="!disabled ? placeholder : ''" (change)="onChange()">
+</nz-input-group>
+<ng-template #suffixControlNumber>
+  <div class="input-group-append" *ngIf="!disabled">
+    <div class="actions" (click)="pushValue()">
+      <i nz-icon nzType="up" nzTheme="outline"></i>
+    </div>
+    <div class="actions" (click)="minusValue()">
+      <i nz-icon nzType="down" nzTheme="outline"></i>
+    </div>
+  </div>
+</ng-template>

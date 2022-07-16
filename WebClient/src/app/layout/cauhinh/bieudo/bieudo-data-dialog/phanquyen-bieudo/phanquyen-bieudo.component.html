@@ -1,0 +1,65 @@
+<form nz-form [formGroup]="myForm" novalidate>
+  <ng-template #controlErrorTpl let-control>
+    <app-render-errors [control]="control"></app-render-errors>
+  </ng-template>
+
+  <ng-container>
+    <div class="row">
+      <div class="col-md-6">
+        <H5>Có {{listOfData.length}} Nhóm quyền được chọn</H5>
+      </div>
+      <div class="col-md-6 text-right">
+        <a class="list-icons-item text-primary" href="javascript:;" (click)="themBuuCuc()" *ngIf="mode !== 'view'">
+              <span nz-tooltip nzTooltipTitle="Xem">
+                <i nz-icon nzType="plus" nzTheme="outline"></i> Thêm nhóm quyền
+              </span>
+        </a>
+      </div>
+    </div>
+
+    <hr class="mt-0 margin-bottom-10">
+    <nz-table #basicTable [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false"
+              nzSize="small" [nzScroll]="{ y: '240px', x: false }">
+      <thead>
+      <tr>
+        <th nzWidth="40px">Stt</th>
+        <th nzWidth="100px">Mã nhóm quyền</th>
+        <th>Tên nhóm quyền</th>
+        <th class="text-center" nzWidth="50px" *ngIf="mode !== 'view'">Xóa</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td class="text-center">
+          {{ i + 1 }}
+        </td>
+        <td>
+          {{item.id}}
+        </td>
+        <td>
+          {{item.name}}
+        </td>
+        <td class="text-center" *ngIf="mode !== 'view'">
+          <div class="list-icons list-icons-extended text-center">
+            <a class="list-icons-item text-danger" href="javascript:;" (click)="removePos(item.id)">
+                            <span nz-tooltip nzTooltipTitle="Xóa">
+                              <i nz-icon nzType="delete" nzTheme="outline"></i>
+                            </span>
+            </a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </nz-table>
+  </ng-container>
+
+  <div class="text-center mt-2">
+    <button nz-button class="btn btn-light mr-2" [nzLoading]="isSubmit" type="button" (click)="preStep()">
+      Về trước
+    </button>
+    <button nz-button class="btn btn-primary" [nzLoading]="isSubmit" type="button" (click)="submitForm()" *ngIf="mode !== 'view'">
+      Lưu dữ liệu
+    </button>
+  </div>
+</form>
+

@@ -1,0 +1,82 @@
+<p-toast position="top-right" key="toastMenuView"></p-toast>
+<div class="card">
+    <h5 class="m-0">Danh sách Menu</h5>
+    <br>
+    <p-treeTable #dt [value]="menus" [columns]="cols" [rows]="10" [paginator]="true" [globalFilterFields]="['name','description']"
+                 [(selection)]="selectedMenus" [rowHover]="true"  
+                 styleClass="p-datatable-customers p-datatable-sm p-datatable-gridlines"
+                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" >
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between table-header">
+                <span class="p-buttonset">
+                     <button pButton pRipple label="{{'add_user' | translate }}" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="showModalAdd()" *ngIf="checkAdd"></button>&nbsp;
+              <button *ngIf="checkDelete" pButton pRipple label="{{'delete' | translate }}" icon="pi pi-trash" class="p-button-danger" (click)="showConfirm()" [disabled]="!selectedMenus || !selectedMenus.length"></button>
+                  </span>
+                <span class="p-input-icon-left">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+            </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
+                </th>
+                <th >{{'menu_level' | translate }}</th>
+                <th >{{'application' | translate }}</th>
+                <th >{{'name' | translate }} </th>
+                <th >{{'url' | translate }}</th>
+                <th >{{'Role' }}</th>
+                <th >{{'description' | translate }}</th>
+                <th> Thao tác </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+            <tr>
+                <td><p-treeTableCheckbox  [value]="rowNode"></p-treeTableCheckbox ></td>
+                <td><p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>Level {{rowData.level}}</td>
+                <td><p-tag styleClass="p-mr-2" value="{{rowData.systemDto.name}}"></p-tag></td>
+                <td>{{rowData.name}}</td>
+                <td>{{rowData.url}}</td>
+                <td><p-tag styleClass="p-mr-2" value="{{rowData.roleDto.description}}"></p-tag></td>
+                <td>{{rowData.description}}</td>
+                <td>
+                    <button *ngIf="checkUpdate" pButton pRipple icon="pi pi-pencil" (click)="showModalUpdate(rowData)" pTooltip="Sửa thông tin menu" tooltipPosition="top" class="p-button-rounded p-button-success mr-2 p-button-sm"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6">Không tồn tại dữ liệu.</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-center">
+                In total there are {{menus ? menus.length : 0 }} menu.
+            </div>
+        </ng-template>
+    </p-treeTable>
+</div>
+<p-confirmDialog header="Xác nhận xóa" icon="pi pi-exclamation-triangle" [style]="{width: '30vw'}"></p-confirmDialog>
+<ng-container *ngIf=isVisibleAdd>
+  <app-add-menu
+    (dataAdd)="addMenu($event)"
+    [isVisibleAdd]="isVisibleAdd"
+    (submitAdd)="closeModalAdd($event)"
+    [roles]="roles"
+    [systems]="systems"
+    [menuParent]="menus">
+  </app-add-menu>
+</ng-container>
+<ng-container *ngIf=isVisibleUpdate>
+  <app-update-menu
+    [isVisibleUpdate]="isVisibleUpdate"
+    [menu]="selectedMenu"
+    (data)="updateMenu($event)"
+    (submitUpdate)="closeModalUpdate($event)"
+    [systems]="systems"
+    [roles]="roles"
+    [menuParent]="menus">
+  </app-update-menu>
+</ng-container>

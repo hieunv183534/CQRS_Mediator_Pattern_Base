@@ -1,0 +1,136 @@
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <form *ngIf="formSearch" [formGroup]="formSearch" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Mã Huyện</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập từ khóa tìm kiếm" formControlName="districtCode">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tên Huyện</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập từ khóa tìm kiếm" formControlName="districtName">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Khu vực</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select-api [items]="[{ value: null, text: 'Tất cả' }, {value:0, text: 'Chưa phân khu vực'}]" formControlName="freightRegionId"
+                    [apiService]="freightRegionApi" [apiParams]="{ page: 1, where: { and: [{domesticFreightRuleCode: ruleCode}] } }" placeholder="">
+                  </input-select-api>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <button type="submit" class="btn btn-primary">
+                <i class="icon-search4 mr-2"></i>Tìm kiếm
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <hr class="mt-0 margin-bottom-10">
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>
+        <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+          (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th>
+        <th>Stt</th>
+        <th>Mã huyện</th>
+        <th>Tên huyện</th>
+        <th>Mã khu vực</th>
+        <th>Tên khu vực</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+          (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)"></td>
+        <td>
+          {{ i + 1 + ((paging.page-1)*paging.size) }}
+        </td>
+        <td>
+            {{item.districtCode}}
+        </td>
+        <td>
+            {{item.districtName}}
+        </td>
+        <td>
+            {{item.freightRegionCode}}
+        </td>
+        <td>
+            {{item.freightRegionName}}
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+<app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+</div>
+<hr class="mt-0 margin-bottom-10">
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse">
+        <form nz-form *ngIf="!isLoading && mode !== 'view'" class="w-100" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row">
+            <div class="col-md-6">
+              <nz-form-item>
+                <nz-form-label nzRequired>Phân khu vực</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-select-api [items]="[{ value: null, text: 'Chọn khu vực' }]" formControlName="freightRegionId"
+                      [apiService]="freightRegionApi" [apiParams]="{ page: 1, where: { and: [{domesticFreightRuleCode: ruleCode}] } }" placeholder="">
+                  </input-select-api>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-6">
+              <ng-container *ngIf="mode !== 'view'">
+                <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+                  Lưu dữ liệu
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-center mt-2">
+  <button class="btn btn-primary" type="button" (click)="preStep()">
+    Quay lại
+  </button>
+  <button class="btn btn-primary" type="button" (click)="nextStep()">
+    Tiếp theo
+  </button>
+</div>

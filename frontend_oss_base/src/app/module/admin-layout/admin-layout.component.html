@@ -1,0 +1,34 @@
+<div class="layout-wrapper layout-menu-indigo" [ngClass]="{'p-input-filled': app.inputStyle === '', 'p-ripple-disabled': !app.ripple,
+        'layout-menu-static': isStatic(),
+        'layout-menu-overlay': isOverlay(),
+        'layout-menu-horizontal': isHorizontal(),
+        'layout-menu-slim': isSlim(),
+        'layout-menu-active': menuActive,
+        'layout-menu-mobile-active': mobileMenuActive,
+        'layout-topbar-mobile-active': mobileTopbarActive,
+        'layout-rightmenu-active': rightMenuActive,
+        'layout-rtl': app.isRTL}" [class]="'layout-menu-' + app.menuTheme + ' layout-topbar-' + app.topbarTheme">
+
+<!--<div class="layout-wrapper layout-menu-indigo layout-topbar-blue p-input-filled layout-menu-static layout-menu-active">-->
+
+    <app-topbar></app-topbar>
+    <app-rightmenu></app-rightmenu>
+
+    <div class="menu-wrapper" (click)="onMenuClick($event)">
+        <div class="layout-menu-container">
+<!--            <app-inline-menu *ngIf="app.inlineMenuPosition=='top' || app.inlineMenuPosition=='both'" key="top"></app-inline-menu>-->
+            <app-menu></app-menu>
+<!--            <app-inline-menu *ngIf="app.inlineMenuPosition=='bottom' || app.inlineMenuPosition=='both'" key="bottom"></app-inline-menu>-->
+        </div>
+    </div>
+
+    <div class="layout-main">
+<!--        <app-breadcrumb></app-breadcrumb>-->
+
+        <div class="layout-content">
+            <router-outlet></router-outlet>
+        </div>
+
+        <!-- <app-footer></app-footer> -->
+    </div>
+</div>

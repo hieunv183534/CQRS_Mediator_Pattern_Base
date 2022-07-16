@@ -1,0 +1,25 @@
+input-number {
+  width: 100%;
+  display: block;
+
+  .ant-input-group-addon{
+    padding: 0px !important;
+  }
+
+  .input-group-append {
+    display: block;
+    width: 30px;
+    .actions {
+      text-align: center;
+      height: 15px;
+      line-height: 11px;
+      &:hover {
+        cursor: pointer;
+        background-color: #dbd8d8;
+      }
+      i {
+        font-size: 10px;
+      }
+    }
+  }
+}

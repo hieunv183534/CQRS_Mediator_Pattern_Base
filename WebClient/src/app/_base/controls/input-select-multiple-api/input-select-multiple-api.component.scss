@@ -1,0 +1,21 @@
+input-select-multiple-api{
+    width: 100%;
+    display: block;
+
+    nz-select {
+      width: 100%;
+    }
+
+    nz-spin{
+      .ant-spin-container{
+        min-height: 30px !important;
+      }
+      .ant-spin-nested-loading>div>.ant-spin{
+        max-height: 30px !important;
+      }
+    }
+
+    .loading-icon {
+      margin-right: 8px;
+    }
+}

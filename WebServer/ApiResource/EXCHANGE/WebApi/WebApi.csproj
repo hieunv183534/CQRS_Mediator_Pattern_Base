@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+    <RootNamespace>BCCP.EXCHANGE.WebApi</RootNamespace>
+    <AssemblyName>BCCP.EXCHANGE.WebApi</AssemblyName>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked> 
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>true</IsPackable>
+    <!--<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>-->
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <UserSecretsId>3e0b9a09-6285-4047-8ddc-4ac449f82998</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'BCCP.WebApi' " />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.4" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.15.10" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NSwag.MSBuild" Version="13.15.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Attributes\**" />
+    <Compile Remove="wwwroot\main\**" />
+    <Compile Remove="wwwroot\template\**" />
+    <Content Remove="Attributes\**" />
+    <Content Remove="wwwroot\main\**" />
+    <Content Remove="wwwroot\template\**" />
+    <EmbeddedResource Remove="Attributes\**" />
+    <EmbeddedResource Remove="wwwroot\main\**" />
+    <EmbeddedResource Remove="wwwroot\template\**" />
+    <None Remove="Attributes\**" />
+    <None Remove="wwwroot\main\**" />
+    <None Remove="wwwroot\template\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\example-report.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+
+  <Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Copy SourceFiles="@(Reference)" DestinationFolder="$(OutDir)References" />
+    <Exec Command="$(NSwagExe_Core31) run /variables:Configuration=$(Configuration)" />
+    <RemoveDir Directories="$(OutDir)References" />
+  </Target>
+
+</Project>

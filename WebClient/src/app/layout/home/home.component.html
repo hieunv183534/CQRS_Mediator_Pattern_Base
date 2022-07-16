@@ -1,0 +1,39 @@
+<!-- https://www.highcharts.com/demo -->
+<div class="content">
+ 
+  <div class="row">
+    <ng-container *ngFor="let item of listDashboard;let i = index">
+      <div class="col-md-{{item.width}}">
+        <ng-container [ngSwitch]="item.type">
+          <ng-container *ngSwitchCase="1">
+            <app-dash-board-column
+                [options]="item"
+            ></app-dash-board-column>
+          </ng-container>
+          <ng-container *ngSwitchCase="3">
+            <app-dash-board-pie
+                [options]="item"
+            ></app-dash-board-pie>
+          </ng-container>
+          <ng-container *ngSwitchCase="2">
+            <app-dash-board-stacked
+                [options]="item"
+            ></app-dash-board-stacked>
+          </ng-container>
+          <ng-container *ngSwitchCase="7">
+            <app-dash-board-table-raw
+                [options]="item"
+            ></app-dash-board-table-raw>
+          </ng-container>
+
+
+          <ng-container *ngSwitchDefault>
+            <app-dash-board-line
+                [options]="item"
+            ></app-dash-board-line>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>

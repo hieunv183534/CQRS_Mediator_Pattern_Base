@@ -1,0 +1,15 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <nz-tabset *ngIf="!isLoading">
+    <nz-tab nzTitle="Khu vực" *ngIf="mode !== 'add'">
+      <app-cuocphi-ctcuochinh-lienkhuvuc [mode]="mode" [ruleId]="ruleId" [stepId]="stepId"></app-cuocphi-ctcuochinh-lienkhuvuc>
+    </nz-tab>
+    <nz-tab nzTitle="Tỉnh" *ngIf="mode !== 'add'">
+      <app-cuocphi-ctcuochinh-lientinh [mode]="mode" [ruleId]="ruleId" [stepId]="stepId"></app-cuocphi-ctcuochinh-lientinh>
+    </nz-tab>
+  </nz-tabset>
+</nz-spin>

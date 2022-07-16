@@ -1,0 +1,33 @@
+.temp1 {
+  .pagination {
+    .page-item {
+      margin-right: 8px;
+      &:nth-last-child(1) {
+        margin-right: 0px;
+      }
+      .page-link {
+        border-radius: 4px !important;
+      }
+    }
+  }
+}
+
+.temp2 {
+  display: inline-block;
+  width: 100%;
+  .jump-page {
+    margin-right: 10px;
+  }
+  .lbl-page {
+    margin-top: 7px;
+    margin-right: 5px;
+  }
+  .in-page {
+    width: 45px;
+    float: left;
+    padding: 7px;
+  }
+  .pagination {
+    float: left;
+  }
+}

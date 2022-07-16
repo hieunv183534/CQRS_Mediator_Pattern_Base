@@ -1,0 +1,13 @@
+<nz-input-group [nzSuffix]="suffixIconSearch">
+  <input id="{{idElement}}" nz-input type="text" [placeholder]="placeholder" [(ngModel)]="controlValue" (change)="onChange()"
+    [disabled]="disabled" [readonly]="readonly" [hidden]="hidden" (focusin)="onBlur()" (focusout)="onUnBlur()"
+    (keyup)="onKeyUp($event)" />
+</nz-input-group>
+<ng-template #suffixIconSearch>
+  <ng-container *ngIf="controlValue; else elseTemplate">
+    <i nz-icon class="ant-input-clear-icon" nzTheme="fill" nzType="close-circle" (click)="onClear()"></i>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <i nz-icon nzType="search"></i>
+  </ng-template>
+</ng-template>

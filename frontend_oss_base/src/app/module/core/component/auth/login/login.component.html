@@ -1,0 +1,53 @@
+
+<div class="pages-body login-page flex flex-column">
+
+    <div class="align-self-center mt-auto mb-auto">
+        <form [formGroup]="validateForm" (ngSubmit)="submitForm()" (keydown.enter)="submitForm()">
+            <div class="pages-panel card flex flex-column">
+
+                <h4>TỔNG CÔNG TY HẠ TẦNG MẠNG</h4>
+
+                <div class="pages-detail mb-4 px-3">ĐĂNG NHẬP HỆ THỐNG</div>
+
+                <div class="input-panel flex flex-column px-0">
+                    <div class="p-inputgroup">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-envelope"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input autofocus type="text" formControlName="userName" pInputText>
+                            <label>Tên đăng nhập</label>
+                        </span>                        
+                    </div>
+                    <div class="p-inputgroup" *ngIf="submited && f.userName.errors">
+                        <ng-container  *ngIf="f.userName.errors.required">
+                            <p-tag styleClass="p-mr-2" severity="warning" value="{{'userName' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+                        </ng-container >          
+                    </div>
+                    <div class="p-inputgroup mt-3 mb-3">
+                        <span class="p-inputgroup-addon">
+                            <i class="pi pi-lock"></i>
+                        </span>
+                        <span class="p-float-label">
+                            <input autofocus type="password" formControlName="password" pInputText>
+                            <label>Mật khẩu</label>
+                        </span>                        
+                    </div>
+                    <div class="p-inputgroup" *ngIf="submited && f.password.errors">
+                        <ng-container  *ngIf="f.password.errors.required">
+                            <p-tag styleClass="p-mr-2" severity="warning" value="{{'password' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+                        </ng-container >          
+                    </div>
+                </div>
+                <div *ngIf="messageError" class="pages-detail mb-4 px-3">
+                    <div class="alert alert-danger" role="alert">
+                        {{messageError}}
+                    </div>
+                </div>
+                <p-button id="btnCasLogin" (click)="submitForm()" class="login-button mb-3 px-0" label="{{ 'Đăng nhập Cộng tác viên' }}"></p-button>
+                <p-button id="btnCasLogin" (click)="casLogin()" class="login-button mb-1 px-0" label="{{ 'Đăng nhập tài khoản VNPT' }}"></p-button>
+
+            </div>
+        </form>
+    </div>
+</div>

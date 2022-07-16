@@ -1,0 +1,213 @@
+@import "variables";
+
+.form-horizontal {
+  .form-group {
+    > label {
+      width: 100%;
+    }
+  }
+}
+
+//@include desktop-xl {
+  // .control-inline {
+  //   > label {
+  //     width: 120px;
+  //     float: left;
+  //     padding-top: 5px;
+  //     padding-right: 5px;
+  //     margin-bottom: 0px;
+  //   }
+
+  //   .control-content {
+  //     width: calc(100% - 125px);
+  //   }
+
+  //   .error-content {
+  //     margin-left: 125px;
+  //   }
+
+  //   input-date-time {
+  //     nz-date-picker {
+  //       width: calc(100% - 125px) !important;
+  //     }
+  //   }
+
+  //   &.lb-7 {
+  //     > label {
+  //       width: calc(100% - 200px);
+  //       float: left;
+  //       padding-top: 5px;
+  //       padding-right: 5px;
+  //       margin-bottom: 0px;
+  //     }
+
+  //     .control-content {
+  //       width: 200px;
+  //     }
+
+  //     .error-content {
+  //       margin-left: calc(100% - 200px);
+  //     }
+  //   }
+
+  //   input-number {
+  //     width: calc(100% - 125px);
+  //     display: inline-block;
+  //   }
+
+  //   input-date {
+  //     width: calc(100% - 125px);
+  //     display: inline-block;
+  //   }
+
+  //   nz-switch {
+  //     padding-top: 5px;
+  //   }
+
+  //   render-error {
+  //     > div {
+  //       margin-left: 120px;
+  //     }
+  //   }
+
+  //   nz-select {
+  //     width: calc(100% - 125px);
+  //     display: inline-block;
+  //   }
+  //}
+
+  // .form-horizontal {
+  //   .form-group {
+  //     width: 100%;
+  //     display: inline-block;
+
+  //     > label {
+  //       display: block;
+  //       width: 120px;
+  //       padding-top: 5px;
+  //       padding-right: 5px;
+  //       margin-bottom: 0px;
+  //       float: left;
+  //     }
+
+  //     > .input-group {
+  //       width: calc(100% - 120px);
+  //       float: right;
+  //       > * {
+  //         width: calc(100% - 46px);
+  //       }
+  //       > .input-group-append {
+  //         width: 46px;
+  //         .input-group-text {
+  //           height: 32px;
+  //         }
+  //       }
+  //     }
+
+  //     > input-radio,
+  //     input-text,
+  //     input-select,
+  //     input-select-object,
+  //     input-number,
+  //     input-float,
+  //     input-date,
+  //     input-date-time,
+  //     input-time,
+  //     input-textarea,
+  //     cs-select-scroll-load,
+  //     cs-select,
+  //     cs-input,
+  //     cs-date-picker {
+  //       width: calc(100% - 120px);
+  //       float: right;
+  //     }
+
+  //     > render-error {
+  //       width: calc(100% - 120px);
+  //       float: right;
+  //     }
+  //   }
+
+  //   nz-form-item {
+  //     display: flex;
+  //     flex-wrap: wrap;
+
+  //     > nz-form-label {
+  //       flex-basis: 120px;
+  //       padding-right: 5px;
+  //       margin-bottom: 0px;
+  //     }
+
+  //     > nz-form-control {
+  //       flex: auto;
+  //     }
+  //   }
+  // }
+// }
+
+.input-group {
+  flex: auto;
+  width: auto;
+}
+
+form {
+  legend {
+    margin-bottom: 15px;
+  }
+}
+
+.dialog-ms {
+  width: 414px !important;
+  @include tablet-and-mobile{
+    width: 100% !important;
+  }
+}
+
+.dialog-md {
+  width: 768px !important;
+  @include tablet-and-mobile{
+    width: 100% !important;
+  }
+}
+
+.dialog-lg {
+  width: 1000px !important;
+}
+
+.dialog-max-lg{
+  width: 80% !important;
+  @include tablet-and-mobile{
+    width: 100% !important;
+  }
+}
+
+.dialog-full {
+  width: calc(100% - 20px) !important;
+  top: 60px;
+  @include tablet-and-mobile{
+    width: 100% !important;
+  }
+}
+
+.modal-data {
+  width: 70% !important;
+  top: 60px;
+  @include tablet-and-mobile{
+    width: 100% !important;
+  }
+}
+
+.modal-data-center {
+  width: 70% !important;
+}
+
+nz-input-group {
+  .ant-select-selection,
+  .ant-input-number {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  nz-select {
+    width: 100% !important;
+  }
+}

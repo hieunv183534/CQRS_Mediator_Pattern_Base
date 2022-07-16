@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>NOM.EXCHANGE.Domain</RootNamespace>
+    <AssemblyName>NOM.EXCHANGE.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="MessageHandlers\**" />
+    <EmbeddedResource Remove="MessageHandlers\**" />
+    <None Remove="MessageHandlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="_Services\ConsumingService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="_Interfaces\" />
+    <Folder Include="Models\" />
+    <Folder Include="_Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DomainGlobal\DomainGlobal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.7.28" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
+  </ItemGroup>
+
+</Project>

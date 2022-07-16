@@ -1,0 +1,47 @@
+<form nz-form [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+  <ng-template #controlErrorTpl let-control>
+    <app-render-errors [control]="control"></app-render-errors>
+  </ng-template>
+
+  <div class="row">
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Mã Nhóm Quyền</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text formControlName="id" placeholder="Mã Nhóm Quyền">
+          </input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div class="col-md-6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Tên Nhóm Quyền</nz-form-label>
+        <nz-form-control [nzErrorTip]="controlErrorTpl">
+          <input-text formControlName="name" placeholder="Tên Nhóm Quyền">
+          </input-text>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <nz-form-item>
+        <nz-form-label>Mô tả Nhóm Quyền</nz-form-label>
+        <nz-form-control>
+          <input-textarea formControlName="concurrencyStamp" placeholder="Mô tả Nhóm Quyền"></input-textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+
+  <!-- *ngIf="checkview" -->
+  <div class="text-center mt-4">
+    <button type="button" nz-button class="btn btn-light mr-2" (click)="closeDialog()">
+      Đóng
+    </button>
+    <button type="submit" nz-button class="btn btn-primary mr-2" (click)="submitForm()">
+      Tiếp tục
+    </button>
+  </div>
+
+</form>

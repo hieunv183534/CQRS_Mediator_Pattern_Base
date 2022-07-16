@@ -1,0 +1,26 @@
+<div class="card">
+  <div class="card-header header-elements-inline">
+    <!-- <h6 class="card-title">{{ this.options?.name }}</h6> -->
+    <div class="header-elements">
+      <span class="badge badge-primary badge-pill ml-2 mr-2">Cục</span>
+      <input-select
+        class="cbx-posCode"
+        [items]="listPos"
+        [(ngModel)]="posCode"
+        (onChange)="changePos()"
+        [allowClear]="false"
+      ></input-select>
+    </div>
+  </div>
+
+  <div class="card-body py-0">
+    <highcharts-chart
+      *ngIf="!loading"
+      [Highcharts]="Highcharts"
+      [options]="chartOptions"
+    >
+    </highcharts-chart>
+
+    <nz-spin *ngIf="loading" [nzSpinning]="loading"></nz-spin>
+  </div>
+</div>

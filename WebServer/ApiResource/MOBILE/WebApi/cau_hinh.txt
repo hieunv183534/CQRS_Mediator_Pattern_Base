@@ -1,0 +1,22 @@
+{
+  "UseInMemoryDatabase": false,
+  "Login": true,
+  "Authority": "http://vnpost.ddns.net/sso",
+  "RequireHttpsMetadata": false,
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=vnpost.ddns.net;Database=KT1;User ID=sa;Password=bccp@123;Trusted_Connection=False;Connection Timeout=3600",
+    "FileCloud": "Server=vnpost.ddns.net;Database=KT1_File;User ID=sa;Password=bccp@123;Trusted_Connection=False;Connection Timeout=3600",
+    "DataWareHouse": "Server=vnpost.ddns.net;Database=KT1_Warehouse;User ID=sa;Password=bccp@123;Trusted_Connection=False;Connection Timeout=3600",
+    "HangfireConnection": "Server=vnpost.ddns.net;Database=KT1_Hangfire;User ID=sa;Password=bccp@123;Trusted_Connection=False;Connection Timeout=3600",
+    "IdentityConnection": "Server=vnpost.ddns.net;Database=KT1_Identity;User ID=sa;Password=bccp@123;Trusted_Connection=False;Connection Timeout=3600",
+    "LogConnection": "Server=vnpost.ddns.net;Database=KT1_Log;User ID=sa;Password=bccp@123;Trusted_Connection=False;Connection Timeout=3600"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Hangfire": "Information",
+      "Microsoft.EntityFrameworkCore.Database.Command": "Information",
+      "Z.EntityFramework.Plus.EFCore": "Information"
+    }
+  }
+}

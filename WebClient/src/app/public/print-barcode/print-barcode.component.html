@@ -1,0 +1,5 @@
+<div style="display: inline-block;">
+  <div *ngFor="let item of listItem" style="float: left;">
+    <ngx-barcode [bc-value]="item" [bc-display-value]="true" [bc-format]="'CODE128'"></ngx-barcode>
+  </div>
+</div>

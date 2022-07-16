@@ -1,0 +1,59 @@
+@import "variables";
+
+app-menu {
+  nz-spin{
+    min-height: calc(100vh - 200px);
+  }
+
+  > .sidebar {
+    width: 260px;
+    // margin-top: 20px;
+  }
+
+  .nav-group-sub {
+    background-color: white !important;
+  }
+
+  .nav-sidebar {
+    > li > .nav-link {
+      padding: 0.75rem 8px;
+    }
+
+    .nav-group-sub {
+      > li > .nav-link {
+        padding: 0.75rem 14px;
+        i {
+          width: 15px;
+        }
+      }
+    }
+
+    .nav-link i {
+      margin-right: 10px;
+    }
+
+    .nav-item-header{
+      height: 50px;
+      margin-top: 0;
+    }
+
+    .nav-item:not(.nav-item-header):first-child {
+      padding-top: 1px;
+    }
+  }
+
+  .nav-item-submenu > .nav-link:after {
+    right: 6px !important;
+    top: 14px !important;
+  }
+
+  @include tablet-and-mobile {
+    .nav-item-header {
+      display: none;
+    }
+
+    .sidebar-content {
+      background-color: #fff !important;
+    }
+  }
+}

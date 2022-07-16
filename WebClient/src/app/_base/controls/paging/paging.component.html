@@ -1,0 +1,66 @@
+<div style="display: flex; justify-content: center;">
+  <div class="display-flex temp1" *ngIf="lstPage.length > 0 && (temp === undefined || temp === 1)">
+    <ul class="pagination mr-auto">
+      <li class="page-item" *ngIf="curentPage > 3">
+        <a class="page-link" (click)="onChangePage(1)" href="javascript:void(0)">
+          <i nz-icon nzType="step-backward" nzTheme="outline"></i>
+        </a>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled': curentPage === 1}">
+        <a class="page-link" *ngIf="curentPage > 1" (click)="onChangePage(curentPage-1)" href="javascript:void(0)">
+          <i nz-icon nzType="caret-left" nzTheme="outline"></i>
+        </a>
+        <a class="page-link" *ngIf="curentPage === 1" href="javascript:void(0)">
+          <i nz-icon nzType="caret-left" nzTheme="outline"></i>
+        </a>
+      </li>
+      <li class="page-item ng-star-inserted" [ngClass]="{'active': x === curentPage}" *ngFor="let x of lstPage">
+        <a *ngIf="x === curentPage" class="page-link" (click)="onChangePage(x)" href="javascript:void(0)">{{x}}</a>
+        <a *ngIf="x !== curentPage" class="page-link" (click)="onChangePage(x)" href="javascript:void(0)">{{x}}</a>
+      </li>
+      <li class="page-item" [ngClass]="{'disabled': curentPage === totalPage}">
+        <a class="page-link" *ngIf="curentPage < totalPage" (click)="onChangePage(curentPage+1)"
+          href="javascript:void(0)">
+          <i nz-icon nzType="caret-right" nzTheme="outline"></i>
+        </a>
+        <a class="page-link" *ngIf="curentPage === totalPage" href="javascript:void(0)">
+          <i nz-icon nzType="caret-right" nzTheme="outline"></i>
+        </a>
+      </li>
+      <li class="page-item" *ngIf="curentPage < totalPage - 2">
+        <a class="page-link" (click)="onChangePage(totalPage)" href="javascript:void(0)">
+          <i nz-icon nzType="step-forward" nzTheme="outline"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+<nav class="temp2" *ngIf="temp === 2">
+  <div class="jump-page float-left">
+    <div class="lbl-page float-left">Go to</div>
+    <input type="number" class="form-control in-page" [value]="curentPage" #page (input)="onChangeInput(page.value)">
+  </div>
+  <div class="record-status float-left">{{1 + (curentPage-1)*itemsPerPage}} -
+    {{(curentPage-1)*itemsPerPage + item.length}} of {{totalItem}}</div>
+  <ul class="pagination justify-content-end m-b-0">
+    <li class="page-item" [ngClass]="{'disabled': curentPage === 1}">
+      <a *ngIf="curentPage > 1" (click)="onChangePage(curentPage-1)" href="javascript:void(0)">
+        <i nz-icon nzType="caret-left" nzTheme="outline"></i>
+      </a>
+      <a *ngIf="curentPage === 1" href="javascript:void(0)">
+        <i nz-icon nzType="caret-left" nzTheme="outline"></i>
+      </a>
+    </li>
+    <li class="page-item" [ngClass]="{'disabled': curentPage === totalPage}">
+      <a class="page-item" *ngIf="curentPage < totalPage" (click)="onChangePage(curentPage+1)"
+        href="javascript:void(0)">
+        <i nz-icon nzType="caret-right" nzTheme="outline"></i>
+      </a>
+      <a class="page-item" *ngIf="curentPage === totalPage" href="javascript:void(0)">
+        <i nz-icon nzType="caret-right" nzTheme="outline"></i>
+      </a>
+    </li>
+  </ul>
+</nav>

@@ -1,0 +1,121 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+
+    <div class="row" formGroupName="id">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Id1</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="id1"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Id2</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="id2"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Text</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="colText"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Number</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-number placeholder="" formControlName="colNumber"></input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Float</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float placeholder="" formControlName="colFloat"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Date time</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date formControlName="colDateTime"></input-date>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-radio formControlName="colRadioBox" [items]="[{id:1,name:'Nam'},{id:2,name:'Nu'}]"></input-radio>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-check-box class="w-auto" formControlName="colCheckBox" [nzValue]="true">Gui Email
+            </input-check-box>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Date String yyyymmdd</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date formControlName="colDateString"></input-date>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <nz-form-item>
+          <nz-form-label nzRequired>ColTextArea</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-textarea placeholder="" formControlName="colTextArea"></input-textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

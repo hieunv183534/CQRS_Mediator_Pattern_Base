@@ -1,0 +1,61 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+      <div class="row">
+        <div class="col-md-4">
+          <nz-form-item>
+            <nz-form-label nzRequired>Ngày giờ tạo</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-date-time formControlName="DateCreated"  placeholder="DD/MM/YYYY HH:MM"></input-date-time>
+            </nz-form-control>
+          </nz-form-item>
+        </div>          
+        <div class="col-md-4">          
+        </div>                
+      </div>    
+      <hr class="mt-0 margin-bottom-20">
+      <div class="row">
+        <div class="col-md-4">
+          <nz-form-item>
+            <nz-form-label nzRequired>Tên văn bản</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-text formControlName="Title"  placeholder="Tên văn bản"></input-text>
+            </nz-form-control>
+          </nz-form-item>
+        </div>        
+        <div class="col-md-8">
+          <nz-form-item>
+            <nz-form-label nzRequired>Nội dung</nz-form-label>
+            <nz-form-control [nzErrorTip]="controlErrorTpl">
+              <input-textarea [rows]="5" placeholder="Nội dung" formControlName="Content"></input-textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </div>        
+      </div>  
+      <div class="import"> 
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn 1 file</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-file placeholder="" [size]="1" folder="documents" formControlName="fileURL"></input-file>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+   
+    <hr class="mt-0 margin-bottom-20">
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

@@ -1,0 +1,29 @@
+<div class="group-group-date-time-picker">
+  <div class="group-date-time">
+    <input class="sl input-group" type="text" placeholder="dd/mm/yyyy H:mm"
+           (focus)="isVisibleDateTimePicker = true"
+           (change)="onInputChange($event)"
+           [ngModel]="dateString | dateFormat: 'dd/MM/yyyy HH:mm'" nz-input
+           style="height: 32px; padding: 4px 11px; font-size: 14px;">
+    <button
+      nz-button
+      nzType="default"
+      nz-popover
+      nzPopoverTitle=""
+      nzPopoverTrigger="click"
+      [(nzVisible)]="isVisibleDateTimePicker"
+      [nzPopoverContent]="dateTimePicker"
+      nzPopoverPlacement="bottom"
+      class="button-date-time">
+      <i class="fal fa-calendar"></i>
+    </button>
+  </div>
+  <ng-template #dateTimePicker>
+    <div class="input-date">
+      <bs-datepicker-inline *ngIf="isVisibleDateTimePicker" [bsValue]="bsInlineValue" (bsValueChange)="bsValueChange($event)" [bsConfig]="{ rangeInputFormat: 'DD/MM/YYYY'}"></bs-datepicker-inline>
+    </div>
+    <div class="input-time">
+      <timepicker *ngIf="isVisibleDateTimePicker" [(ngModel)]="myTime" (ngModelChange)="changeTimeModel($event)" [showMeridian]="isMeridian"  [showSpinners]="showSpinners"></timepicker>
+    </div>
+  </ng-template>
+</div>

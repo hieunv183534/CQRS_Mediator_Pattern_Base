@@ -1,0 +1,201 @@
+<p-toast position="top-right" key="toastUserView"></p-toast>
+<p-toast></p-toast>
+<div class="card">
+    <h5>Quản lý người dùng</h5>
+    <p-fieldset legend="Tìm kiếm" toggleable="true">
+        <form [formGroup]="formSearch" (ngSubmit)="onSearchSubmit()">
+            <div class="p-fluid grid">
+                <div class="p-field col-4 md-4 ">
+                        <span class="p-float-label">
+                            <input type="text" id="name" pInputText formControlName="name" (keyup.enter)="onSearchSubmit()"/>
+                            <label for="name">Tên</label>
+                        </span>
+                </div>
+                <div class="p-field col-4 md-4">
+                        <span class="p-float-label">
+                            <input type="text" id="email" pInputText formControlName="email" (keyup.enter)="onSearchSubmit()"/>
+                            <label for="email">Email</label>
+                        </span>
+                </div>
+                <div class="p-field col-4 md-4">
+                        <span class="p-float-label">
+                            <input type="text" id="phoneNumber" pInputText formControlName="phoneNumber" (keyup.enter)="onSearchSubmit()"/>
+                            <label for="phoneNumber">phone</label>
+                        </span>
+                </div>
+                <div class="p-field col-4 md-4 ">
+                        <span class="p-float-label">
+                            <p-dropdown id="groupId" [options]="groups" formControlName="groupId" optionLabel="name" optionValue="groupId" [filter]="true" filterBy="name" [showClear]="true" placeholder="." (keyup.enter)="onSearchSubmit()"></p-dropdown>
+                            <label for="groupId">Nhóm</label>
+                        </span>
+                </div>
+                <div class="p-field col-4 md-4">
+                        <span class="p-float-label">
+                            <!-- <input type="text" id="status" pInputText formControlName="status" (keyup.enter)="onSearchSubmit()"/> -->
+                            <p-dropdown id="status" [options]="userStatusOptionsAll" formControlName="status" optionLabel="label" placeholder="."  [showClear]="true" optionValue="value" (keyup.enter)="onSearchSubmit()"></p-dropdown>
+                            <label for="status">Trạng thái</label>
+                        </span>
+                </div>
+                <div class="p-field col-4 md-4">
+                        <span class="p-float-label">
+                            <input type="text" id="username" pInputText formControlName="username" (keyup.enter)="onSearchSubmit()"/>
+                            <label for="username">Tên đăng nhập</label>
+                        </span>
+                </div>
+            </div>
+        </form>
+        <p-toolbar styleClass="flex align-items-center justify-content-center">
+            <button pButton pRipple label="Tìm kiếm" icon="pi pi-search" class="p-button p-mr-2" (click)="onSearchSubmit()"></button>
+        </p-toolbar>
+    </p-fieldset>
+    <br>
+
+    <p-table #dt [value]="users" [columns]="cols" [rows]="10" [paginator]="true" [globalFilterFields]="['name','userName','email']"
+             [(selection)]="selectedUsers" [rowHover]="true" dataKey="userId"
+             styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped p-datatable-sm"
+             currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+        <ng-template pTemplate="caption">
+            <div class="flex flex-column md:flex-row md:justify-content-between table-header">
+                        <span class="p-buttonset">
+                            <button pButton  label="New" icon="pi pi-plus" class="p-button p-button-success mr-2 p-mr-2" (click)="showModalAdd()" *ngIf="checkAdd"></button>
+                            <p-splitButton label="Export CSV" icon="pi pi-file" (onClick)="dt.exportCSV()" [model]="exportButtons" styleClass="p-button-help mr-2 p-mb-2"></p-splitButton>
+                            <button *ngIf="checkDelete" pButton  label="Delete" icon="pi pi-trash" class="p-button p-button-danger p-mr-2" (click)="showConfirm()" [disabled]="!selectedUsers || !selectedUsers.length"></button>
+			            </span>
+                <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                        </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr class="ng-star-inserted">
+                <th style="width: 5rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="name">
+                    <div class="flex justify-content-between align-items-center ml-auto">
+                        Tên
+                        <p-sortIcon field="name"></p-sortIcon>
+
+                    </div>
+                </th>
+                <th pSortableColumn="email">
+                    <div class="flex justify-content-between align-items-center">
+                        Tên
+                        <p-sortIcon field="email"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="phoneNumber">
+                    <div class="flex justify-content-between align-items-center">
+                        Phone
+                        <p-sortIcon field="phoneNumber"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="group.name">
+                    <div class="flex justify-content-between align-items-center">
+                        Nhóm
+                        <p-sortIcon field="group.name"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="status">
+                    <div class="flex justify-content-between align-items-center">
+                        Trạng thái
+                        <p-sortIcon field="status"></p-sortIcon>
+                    </div>
+                </th>
+                <th pSortableColumn="userName">
+                    <div class="flex justify-content-between align-items-center">
+                        UserName
+                        <p-sortIcon field="userName"></p-sortIcon>
+                    </div>
+                </th>
+                <th>
+                    <div class="flex justify-content-between align-items-center">
+                        Thao tác
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td><p-tableCheckbox [value]="user"></p-tableCheckbox></td>
+                <td>{{user.name}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.phoneNumber}}</td>
+                <td>{{user.group.name}}</td>
+                <td><p-tag styleClass="p-mr-2" [severity]="(user.status == '1' ? 'success' : 'warning')" value="{{getStatusUser(user.status)}}"></p-tag></td>
+                <td>{{user.userName}}</td>
+                <td>
+                    <button *ngIf="checkUpdate" pButton pRipple icon="pi pi-pencil" (click)="showModal(user)" pTooltip="Sửa thông tin người dùng" tooltipPosition="top" class="p-button-rounded p-button-success mr-2 p-button-sm"></button>
+                    <button *ngIf="checkAuthen" pButton pRipple icon="pi pi-user" (click)="showModalAuthen(user)" pTooltip="Phân quyền role người dùng" tooltipPosition="top" class="p-button-rounded p-button-success mr-2 p-button-sm" ></button>
+                    <button *ngIf="checkUpdate" pButton pRipple icon="pi pi-key" (click)="deleteProduct(user)" pTooltip="Đổi mật khẩu" tooltipPosition="top" class="p-button-rounded p-button-success p-button-sm" ></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">Không tồn tại dữ liệu.</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-center">
+                In total there are {{users ? users.length : 0 }} users.
+            </div>
+        </ng-template>
+    </p-table>
+    <p-toast [style]="{marginTop: '80px'}"></p-toast>
+
+    <p-gmap #gmap [style]="{'width':'100%','height':'320px', 'margin-bottom': '1em'}" [options]="options" [overlays]="overlays"
+            (onMapClick)="handleMapClick($event)" (onOverlayClick)="handleOverlayClick($event)" (onOverlayDragEnd)="handleDragEnd($event)"></p-gmap>
+
+    <button type="button" pButton label="Clear" icon="pi pi-times" (click)="clear()" style="margin-right:.25em"></button>
+    <button type="button" pButton label="Zoom In" icon="pi pi-plus" (click)="zoomIn(gmap.getMap())" style="margin-right:.25em"></button>
+    <button type="button" pButton label="Zoom Out" icon="pi pi-minus" (click)="zoomOut(gmap.getMap())"></button>
+
+    <p-dialog showEffect="fade" [(visible)]="dialogVisible" header="New Location" [style]="{width: '300px'}">>
+        <div class="p-grid p-fluid" *ngIf="selectedPosition">
+            <div class="p-col-2"><label for="title">Label</label></div>
+            <div class="p-col-10"><input type="text" pInputText id="title" [(ngModel)]="markerTitle"></div>
+
+            <div class="p-col-2"><label for="lat">Lat</label></div>
+            <div class="p-col-10"><input id="lat" type="text" readonly pInputText [ngModel]="selectedPosition.lat()"></div>
+
+            <div class="p-col-2"><label for="lng">Lng</label></div>
+            <div class="p-col-10"><input id="lng" type="text" readonly pInputText [ngModel]="selectedPosition.lng()"></div>
+
+            <div class="p-col-2"><label for="drg">Drag</label></div>
+            <div class="p-col-10"><p-checkbox [(ngModel)]="draggable" binary="true" [style]="{'margin-top':'.25em'}"></p-checkbox></div>
+        </div>
+        <ng-template pTemplate="footer">
+            <div>
+                <button type="button" pButton label="Add Marker" icon="pi-plus" (click)="addMarker()"></button>
+            </div>
+        </ng-template>
+    </p-dialog>
+
+</div>
+<p-confirmDialog header="Xác nhận xóa" icon="pi pi-exclamation-triangle" [style]="{width: '30vw'}"></p-confirmDialog>
+<ng-container *ngIf="roles.length > 0 && groups.length > 0">
+    <app-add-user
+    [isVisibleAdd]="isVisibleAdd"
+    (dataAdd)="addUser($event)"
+    (submitAdd)="closeModalAdd($event)"
+    [groupsAdd]="groups">
+    </app-add-user>
+</ng-container>
+<ng-container *ngIf="user != null || (roles.length > 0 && groups.length > 0)">
+    <app-update-user
+    [isVisible]="isVisible"
+    [user]="user"
+    (data)="updateUser($event)"
+    (submitUpdate)="closeModalUpdate($event)"
+    [groups]="groups"></app-update-user>
+</ng-container>
+<ng-container *ngIf="isVisibleRole">
+    <app-roles-user-modal (cancel)="closeModalAuthen($event)" [isVisibleRole]="isVisibleRole"
+      [nodes]="nodes"
+      [user]="user"
+      [titleModelRole]="'Phân quyền người dùng'"
+      >
+    </app-roles-user-modal>
+</ng-container>

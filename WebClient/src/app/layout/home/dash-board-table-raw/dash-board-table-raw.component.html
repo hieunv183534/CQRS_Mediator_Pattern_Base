@@ -1,0 +1,29 @@
+<div class="card">
+  <div class="card-header header-elements-inline">
+    <h6 class="card-title">{{ options ? options.name : "" }}</h6>
+    <div class="header-elements"></div>
+  </div>
+  <div class="card-body p-0">
+    <nz-table
+      [nzData]="data"
+      [nzLoading]="loading"
+      [nzBordered]="true"
+      [nzFrontPagination]="false"
+      nzSize="small"
+      [nzScroll]="{ x: false }"
+    >
+      <thead>
+        <tr>
+          <th class="text-center" *ngFor="let colum of colums">{{ colum }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of data; let i = index">
+          <td class="text-center" *ngFor="let colum of colums; let j = index">
+            {{ item[colum] }}
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

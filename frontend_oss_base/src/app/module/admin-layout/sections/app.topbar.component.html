@@ -1,0 +1,38 @@
+<div class="layout-topbar shadow-6">
+    <div class="layout-topbar-left">
+
+        <div class="layout-topbar-logo" >
+            <img src="assets/image/logovnpt.png" alt="Tổng công ty Hạ Tầng Mạng" style="height: 2.25rem">
+            <span style="font-weight: bold; padding-left: 15px; font-size: 1.5rem">VNPTNET</span>
+        </div>
+        <a class="layout-menu-button shadow-6" (click)="appMain.onMenuButtonClick($event)" pRipple>
+            <i class="pi pi-chevron-right"></i>
+        </a>
+
+        <a class="layout-topbar-mobile-button" (click)="appMain.onTopbarMobileButtonClick($event)" pRipple>
+            <i class="pi pi-ellipsis-v fs-large"></i>
+        </a>
+    </div>
+
+    <div class="layout-topbar-right" [ngClass]="{'layout-topbar-mobile-active': appMain.mobileTopbarActive}">
+        <div class="layout-topbar-actions-left"></div>
+        <div class="layout-topbar-actions-right">
+            <ul class="layout-topbar-items">
+                <li class="layout-topbar-item">
+                    <a class="layout-topbar-action flex flex-row justify-content-center align-items-center px-2 rounded-circle" (click)="appMain.onTopbarItemClick($event, 'profile')" pRipple>
+                        <img src="assets/image/avtDF.png" alt="avatar" style="width: 32px; height: 32px;">
+                    </a>
+
+                    <ul class="layout-topbar-action-panel shadow-6" [@topbarActionPanelAnimation]="'visible'" *ngIf="appMain.activeTopbarItem === 'profile'">
+                        <li class="layout-topbar-action-item">
+                            <a class="flex flex-row align-items-center" (click)="logout()" pRipple>
+                                <i class="pi pi-power-off" [ngClass]="{'mr-2': !app.isRTL, 'ml-2': app.isRTL}"></i>
+                                <span>Thoát</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

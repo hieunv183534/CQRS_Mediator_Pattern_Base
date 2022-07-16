@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="page-header page-header-light border-bottom-0 d-inline-block w-100">
+      <h4 class="float-left"><span class="font-weight-semibold">Danh sách menu hệ thống</span></h4>
+      <a href="javascript:;" class="btn btn-primary float-right" (click)="addUserMember()">
+        <i class="mr-2" nz-icon nzType="plus-circle" nzTheme="outline"></i>
+        Thêm thành viên</a>
+    </div>
+    <hr class="mt-0 margin-bottom-10">
+    <nz-table #tableData [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="true"
+      nzSize="small" [nzScroll]="{ x: false }">
+      <thead>
+        <tr>
+          <th>Tài khoản</th>
+          <th>Tên</th>
+          <th>Số điện thoại</th>
+          <th>Mã bưu cục</th>
+          <th>Mã đơn vị</th>
+          <th class="action text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of tableData.data;let i = index">
+          <td>
+            {{item.username}}
+          </td>
+          <td>
+            <a class="data-link" href="javascript:;">
+              {{item.fullName}}
+            </a>
+          </td>
+          <td>
+            {{item.tel}}
+          </td>
+          <td>
+            {{item.pOSCode}}
+          </td>
+          <td>
+            {{item.unitCode}}
+          </td>
+          <td class="text-center">
+            <div class="list-icons list-icons-extended text-center">
+              <a class="list-icons-item text-danger" href="javascript:;" (click)="deleteUserMember(item.id)">
+                <span nz-tooltip nzTooltipTitle="Xóa">
+                  <i nz-icon nzType="delete" nzTheme="outline"></i>
+                </span>
+              </a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<div class="text-center mt-4">
+  <button type="button" nz-button class="btn btn-light mr-2" (click)="closeDialog()">
+    Đóng
+  </button>
+  <button type="button" nz-button class="btn btn-light mr-2" (click)="cancelForm()">
+    Trở lại
+  </button>
+  <button type="submit" nz-button class="btn btn-primary mr-2" (click)="submitForm()">
+    Lưu dữ liệu
+  </button>
+</div>

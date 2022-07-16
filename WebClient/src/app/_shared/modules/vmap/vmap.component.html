@@ -1,0 +1,45 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+
+<nz-table #basicTable [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false"
+  nzSize="small" [nzScroll]="{ x: false }">
+  <thead>
+    <tr>
+      <th nzWidth="40px">Stt</th>
+      <th>Mã VPostCode</th>
+      <th>Địa chỉ chi tiết</th>
+      <th nzWidth="200px" class="text-center">Thao tác</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of listOfData;let i = index">
+      <td class="text-center">
+        {{i+1}}
+      </td>
+      <td>
+        <a class="data-link" href="javascript:;">
+          {{item.vMapCode}}
+        </a>
+      </td>
+      <td>
+        {{item.fullAddress}}
+      </td>
+      <td class="text-center">
+        <button type="button" class="btn btn-light mr-2" (click)="openMap(item)">
+          Bản đồ
+        </button>
+        <button type="button" class="btn btn-primary" (click)="selectItem(item)">
+          Chọn
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+
+<div class="text-center mt-2">
+  <button class="btn btn-light mr-2" type="button" (click)="closeDialog()">
+    <i class="icon-close2 mr-2"></i>Đóng</button>
+</div>

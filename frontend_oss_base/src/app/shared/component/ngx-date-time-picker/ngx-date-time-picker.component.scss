@@ -1,0 +1,19 @@
+.group-date-time {
+  position: relative;
+}
+.button-date-time {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-radius: 0;
+  background: #f1f1f1;
+}
+.input-time {
+  justify-content: center;
+  display: flex;
+  border: 1px solid #ababab;
+  padding: 5px;
+  box-shadow: 0px 0px 3px;
+  width: 50%;
+  margin: 15px auto 0 auto;
+}

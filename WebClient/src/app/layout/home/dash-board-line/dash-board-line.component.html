@@ -1,0 +1,14 @@
+<div class="card">
+ <div class="card-header header-elements-inline">
+     <h6 class="card-title">{{options ? options.name : ''}}</h6>
+     <div class="header-elements"></div>
+ </div>
+
+  <div class="card-body py-0">
+      <highcharts-chart *ngIf="!loading"
+      [Highcharts]="Highcharts" 
+      [options]="chartOptions">
+      </highcharts-chart>
+      <nz-spin *ngIf="loading" [nzSpinning]="loading"></nz-spin>
+  </div>
+</div>

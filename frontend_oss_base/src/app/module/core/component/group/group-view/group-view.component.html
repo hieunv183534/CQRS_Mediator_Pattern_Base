@@ -1,0 +1,130 @@
+<p-toast position="top-right" key="toastGroupView"></p-toast>
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+        <h5 class="m-0">Danh sách nhóm quyền</h5>
+        <br>
+      <p-table #dt [value]="searchGroups" [columns]="cols" [rows]="10" [paginator]="true" [globalFilterFields]="['name','description']"
+                [(selection)]="selectedGroups" [rowHover]="true" dataKey="groupId"
+                styleClass="p-datatable-customers p-datatable-gridlines p-datatable-striped p-datatable-sm"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+          <ng-template pTemplate="caption">
+              <div class="flex flex-column md:flex-row md:justify-content-between table-header">
+                  <span class="p-buttonset">
+                      <button pButton pRipple label="{{'add_user' | translate }}" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="showModalAdd()" *ngIf="checkAdd"></button>&nbsp;
+                      <button *ngIf="checkDelete" pButton pRipple label="{{'delete' | translate }}" icon="pi pi-trash" class="p-button-danger" (click)="showConfirm()" [disabled]="!selectedGroups || !selectedGroups.length"></button>
+                  </span>
+                  <span class="p-input-icon-left">
+                  <i class="pi pi-search"></i>
+                  <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+              </span>
+              </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+              <tr>
+                  <th style="width: 3rem">
+                      <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th pSortableColumn="name">
+                      <div class="flex justify-content-between align-items-center">
+                          Tên
+                          <p-sortIcon field="name"></p-sortIcon>
+                      </div>
+                  </th>
+                  <th pSortableColumn="description">
+                      <div class="flex justify-content-between align-items-center">
+                          Mô tả
+                          <p-sortIcon field="description"></p-sortIcon>
+                      </div>
+                  </th>
+                  <th pSortableColumn="status">
+                      <div class="flex justify-content-between align-items-center">
+                          Trạng thái
+                          <p-sortIcon field="status"></p-sortIcon>
+                      </div>
+                  </th>
+                  <th>
+                      <div class="flex justify-content-between align-items-center">
+                          Roles
+                      </div>
+                  </th>
+                  <th>
+                      <div class="flex justify-content-between align-items-center">
+                          Thao tác
+                      </div>
+                  </th>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-group>
+              <tr>
+                  <td><p-tableCheckbox [value]="group"></p-tableCheckbox></td>
+                  <td>{{group.name}}</td>
+                  <td>{{group.description}}</td>
+                  <td><p-tag styleClass="p-mr-2" [severity]="(group.status == '1' ? 'success' : 'warning')" value="{{getStatusGroup(group.status)}}"></p-tag></td>
+                  <td><p-tag styleClass="p-mr-2" [severity]="success" value="{{group.roles!=null && group.roles.length> 0 ? (group.roles.length == 1 ? group.roles[0].description : group.roles[0].description + ' ...' ) : ''}}" (click)="showListRoles($event, op, group)"> </p-tag></td>
+                  <td>
+                      <button *ngIf="checkUpdate" pButton pRipple icon="pi pi-pencil" (click)="showModalUpdate(group)" pTooltip="Sửa thông tin phân hệ" tooltipPosition="top" class="p-button-rounded p-button-success mr-2 p-button-sm"></button>
+                      <button *ngIf="checkSetAuthen" pButton pRipple icon="pi pi-user" (click)="showModalAuthen(group)" pTooltip="Phân quyền role cho phân hệ" tooltipPosition="top" class="p-button-rounded p-button-success mr-2 p-button-sm" ></button>
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+              <tr>
+                  <td colspan="6">Không tồn tại dữ liệu.</td>
+              </tr>
+          </ng-template>
+          <ng-template pTemplate="summary">
+              <div class="flex align-items-center justify-content-center">
+                  In total there are {{systems ? systems.length : 0 }} systems.
+              </div>
+          </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+<p-confirmDialog header="Xác nhận xóa" icon="pi pi-exclamation-triangle" [style]="{width: '30vw'}"></p-confirmDialog>
+<ng-container *ngIf="checkAdd">
+    <app-add-group
+    [isVisibleAdd]="isVisibleAdd"
+    (data)="addGroup($event)"
+    (submitAdd)="closeModalAdd()">
+    </app-add-group>
+</ng-container>
+<ng-container *ngIf="group != null && checkUpdate">
+    <app-update-group
+    [isVisibleUpdate]="isVisibleUpdate"
+    [group]="group"
+    (submitUpdate)="updateGroup($event)"
+    (cancelUpdate)="closeModalUpdate()" ></app-update-group>
+</ng-container>
+
+<ng-container *ngIf="isVisibleRole">
+    <app-roles-group-modal (cancel)="closeModalAuthen($event)" [isVisibleRole]="isVisibleRole"
+      [nodes]="nodes"
+      [group]="group"
+      [titleModelRole]="'Gán roles cho nhóm quyền'">
+    </app-roles-group-modal>
+</ng-container>
+
+<p-overlayPanel #op [showCloseIcon]="true" [style]="{width: '550px', height: '450px'}">
+  <ng-template pTemplate>
+    <p-table #dtRole [value]="group.roles" [columns]="['description']" [globalFilterFields]="['description']" [paginator]="true" [rows]="10"
+                dataKey="description" styleClass="p-datatable-customers p-datatable-sm"
+                currentPageReportTemplate="{totalRecords} roles" [showCurrentPageReport]="true">
+          <ng-template pTemplate="caption">
+              <div class="flex flex-column md:flex-row md:justify-content-between table-header">
+                  <h5 class="m-0">Danh sách Roles</h5>
+                  <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dtRole.filterGlobal($event.target.value, 'contains')" placeholder="Search..." />
+                  </span>
+              </div>
+          </ng-template>
+          <ng-template pTemplate="body" let-role>
+              <tr>
+                  <td>{{role.description}}</td>
+              </tr>
+          </ng-template>
+      </p-table>
+  </ng-template>
+</p-overlayPanel>

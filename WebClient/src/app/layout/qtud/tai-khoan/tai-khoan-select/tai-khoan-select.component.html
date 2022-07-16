@@ -1,0 +1,103 @@
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <form *ngIf="formSearch" [formGroup]="formSearch" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tìm theo tài khoản</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập từ khóa tìm kiếm" formControlName="userName">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tìm theo tên</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search placeholder="Nhập từ khóa tìm kiếm" formControlName="fullName">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div class="col-md-3">
+              <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <hr class="mt-0 margin-bottom-10">
+
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>
+        <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+          (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th>
+        <th>Stt</th>
+        <th>Tài khoản</th>
+        <th>Tên</th>
+        <th>Email</th>
+        <th>Số điện thoại</th>
+        <th>Đơn vị</th>
+        <th class="action text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of listOfData;let i = index">
+        <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+          (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)"></td>
+        <td>
+          {{ i + 1 + ((paging.page - 1)*paging.size)}}
+        </td>
+        <td>
+          {{item.username}}
+        </td>
+        <td>
+          <a class="data-link" href="javascript:;">
+            {{item.fullName}}
+          </a>
+        </td>
+        <td>
+          {{item.tel}}
+        </td>
+        <td>
+          {{item.pOSCode}}
+        </td>
+        <td>
+          {{item.unitCode}}
+        </td>
+        <td class="text-center">
+          <ng-container *ngIf="!tableConfig.itemSelected.has(item[tableConfig.keyId])">
+            <button type="button" class="btn btn-success" (click)="tableConfig.onItemChecked(item[tableConfig.keyId], true, listOfData)">Chọn</button>
+          </ng-container>
+          <ng-container *ngIf="tableConfig.itemSelected.has(item[tableConfig.keyId])">
+            <button type="button" class="btn btn-danger" (click)="tableConfig.onItemChecked(item[tableConfig.keyId], false, listOfData)">Bỏ</button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <app-paging [data]="paging" (onChange)="getData($event)"></app-paging>
+</div>
+
+<div class="text-center mt-4">
+  <button type="button" nz-button class="btn btn-light mr-2" (click)="closeDialog()">
+    Đóng
+  </button>
+  <button type="button" nz-button class="btn btn-primary mr-2" (click)="submitForm()">
+    Thêm thành viên
+  </button>
+</div>

@@ -1,0 +1,41 @@
+<div class="row">
+  <form class="form-horizontal col-md-12" nz-form *ngIf="formAreaPlace" [formGroup]="formAreaPlace" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+  
+    <div class="row">
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn tỉnh/thành</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="province" [apiService]="provinceApi" [apiParams]="whereProvince"
+              placeholder="Chọn tỉnh/thành" (onChange)="onChangeProvince()">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn quận/huyện</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="district" [apiService]="districtApi" [apiParams]="whereDistrict"
+              placeholder="Chọn quận/huyện" (onChange)="onChangeDistrict()">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn phường/xã</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="commune" [apiService]="communeApi" [apiParams]="whereCommune"
+              placeholder="Chọn phường/xã" (onChange)="onChangeCommune()">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+  
+  </form>
+</div>

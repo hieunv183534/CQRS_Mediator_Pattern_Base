@@ -1,0 +1,154 @@
+﻿@model LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>VNPOST Việt Nam</title>
+
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico" />
+
+    <!-- Global stylesheets -->
+    @*<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">*@
+    <link href="~/global_assets/css/icons/icomoon/styles.min.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/bootstrap_limitless.min.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/layout.min.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/components.min.css" rel="stylesheet" type="text/css">
+    <link href="~/assets/css/colors.min.css" rel="stylesheet" type="text/css">
+    <link href="~/css/style.css?v=1.1" rel="stylesheet" type="text/css">
+    <!-- /global stylesheets -->
+    <!-- Core JS files -->
+    @*<script src="/global_assets/js/main/jquery.min.js"></script>*@
+    @*<script src="/global_assets/js/main/bootstrap.bundle.min.js"></script>*@
+    @*<script src="/global_assets/js/plugins/loaders/blockui.min.js"></script>*@
+    <!-- /core JS files -->
+    <!-- Theme JS files -->
+    @*<script src="/global_assets/js/plugins/forms/styling/uniform.min.js"></script>*@
+
+    @*<script src="/assets/js/app.js"></script>*@
+    @*<script src="/global_assets/js/demo_pages/login.js"></script>*@
+    <!-- /theme JS files -->
+</head>
+
+<body>
+
+    <!-- Page content -->
+    <div class="page-content">
+
+        <!-- Main content -->
+        <div class="content-wrapper">
+
+            <!-- Content area -->
+            <div class="content d-flex justify-content-center align-items-center">
+
+                @if (Model.EnableLocalLogin)
+                {
+                    <!-- Login form -->
+                    <form class="login-form wmin-sm-500" asp-route="Login">
+                        <input type="hidden" asp-for="ReturnUrl" />
+
+                        <div class="card mb-0 bg-login">
+                            <div class="card-body">
+                                <div class="text-center mb-3">
+                                    <img class="icon-logo mb-1 mt-1" title="logo login" src="~/assets/images/logo.png" />
+                                    <h3 class="title-form-login">
+                                        HỆ THỐNG XÁC THỰC TÀI KHOẢN
+                                    </h3>
+                                    <partial name="_ValidationSummary" />
+                                </div>
+
+                                <div class="form-group form-group-feedback form-group-feedback-left">
+                                    <input type="text" class="form-control" placeholder="Tài khoản" asp-for="Username" autofocus>
+                                    <div class="form-control-feedback">
+                                        <i class="icon-user text-muted"></i>
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-group-feedback form-group-feedback-left">
+                                    <input type="password" class="form-control" placeholder="************" asp-for="Password" autocomplete="off">
+                                    <div class="form-control-feedback">
+                                        <i class="icon-lock2 text-muted"></i>
+                                    </div>
+                                </div>
+
+                                <div class="form-group d-flex align-items-center">
+                                    @if (Model.AllowRememberLogin)
+                                    {
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input" asp-for="RememberLogin">
+                                                <label class="form-check-label" asp-for="RememberLogin">
+                                                    Nhớ phiên đăng nhập
+                                                </label>
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-block" name="button" value="login">Đăng nhập</button>
+                                </div>
+                                <div class="text-center">
+                                    <a asp-action="ForgotPassword" class="ml-auto">Quên mật khẩu?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- /login form -->
+                }
+
+                @if (Model.VisibleExternalProviders.Any())
+                {
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>External Account</h2>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-inline">
+                                    @foreach (var provider in Model.VisibleExternalProviders)
+                                    {
+                                        <li class="list-inline-item">
+                                            <a class="btn btn-secondary"
+                                               asp-controller="External"
+                                               asp-action="Challenge"
+                                               asp-route-scheme="@provider.AuthenticationScheme"
+                                               asp-route-returnUrl="@Model.ReturnUrl">
+                                                @provider.DisplayName
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
+                {
+                    <div class="alert alert-warning">
+                        <strong>Invalid login request</strong>
+                        There are no login schemes configured for this request.
+                    </div>
+                }
+
+            </div>
+            <!-- /content area -->
+
+        </div>
+        <!-- /main content -->
+
+    </div>
+    <!-- /page content -->
+
+</body>
+</html>

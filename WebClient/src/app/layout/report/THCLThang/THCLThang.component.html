@@ -1,0 +1,47 @@
+<div class="page-header page-header-light">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a [routerLink]="['/']" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Trang chủ</a>
+        <a href="javascript:;" class="breadcrumb-item">Report</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Tổng hợp chất lượng tháng</span></h4>
+    </div>
+  </div>
+</div>
+
+<div class="content pt-0">
+
+  <form nz-form [formGroup]="form" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md"></div>
+      <div class="col-md-3">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn tháng</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-month formControlName="Month" placeholder="MM/YYYY"></input-month>
+          </nz-form-control>
+        </nz-form-item>
+      </div> 
+      <div class="col-md"></div>
+    </div>
+
+    <div class="text-center mt-2">
+      <ng-container>
+        <button nz-button class="btn btn-primary mr-2" type="button" (click)="submit()">
+          Xem báo cáo
+        </button>
+      </ng-container>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,242 @@
+<div class="card">
+  <div class="card-header header-elements-inline">
+    <h6 class="card-title">SẢN LƯỢNG CHẤP NHẬN GỬI THEO TỈNH</h6>
+    <div class="header-elements">
+      <span class="badge badge-success badge-pill mr-2">Tỉnh</span>
+      <input-select-api
+        class="cbx-posCode"
+        [apiService]="provinceApi"
+        [(ngModel)]="province"
+        (onChange)="changePos()"
+        placeholder="Tất cả"
+      ></input-select-api>
+
+      <span class="badge badge-primary badge-pill ml-2 mr-2">Cục</span>
+      <input-select
+        class="cbx-posCode"
+        [items]="listPos"
+        [(ngModel)]="posCode"
+        [allowClear]="false"
+        (onChange)="changePos()"
+        placeholder="Toàn mạng"
+      ></input-select>
+    </div>
+  </div>
+
+  <div
+    class="card-body d-sm-flex align-items-sm-center justify-content-sm-between flex-sm-wrap"
+  >
+    <div class="d-flex align-items-center mb-3 mb-sm-0">
+      <div id="campaigns-donut">
+        <svg width="42" height="42">
+          <g transform="translate(21,21)">
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M1.1634144591899855e-15,19A19,19 0 0,1 -14.050144241469582,12.790365389381929L-7.025072120734791,6.3951826946909645A9.5,9.5 0 0,0 5.817072295949927e-16,9.5Z"
+                style="fill: rgb(102, 187, 106)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M-14.050144241469582,12.790365389381929A19,19 0 0,1 0.6493373977393208,-18.988900993577726L0.3246686988696604,-9.494450496788863A9.5,9.5 0 0,0 -7.025072120734791,6.3951826946909645Z"
+                style="fill: rgb(149, 117, 205)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M0.6493373977393208,-18.988900993577726A19,19 0 0,1 5.817072295949928e-15,19L2.908536147974964e-15,9.5A9.5,9.5 0 0,0 0.3246686988696604,-9.494450496788863Z"
+                style="fill: rgb(255, 112, 67)"
+              ></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="ml-3" *ngIf="tongquan">
+        <h5 class="font-weight-semibold mb-0">
+          {{ tongquan.DIN | number }}
+          <span
+            class="font-size-sm font-weight-normal"
+            [ngClass]="{
+              'text-success': tongquan.DIN >= tongquan.DIO,
+              'text-danger': tongquan.DIN < tongquan.DIO
+            }"
+            ><i
+              [ngClass]="{
+                'icon-arrow-up12': tongquan.DIN >= tongquan.DIO,
+                'icon-arrow-down12': tongquan.DIN < tongquan.DIO
+              }"
+            ></i>
+            (
+            {{ tongquan.DIN >= tongquan.DIO ? "" : "-" }}
+            {{
+              (abs(tongquan.DIN - tongquan.DIO) * 100) / tongquan.DIO
+                | number: "0.1-2"
+            }}% )
+          </span>
+        </h5>
+        <span class="badge badge-mark border-success mr-1"></span>
+        <span class="text-muted">Sản lượng tháng này</span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center mb-3 mb-sm-0">
+      <div id="campaign-status-pie">
+        <svg width="42" height="42">
+          <g transform="translate(21,21)">
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M1.1634144591899855e-15,19A19,19 0 0,1 -10.035763324841723,-16.133302652828462L-5.017881662420861,-8.066651326414231A9.5,9.5 0 0,0 5.817072295949927e-16,9.5Z"
+                style="fill: rgb(41, 182, 246)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M-10.035763324841723,-16.133302652828462A19,19 0 0,1 17.35205039879773,-7.739919053684189L8.676025199398865,-3.8699595268420945A9.5,9.5 0 0,0 -5.017881662420861,-8.066651326414231Z"
+                style="fill: rgb(239, 83, 80)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M17.35205039879773,-7.739919053684189A19,19 0 0,1 14.540850859600345,12.229622082421841L7.270425429800173,6.1148110412109205A9.5,9.5 0 0,0 8.676025199398865,-3.8699595268420945Z"
+                style="fill: rgb(129, 199, 132)"
+              ></path>
+            </g>
+            <g class="d3-arc d3-slice-border" style="cursor: pointer">
+              <path
+                d="M14.540850859600345,12.229622082421841A19,19 0 0,1 5.817072295949928e-15,19L2.908536147974964e-15,9.5A9.5,9.5 0 0,0 7.270425429800173,6.1148110412109205Z"
+                style="fill: rgb(153, 153, 153)"
+              ></path>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="ml-3" *ngIf="tongquan">
+        <h5 class="font-weight-semibold mb-0">
+          {{ tongquan.DIO | number }}
+        </h5>
+        <span class="badge badge-mark border-danger mr-1"></span>
+        <span class="text-muted">Sản lượng tháng trước</span>
+      </div>
+    </div>
+
+    <div></div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table text-nowrap">
+      <thead>
+        <tr>
+          <th>Tỉnh</th>
+          <th>Chấp nhận gửi</th>
+          <th>Biến động</th>
+          <th>Gửi đến</th>
+          <th>Biến động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-active table-border-double">
+          <td colspan="4">Tháng {{ time | date: "MM/yyyy" }}</td>
+          <td class="text-right">
+            <span class="progress-meter" id="today-progress" data-progress="30"
+              ><svg width="20" height="20">
+                <g transform="translate(10,10)">
+                  <g class="progress-meter">
+                    <path
+                      d="M0,8A8,8 0 1,1 0,-8A8,8 0 1,1 0,8Z"
+                      style="
+                        fill: none;
+                        stroke: rgb(121, 134, 203);
+                        stroke-width: 1.5;
+                      "
+                    ></path>
+                    <path
+                      d="M4.898587196589413e-16,-8A8,8 0 0,1 7.608452130361228,2.472135954999579L0,0Z"
+                      style="fill: rgb(121, 134, 203)"
+                    ></path>
+                  </g>
+                </g>
+              </svg>
+            </span>
+          </td>
+        </tr>
+
+        <tr *ngFor="let item of data; let i = index">
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="mr-3">
+                <a
+                  href="#"
+                  class="btn {{
+                    getRandomColor()
+                  }} rounded-pill btn-icon btn-sm"
+                >
+                  <span class="letter-icon">{{ i + 1 }}</span>
+                </a>
+              </div>
+              <div>
+                <a href="#" class="text-body font-weight-semibold">{{
+                  item.ProvinceName
+                }}</a>
+                <!-- <div class="text-muted font-size-sm">
+                  <span class="badge badge-mark border-primary mr-1"></span>
+                  Tháng {{time | date:'MM/yyyy'}}
+                </div> -->
+              </div>
+            </div>
+          </td>
+          <td>
+            <h6 class="font-weight-semibold mb-0">{{ item.DIN | number }}</h6>
+          </td>
+          <td>
+            <span
+              [ngClass]="{
+                'text-success': item.DIN >= item.DIO,
+                'text-danger': item.DIN < item.DIO
+              }"
+              ><i
+                class="mr-2"
+                [ngClass]="{
+                  'icon-stats-growth2': item.DIN >= item.DIO,
+                  'icon-stats-decline2': item.DIN < item.DIO
+                }"
+              ></i>
+              {{ item.DIN < item.DIO ? "-" : "" }}
+              {{
+                (abs(item.DIN - item.DIO) * 100) / item.DIO
+                  | number: "0.1-2"
+              }}%
+            </span>
+          </td>
+          <td>
+            <h6 class="font-weight-semibold mb-0">{{ item.TOIN | number }}</h6>
+          </td>
+          <td>
+            <span
+              [ngClass]="{
+                'text-success': item.TOIN >= item.TOIO,
+                'text-danger': item.TOIN < item.TOIO
+              }"
+              ><i
+                class="mr-2"
+                [ngClass]="{
+                  'icon-stats-growth2': item.TOIN >= item.TOIO,
+                  'icon-stats-decline2': item.TOIN < item.TOIO
+                }"
+              ></i>
+              {{ item.TOIN < item.TOIO ? "-" : "" }}
+              {{
+                (abs(item.TOIN - item.TOIO) * 100) / item.TOIO
+                  | number: "0.1-2"
+              }}%
+            </span>
+          </td>
+        </tr>
+      </tbody>
+      <!-- <footer *ngIf="!loading">
+        <tr>
+          <td colspan="5" class="text-center">Đang tải...</td>
+        </tr>
+      </footer> -->
+    </table>
+  </div>
+</div>

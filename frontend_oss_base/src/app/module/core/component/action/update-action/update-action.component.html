@@ -1,0 +1,37 @@
+<form [formGroup]="formUpdate" (ngSubmit)="handleOk()" (keydown.enter)="handleOk()">
+  <p-dialog header="{{'Sửa thông tin action' | translate }}" [(visible)]="isVisibleUpdate" modal="true" (onHide)="handleCancel()" [style]="{width: '50vw'}">
+      <p-divider align="left"> <b>Thông tin cơ bản</b> </p-divider>
+      <div class="p-fluid grid">
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <input type="text" id="name" pInputText formControlName="name" autofocus/>
+          <label for="name">{{'name' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.name.errors">
+          <ng-container  *ngIf="f.name.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'name' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+        </div>
+      </div>
+      <div class="p-field col-6 md-6">
+        <span class="p-float-label">
+          <input type="text" id="nameAscii" pInputText formControlName="nameAscii" autofocus/>
+          <label for="nameAscii">{{'nameAscii' | translate }} <span style="color: red;">*</span> </label>
+        </span>
+        <div *ngIf="submitted && f.nameAscii.errors">
+          <ng-container  *ngIf="f.nameAscii.errors.required">
+            <p-tag styleClass="p-mr-2" severity="warning" value="{{'nameAscii' | translate }} {{'ms_validate_required' | translate }}" ></p-tag><br>
+          </ng-container >
+          <ng-container  *ngIf="f.nameAscii.errors.cannotContainSpace">
+            <p-tag styleClass="p-mr-2" severity="warning" *ngIf="f.nameAscii.errors.cannotContainSpace" value="{{'nameAscii' | translate }} {{'ms_validate_space' | translate }}"></p-tag>
+          </ng-container >
+        </div>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button (click)="handleCancel()" label="{{'cancel' | translate }}" styleClass="p-button-warning"></p-button>
+      <p-button (click)="handleOk()" label="{{'save' | translate }}" styleClass="p-button-success"></p-button>
+    </ng-template>
+  </p-dialog>
+
+</form>

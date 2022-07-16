@@ -1,0 +1,62 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên Data</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="name"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Cache (phút)</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float placeholder="" [items]="listConnection" formControlName="cache"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-4">
+        <nz-form-item>
+          <nz-form-label nzRequired>Kết nối</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select placeholder="" [items]="listConnection" formControlName="connectString"></input-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <nz-form-item>
+          <nz-form-label nzRequired>SQL</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-textarea formControlName="dataValue"></input-textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <i>@PosCode : Mã bưu cục đang đăng nhập</i>
+      </div>
+    </div>
+
+    <div class="text-right mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="button">
+          Test dữ liệu
+        </button>
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

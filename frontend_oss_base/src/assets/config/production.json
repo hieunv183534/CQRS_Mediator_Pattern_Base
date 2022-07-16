@@ -1,0 +1,19 @@
+{
+  "api": {
+    "baseUrl": "http://10.155.136.123:8101",
+    "partnerUrl": "",
+    "assetCDNUrl": "",
+    "ossUserUrl": "http://10.155.136.123:8101",
+    "casUrl": "https://id.vnpt.com.vn/cas/login?service=http://localhost:4200/"
+  },
+  "pmsCoreApi": {
+    "baseUrl": "http://127.0.0.1:8901"    
+  },
+  "pageSize": [
+    10,
+    50,
+    100
+  ],
+  "page": 1,
+  "defaultPage": 10
+}

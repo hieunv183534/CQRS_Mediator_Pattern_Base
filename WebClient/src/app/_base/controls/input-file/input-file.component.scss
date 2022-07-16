@@ -1,0 +1,23 @@
+nz-upload {
+  width: 100%;
+  display: block;
+  border: solid 1px #ccc;
+  border-radius: 3px;
+  .ant-upload-select {
+    width: 100%;
+    .btn-upload {
+      border: none;
+      width: 100%;
+    }
+  }
+
+  .ant-upload-list-item {
+    margin-top: 0;
+    height: 30px;
+
+    .ant-upload-list-item-info {
+      padding-top: 5px;
+      padding-bottom: 5px;
+    }
+  }
+}

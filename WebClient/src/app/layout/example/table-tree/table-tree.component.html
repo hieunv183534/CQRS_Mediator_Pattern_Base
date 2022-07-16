@@ -1,0 +1,71 @@
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Dữ liệu tree</span></h4>
+    </div>
+    <div class="header-elements">
+
+    </div>
+  </div>
+</div>
+
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse" id="search-list">
+        <!-- <form *ngIf="myForm" [formGroup]="myForm" class="w-100" (ngSubmit)="getData()" novalidate>
+          <ng-template #controlErrorTpl let-control>
+            <app-render-errors [control]="control"></app-render-errors>
+          </ng-template>
+          <div class="row ">
+            <div class="col-md-3">
+              <nz-form-item>
+                <nz-form-label>Tìm kiếm</nz-form-label>
+                <nz-form-control [nzErrorTip]="controlErrorTpl">
+                  <input-text-search  placeholder="Nhập từ khóa tìm kiếm"
+                    formControlName="keySearch">
+                  </input-text-search>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <button type="submit" [hidden]="true">Tìm kiếm</button>
+        </form> -->
+      </div>
+    </div>
+  </div>
+  <hr class="mt-0 margin-bottom-10">
+
+  <nz-table [nzData]="listOfData" [nzLoading]="isLoading" [nzBordered]="true" [nzFrontPagination]="false" nzSize="small"
+    [nzScroll]="{ x: false }">
+    <thead>
+      <tr>
+        <th nzWidth="40px" [nzChecked]="tableConfig.isAllChecked" [nzIndeterminate]="tableConfig.indeterminate"
+          (nzCheckedChange)="tableConfig.onAllChecked($event,listOfData)"></th>
+        <th>Tên</th>
+        <th>Mã</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of listOfData">
+        <ng-container *ngFor="let item of tableTreeConfig.mapOfExpandedData[data[tableTreeConfig.keyId]]">
+          <tr *ngIf="(item.parent && item.parent.expand) || !item.parent">
+            <td [nzChecked]="tableConfig.itemSelected.has(item[tableConfig.keyId])"
+              (nzCheckedChange)="tableConfig.onItemChecked(item[tableConfig.keyId], $event, listOfData)">
+            </td>
+            <td [ngStyle]="{'padding-left': 5 + (item.level! * 20) + (item.children.length > 0? 0: 25) +'px'}" [nzShowExpand]="!!item.children && item.children.length > 0" [(nzExpand)]="item.expand"
+              (nzExpandChange)="tableTreeConfig.collapse(tableTreeConfig.mapOfExpandedData[data[tableTreeConfig.keyId]], item, $event)">
+              {{ item.name }}
+            </td>
+            <td>{{ item.id }}</td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </nz-table>
+</div>

@@ -1,0 +1,4 @@
+<label nz-checkbox [class]="class" [(ngModel)]="controlValue" [nzChecked]="controlValue === nzValue" (nzCheckedChange)="onChange()" [nzDisabled]="disabled"
+  (focusin)="onBlur()" (focusout)="onUnBlur()" [nzValue]="nzValue">
+  <ng-content></ng-content>
+</label>

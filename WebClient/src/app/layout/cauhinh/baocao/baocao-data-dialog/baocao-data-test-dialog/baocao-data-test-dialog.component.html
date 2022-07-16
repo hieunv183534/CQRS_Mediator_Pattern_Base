@@ -1,0 +1,39 @@
+<nz-spin [nzSpinning]="isLoading">
+  <form nz-form [formGroup]="myForm" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+  
+    <div class="row">
+      <div class="col-12">
+        <nz-form-item>
+          <nz-form-label>Params Json Object</nz-form-label>
+          <nz-form-control>
+            <input-textarea formControlName="reportParams" placeholder="Nhập tham số"></input-textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div *ngIf="viewDataSet">{{viewDataSet | json}}</div>
+    <div class="text-center mt-2">
+      <button type="submit" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="viewReport()">
+        Xem báo cáo
+      </button>
+      <button type="submit" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="printReport()">
+        In báo cáo
+      </button>
+      <div class="btn-group justify-content-center">
+        <a href="javascript:;" class="btn btn-success mr-2 w-2 dropdown-toggle" data-toggle="dropdown">Kết xuất</a>
+        <div class="dropdown-menu">
+          <a href="javascript:;" class="dropdown-item" (click)="dowloadReport(1)">Pdf</a>
+          <a href="javascript:;" class="dropdown-item" (click)="dowloadReport(3)">Doc</a>
+          <a href="javascript:;" class="dropdown-item" (click)="dowloadReport(2)">Excel</a>
+        </div>
+      </div>
+      <button type="button" nz-button [nzLoading]="isSubmit" class="btn btn-primary mr-2 w-2" (click)="viewData()">
+        View Data
+      </button>
+      <button type="button" class="btn btn-light" type="button" (click)="closeDialog()">Đóng</button>
+    </div>
+  </form>
+</nz-spin>

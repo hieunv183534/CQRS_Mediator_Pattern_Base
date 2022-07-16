@@ -1,0 +1,30 @@
+<div class="row">
+  <form class="form-horizontal col-md-12" nz-form *ngIf="formAreaPlace" [formGroup]="formAreaPlace" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn tuyến phát</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="deliveryroute" [apiService]="deliveryrouteApi" [apiParams]="{ where :{FromPOSCode: this.userService.userInfo.postCode}, page: 1 }"
+              placeholder="Chọn tuyến phát" (onChange)="onChangeDeliveryroute()">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Chọn điểm phát</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api formControlName="deliverypoint" [apiService]="deliverypointApi" [apiParams]="whereDeliveryPoint"
+              placeholder="Chọn điểm phát" (onChange)="onChangeDeliverypoint()">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>     
+    </div>
+  </form>
+</div>

@@ -1,0 +1,197 @@
+<button aria-label="Close" class="ant-modal-close ng-star-inserted" (click)="closeDialog()">
+  <span class="ant-modal-close-x">
+    <i nz-icon nzType="close" nzTheme="outline" class="anticon ant-modal-close-icon anticon-close"></i>
+  </span>
+</button>
+<nz-spin [nzSpinning]="isLoading">
+  <nz-tabset *ngIf="!isLoading">
+    <nz-tab nzTitle="Bảng cước">
+  <form nz-form *ngIf="!isLoading" [formGroup]="myForm" (ngSubmit)="submitForm()" novalidate>
+    <ng-template #controlErrorTpl let-control>
+      <app-render-errors [control]="control"></app-render-errors>
+    </ng-template>
+    <div class="row">
+       <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên dịch vụ</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api [items]="[{ value: null, text: 'Chọn dịch vụ' }]" [disabled]="true" formControlName="serviceCode"
+               [apiService]="serviceApi" [apiParams]="{ page: 1 }" placeholder="">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Mã bảng cước</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="domesticFreightRuleCode"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Ngày hiệu lực</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date placeholder="" formControlName="valueDate"></input-date>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label nzRequired>Ngày hết hiệu lực</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-date placeholder="" formControlName="expiredDate"></input-date>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Số quyết định</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="ruleNo"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Có VAT</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-check-box placeholder="" formControlName="hasVAT"></input-check-box>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Phần trăm VAT</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select placeholder="" [items]="[{value:0,text:'0%'},{value:5,text:'5%'},{value:10, text:'10%'}]"
+             formControlName="vatPercent"></input-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Mã Tỉnh</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select-api [items]="[{ value: null, text: 'Chọn Tỉnh' }]" formControlName="provinceCode"
+               [apiService]="provinceApi" [apiParams]="{ page: 1 }" placeholder="">
+            </input-select-api>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Mã khách hàng</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-text placeholder="" formControlName="customerCode"></input-text>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+        
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label >Công thức tính hệ số loại hàng</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select placeholder="" [items]="[{value:0,text:'Tính tổng'},{value:1, text:'chưa có'}]"
+            formControlName="commodityCalculationMethod"></input-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+        
+      <!-- <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Cách tính cước vùng xa</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select placeholder="" 
+              [items]="[{value:0,text:'Theo nấc khối lượng'},{value:1, text:'chưa có'}]"
+              formControlName="farRegionFreightType"></input-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div> -->
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Hệ số cước xăng dầu</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float placeholder="" formControlName="fuelFreightCoefficient"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Hệ số cước vùng xa</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-float placeholder="" formControlName="farRegionCoefficient"></input-float>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+        
+      <div class="col-md-6">
+        <nz-form-item>
+          <nz-form-label>Cách tính cước lô</nz-form-label>
+          <nz-form-control [nzErrorTip]="controlErrorTpl">
+            <input-select placeholder="" [items]="[{value:0,text:'Theo tổng khối lượng của lô'},{value:1, text:'chưa có'}]"
+             formControlName="batchCalculateMethod"></input-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      </div>
+
+    <div class="text-center mt-2">
+      <ng-container *ngIf="mode !== 'view'">
+        <button nz-button class="btn btn-primary mr-2" type="submit" [nzLoading]="isSubmit">
+          <i class="icon-floppy-disk mr-2"></i>Lưu dữ liệu
+        </button>
+      </ng-container>
+      <button class="btn btn-light" type="button" (click)="closeDialog()"><i class="icon-close2 mr-2"></i>Đóng</button>
+    </div>
+  </form>
+    </nz-tab>
+    <nz-tab nzTitle="Khu vực" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-khuvuc [mode]="mode" [ruleId]="id"></app-cuocphi-khuvuc>
+      </ng-template>
+    </nz-tab>
+    
+    <!--<nz-tab nzTitle="Vùng tính cước" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-vung [mode]="mode" [ruleId]="id"></app-cuocphi-vung>
+      </ng-template>
+    </nz-tab>
+     -->
+    <nz-tab nzTitle="Cước chính" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-cuocchinh [mode]="mode" [ruleId]="id"></app-cuocphi-cuocchinh>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Cước DVCT" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-cuocdvct [mode]="mode" [ruleId]="id"></app-cuocphi-cuocdvct>
+      </ng-template>
+    </nz-tab>
+    <!-- <nz-tab nzTitle="Nấc cước vùng xa" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-cuocvungxa [mode]="mode" [ruleId]="id"></app-cuocphi-cuocvungxa>
+      </ng-template>
+    </nz-tab> -->
+    <nz-tab nzTitle="Huyện vùng xa" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-cuocvungxa-huyen [mode]="mode" [ruleId]="id"></app-cuocphi-cuocvungxa-huyen>
+      </ng-template>
+    </nz-tab>
+    <nz-tab nzTitle="Xã vùng xa" *ngIf="mode !== 'add'">
+      <ng-template nz-tab>
+        <app-cuocphi-cuocvungxa-xa [mode]="mode" [ruleId]="id"></app-cuocphi-cuocvungxa-xa>
+      </ng-template>
+    </nz-tab>
+  </nz-tabset>
+</nz-spin>

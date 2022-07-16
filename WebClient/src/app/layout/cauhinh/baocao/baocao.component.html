@@ -1,0 +1,166 @@
+<div class="page-header page-header-light">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a [routerLink]="['/']" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Trang chủ</a>
+        <a [routerLink]="['/danhmuc']" class="breadcrumb-item">Danh mục</a>
+        <!--                <a href="javascript:;" class="breadcrumb-item">Quản lý</a>-->
+        <span class="breadcrumb-item active">Khách hàng, đối tác</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header page-header-light border-bottom-0">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Biểu mẫu báo cáo</span></h4>
+    </div>
+    <div class="header-elements">
+<!--      <button type="submit" class="btn btn-primary" (click)="search()">-->
+<!--        <i class="icon-search4 mr-2"></i>Tìm kiếm-->
+<!--      </button>-->
+      <button type="button" class="btn btn-primary" (click)="addNewReport('newReport')">
+        <i class="icon-plus-circle2 mr-2"></i>Thêm báo cáo
+      </button>
+      <button type="button" class="btn btn-primary" (click)="addNewFolder()">
+        <i class="icon-plus-circle2 mr-2"></i>Thêm thư mục
+      </button>
+<!--      <button type="button" class="btn btn-primary">-->
+<!--        <i class="icon-pencil7 mr-2"></i>Sửa-->
+<!--      </button>-->
+<!--      <button class="ml-2" nz-button nzType="danger">-->
+<!--        <i class="icon-bin mr-2"></i>Xóa-->
+<!--      </button>-->
+      <!--            <button type="button" class="btn btn-primary" (click)="addDataDialog()">-->
+      <!--                <i class="icon-download mr-2"></i>Kết xuất-->
+      <!--            </button>-->
+    </div>
+  </div>
+</div>
+
+<div class="content pt-0">
+  <div class="header-elements-inline">
+    <div class="navbar-expand-md w-100">
+      <div class="padding-left-15 text-right d-md-none w-100 row">
+        <button class="navbar-toggler" data-target="#search-list" data-toggle="collapse" type="button">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+<!--      <div class="navbar-collapse collapse" id="search-list">-->
+<!--        <form *ngIf="formSearch" [formGroup]="formSearch" class="w-100" novalidate>-->
+<!--          <ng-template #controlErrorTpl let-control>-->
+<!--            <app-render-errors [control]="control"></app-render-errors>-->
+<!--          </ng-template>-->
+<!--          <div class="row">-->
+<!--            <div class="col-md-4">-->
+<!--              <nz-form-item>-->
+<!--                <nz-form-label>Mã khách hàng</nz-form-label>-->
+<!--                <nz-form-control [nzErrorTip]="controlErrorTpl">-->
+<!--                  <input-text-search placeholder="Nhập từ khóa tìm kiếm"-->
+<!--                                     formControlName="customerCode">-->
+<!--                  </input-text-search>-->
+<!--                </nz-form-control>-->
+<!--              </nz-form-item>-->
+<!--            </div>-->
+<!--            <div class="col-md-4">-->
+<!--              <nz-form-item>-->
+<!--                <nz-form-label>Tên khách hàng</nz-form-label>-->
+<!--                <nz-form-control [nzErrorTip]="controlErrorTpl">-->
+<!--                  <input-text-search placeholder="Nhập từ khóa tìm kiếm"-->
+<!--                                     formControlName="customerName">-->
+<!--                  </input-text-search>-->
+<!--                </nz-form-control>-->
+<!--              </nz-form-item>-->
+<!--            </div>-->
+
+<!--          </div>-->
+<!--          <ng-container>-->
+<!--            <button [hidden]="true" type="submit"></button>-->
+<!--          </ng-container>-->
+<!--          <br/>-->
+<!--        </form>-->
+<!--      </div>-->
+    </div>
+  </div>
+  <hr class="mt-0 margin-bottom-10">
+
+  <nz-table #expandTable [nzData]="listOfMapData" [nzLoading]="isLoading" nzTableLayout="fixed" style="min-height: 200px">
+    <thead>
+    <tr>
+      <th>Tên</th>
+      <th>Mô tả</th>
+<!--      <th class="action text-center">Thao tác</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    <ng-container *ngFor="let data of listOfMapData">
+      <ng-container *ngFor="let item of mapOfExpandedData[data.key]">
+        <tr *ngIf="(item.parent && item.parent.expand) || !item.parent" (contextmenu)="contextMenu($event, menu, item)">
+          <td
+              [nzIndentSize]="item.level! * 20"
+              [nzShowExpand]="!!item.children.length"
+              [(nzExpand)]="item.expand"
+              (nzExpandChange)="collapse(mapOfExpandedData[data.key], item, $event)"
+          >
+            <div >
+            <i class="icon-folder5 mr-2" *ngIf="item.type === 1 || item.type === 0"></i>
+            <i class="icon-file-stats mr-2" *ngIf="item.type !== 1"></i>
+<!--            <div style="display: inline" class="editable-cell" [hidden]="editId === item.id" (click)="startEdit(item.id)">-->
+              {{ item.name }}
+              <a [hidden]="editId == item.id" class="list-icons-item text-primary" href="javascript:;" (click)="startEdit(item.id)">
+              <span nz-tooltip nzTooltipTitle="Dán">
+                <i class="icon-copy2"></i>
+              </span>
+              </a>
+<!--            </div>-->
+            <input [hidden]="editId !== item.id" type="text" [value]="item.name" nz-input (blur)="stopEdit()" />
+              <a [hidden]="editId !== item.id" class="list-icons-item text-primary" href="javascript:;">
+              <span nz-tooltip nzTooltipTitle="Dán">
+                <i class="icon-copy2"></i>
+              </span>
+              </a>
+<!--            {{ item.name }}-->
+            </div>
+          </td>
+
+          <td>{{ item.description }}</td>
+<!--          <td class="text-center">-->
+<!--            <div class="list-icons list-icons-extended text-center">-->
+<!--              <a class="list-icons-item" href="javascript:;">-->
+<!--              <span nz-tooltip nzTooltipTitle="Sao Chép">-->
+<!--                <i class="icon-copy3"></i>-->
+<!--              </span>-->
+<!--              </a>-->
+<!--              <a class="list-icons-item text-primary" href="javascript:;" *ngIf="false">-->
+<!--              <span nz-tooltip nzTooltipTitle="Dán">-->
+<!--                <i class="icon-copy2"></i>-->
+<!--              </span>-->
+<!--              </a>-->
+<!--              <a class="list-icons-item text-danger" href="javascript:;">-->
+<!--              <span nz-tooltip nzTooltipTitle="Di Chuyển">-->
+<!--                <i class="icon-scissors"></i>-->
+<!--              </span>-->
+<!--              </a>-->
+<!--            </div>-->
+<!--          </td>-->
+        </tr>
+      </ng-container>
+    </ng-container>
+    </tbody>
+  </nz-table>
+  <nz-dropdown-menu #menu="nzDropdownMenu">
+    <ul nz-menu (blur)="stopContextMenuSelect()">
+      <li nz-menu-item (click)="addNewFolder('')"><i class="icon-folder-plus2 mr-2"></i>Thêm mới thư mục</li>
+      <li nz-menu-item (click)="addNewReport('newReport')"><i class="icon-file-plus mr-2"></i>Thêm mới báo cáo</li>
+      <li nz-menu-item (click)="editReport()" *ngIf="contextMenuSelect && contextMenuSelect.type !== 1"><i class="icon-pencil7 mr-2"></i>Chỉnh sửa</li>
+      <li nz-menu-item (click)="RenameFolder('nameOld')"><i class="icon-pencil3 mr-2"></i>Đổi tên</li>
+<!--      <li nz-menu-item (click)="funcSaoChep()"><i class="icon-copy3 mr-2"></i>Sao chép</li>-->
+      <li nz-menu-item (click)="funcDiChuyen()"><i class="icon-scissors mr-2"></i>Di chuyển</li>
+      <li nz-menu-item (click)="funcDan()" *ngIf="!!contextMenuKeepItem"><i class="icon-copy2 mr-2"></i>Dán</li>
+      <li nz-menu-item (click)="delete()"><i class="icon-bin mr-2"></i>Xóa</li>
+<!--      <li nz-menu-item (click)="testContextMenu($event)"><i class="icon-bin mr-2"></i>Test</li>-->
+    </ul>
+  </nz-dropdown-menu>
+</div>
+

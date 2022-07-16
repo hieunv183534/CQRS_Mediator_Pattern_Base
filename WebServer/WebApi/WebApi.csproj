@@ -1,0 +1,100 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+    <RootNamespace>NOM.WebApi</RootNamespace>
+    <AssemblyName>NOM.WebApi</AssemblyName>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked> 
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>true</IsPackable>
+    <!--<IncludeOpenAPIAnalyzers>true</IncludeOpenAPIAnalyzers>-->
+    <!-- Set this to true if you enable server-side prerendering -->
+    <BuildServerSideRenderer>false</BuildServerSideRenderer>
+    <UserSecretsId>3e0b9a09-6285-4047-8ddc-4ac449f82998</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.3.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.3" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Controllers\DoiSoat\" />
+    <None Remove="Controllers\DanhGia\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="GenCode\00Gencode.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>00Gencode.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\DanhMuc\**" />
+    <Content Remove="Controllers\DanhMuc\**" />
+    <EmbeddedResource Remove="Controllers\DanhMuc\**" />
+    <None Remove="Controllers\DanhMuc\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="web.config" />
+    <Content Remove="wwwroot\example-report.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="GenCode\00Gencode.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>00Gencode.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+    <Folder Include="wwwroot\main\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\template\KT1_ChapNhanGui_Template.xlsx" />
+    <None Include="wwwroot\template\KT1_TiepNhan_Template.xlsx" />
+  </ItemGroup>
+
+  <!--<Target Name="NSwag" AfterTargets="Build" Condition="'$(Configuration)' == 'Debug'">
+    <Copy SourceFiles="@(Reference)" DestinationFolder="$(OutDir)References" />
+    <Exec Command="$(NSwagExe_Core31) run /variables:Configuration=$(Configuration)" />
+    <RemoveDir Directories="$(OutDir)References" />
+  </Target>-->
+
+</Project>

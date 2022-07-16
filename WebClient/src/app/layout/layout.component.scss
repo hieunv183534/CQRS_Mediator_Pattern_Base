@@ -1,0 +1,38 @@
+app-layout {
+  .content-wrapper {
+    padding-top: 50px;
+  }
+  .sidebar-xs .sidebar-main .nav-sidebar > .nav-item-submenu > .nav-group-sub {
+    top: -1px;
+  }
+
+  app-navbar.clear-dashboard {
+    display: none !important;
+  }
+
+  .content-wrapper.clear-dashboard {
+    padding-top: 0px;
+  }
+
+  .clear-dashboard {
+    app-footer {
+      display: none !important;
+    }
+    app-home {
+      > .content {
+        padding-top: 5px;
+        padding-left: 8px;
+        padding-right: 8px;
+        padding-bottom: 0;
+      }
+
+      .card {
+        margin-bottom: 10px;
+        .card-header {
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+//.page_login {
+//    background-color: #0857EC;
+//    background-image: url("https://vnpt.com.vn/design/images/banner_gioithieu.jpg");
+//    background-repeat:no-repeat;
+//    background-size: contain;
+//}
+//.login_main {
+//  display: flex;
+//  justify-content: center;
+//  align-items: center;
+//  height: calc(100vh - 45px);
+//  max-width: 100%;
+//}
+//.footer {
+//  text-align: center;
+//  padding: 10px 0;
+//  background: #ebebeb;
+//}
+//.login_content {
+//  width: 420px;
+//  background: rgba(255,255,255, 1);
+//  text-align: center;
+//  padding: 30px;
+//  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+//}
+//.logo-login {
+//  padding: 0px 0 15px;
+//}
+.login-text, .login-pass {
+  margin-bottom: 20px;
+  position: relative;
+}
+.login_main .alert {
+  padding: 10px;
+  font-family: Tahoma;
+  font-size: 13px;
+}
+.login-text input, .login-pass input {
+  width: 100%;
+  padding: 0 40px;
+  border: 1px solid #d3d3d3;
+  border-radius: 3px;
+  font-family: Roboto,sans-serif;
+  font-size: 14px;
+  color: #4e4e4e;
+  height: 45px;
+  line-height: 45px;
+}
+//#btnLogin
+.login_remember {
+  //background: #187EFB;
+  color: #fff;
+  text-align: center;
+  font-size: 17px;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  text-transform: uppercase;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  font-family: Tahoma;
+}
+.login_remember #btnCasLogin{
+  //background: #187EFB;
+  color: #fff;
+  text-align: center;
+  font-size: 17px;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  text-transform: uppercase;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 45px;
+  font-family: Tahoma;
+}
+
+.login-text-input {
+  position: relative;
+}
+.login-text-input::before {
+  content: "\f007";
+  font-family: fontawesome;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 15px;
+  z-index: 1;
+  font-size: 18px;
+  color: #ababab;
+}
+.login-pass::before {
+  content: "\f023";
+  font-family: fontawesome;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 15px;
+  z-index: 1;
+  font-size: 18px;
+  color: #ababab;
+}
+//@media screen and (max-width:767px) {
+//  .page_login {
+//    background: #eaeaea;
+//  }
+//
+//  .login_content {
+//    width: 100%;
+//    padding: 20px;
+//  }
+//
+//  .ant-form {
+//    width: 100%;
+//  }
+//}
+//
+//.forget-password {
+//  font-family: Tahoma;
+//  margin-bottom: 20px;
+//  display: flex;
+//  justify-content: center;
+//}
+//
+//.forget-password a{
+//  font-size: 14px;
+//  color: deepskyblue;
+//}
+//
+//.forget-password a:hover {
+//  color: darkslategrey;
+//}
